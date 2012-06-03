@@ -19,6 +19,12 @@ class Request {
 	/* POST data sent with the request */
 	protected $postData = array();
 	
+	/* The request method used in sending the request */
+	protected $requestMethod;
+	
+	/* The URL requested with the page load */
+	protected $url;
+	
 	/**
 	 * Processes PHP environment variables, instantiating and populating a
 	 * Request object to represent the current HTTP request.
@@ -26,6 +32,19 @@ class Request {
 	 * @return a request object representing the received HTTP request
 	 */
 	public static function createRequestFromEnvironment() {
+		
+		$req = new Request();
+		
+		$req->requestMethod = $_SERVER['REQUEST_METHOD'];
+		$req->url = new Url( $_SERVER['REQUEST_URI'] );
+		
+		foreach($_GET as $key => $val)
+			$req->getData[$key] = $val;
+			
+		foreach($_POST as $key => $val)
+			$req->postData[$key] = $val;
+			
+		return $req;
 		
 	}
 	
@@ -54,7 +73,7 @@ class Request {
 	 * 
 	 * @param string $param  the parameter to determine existence for
 	 * 
-	 * @return boolean  true iff the paramaeter is set
+	 * @return boolean  true iff the parameter is set
 	 */
 	public function getParamExists($getParam) {
 		return isset($this->getData[$getParam]);
@@ -63,7 +82,7 @@ class Request {
 	/**
 	 * The key of the POST parameter to retrieve.
 	 * 
-	 * @param string $param the parameter to determine existence for
+	 * @param string $param the parameter to retrieve
 	 * 
 	 * @return  the parameter to return the value for
 	 */
@@ -72,6 +91,32 @@ class Request {
 			return null;
 		else
 			return $this->postData[$key];
+	}
+	
+	/**
+	 * 
+	 * Determines whether a given POST parameter exists.
+	 * 
+	 * @param string $postParam  the parameter to determine existence for
+	 * 
+	 * @return  true iff the parameter is set
+	 */
+	public function postParamExists($postParam) {
+		return isset($this->postData[$postParam]);
+	}
+	
+	/**
+	 * Returns the URL requested.
+	 */
+	public function getUrl() {
+		return $this->url;
+	}
+	
+	/**
+	 * Returns the request method used for this request.
+	 */
+	public function getRequestMethod() {
+		return $this->requestMethod;
 	}
     
 }
