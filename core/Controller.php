@@ -12,6 +12,17 @@ namespace esprit\core;
  */
 class Controller {
 
+	/* The configuration object */
+	protected $config;
+	
+	/**
+	 * Creates a new controller from a configuration object.
+	 * 
+	 * @param Config $config the config object to use
+	 */
+	public function __construct(Config $config) {
+		$this->config = $config;
+	}
 	
 	/**
 	 * Runs through the entire request to response cycle.

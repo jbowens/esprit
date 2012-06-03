@@ -4,5 +4,7 @@ namespace esprit;
 
 require_once "init.php";
 
-$controller = new core\Controller();
-$contorller->run();
+$config = core\Config::createFromXMLFile("config.php");
+$controller = new core\Controller( $config );
+
+$controller->run();
