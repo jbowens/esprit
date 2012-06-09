@@ -3,13 +3,11 @@
 namespace esprit\core;
 
 /**
- * 
  * A request to be processed by the website. This class contains information
  * about and GET or POST data sent with the request, HTTP headers received,
  * the url of the request, etc.
  * 
  * @author jbowens
- *
  */
 class Request {
 
