@@ -3,12 +3,10 @@
 namespace esprit\core;
 
 /**
- *
  * The primary controller for the framework. This controller creates the initial
  * request object and moves it along from model to view.
  * 
  * @author jbowens
- *
  */
 class Controller {
     
@@ -31,8 +29,10 @@ class Controller {
 	 * Runs through the entire request to response cycle.
 	 */
 	public function run() {
-		
-		
+	
+        $this->initializeSessions();
+    	
+	    $request = $this->createRequestFromEnvironment();	
 		
 	}
 
@@ -43,12 +43,35 @@ class Controller {
 	 * @return a Request object representing the received HTTP request
 	 */
 	public function createRequestFromEnvironment() {
-	
-		$req = new Request(SITE_ID, $_GET, $_POST, $_SERVER['REQUEST_METHOD'], new Url( $_SERVER['REQUEST_URI'] ));
+
+        $req = (new RequestBuilder())->siteid(SITE_ID)->getData($_GET)->postData($_POST)
+               ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $_SERVER['REQUEST_URI'] ))->build();	
 		
 		return $req;
 		
 	}
+
+    /**
+     * Retrieves the session handler that should be used by the controller.
+     *
+     * @return a SessionHandlerInterface object
+     */
+    public function getSessionHandler() {
+       if( ! $config->settingExists("session_handler") || $config->get("session_handler") == "default" )
+           return new SessionHandler();
+       else
+           return new SessionHandler();
+       // TODO: Update line above 
+    }
+
+    /**
+     * Sets session preferences and begins the session.
+     */
+    protected function initializeSessions() {
+        SessionHandlerInterface sessionHandler = $this->getSessionHandler();
+        session_set_save_handler( sessionHandler );
+        session_start();
+    }
 
 }
 

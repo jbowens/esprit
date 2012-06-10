@@ -3,14 +3,12 @@
 namespace esprit\core;
 
 /**
- * 
  * Stores installation-specific configuration options for the framework. These options are
  * initially loaded from config.xml. This should not be used for storing session or request
  * specific values. Values stored in a Config object should persist acorss the installation
  * acorss all requests and sessions.
  * 
  * @author jbowens
- *
  */
 class Config {
 

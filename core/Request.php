@@ -26,15 +26,25 @@ class Request {
 	/* The URL requested with the page load */
 	protected $url;
 	
+    /**
+     * Creates a new RequestBuilder that can be used to instantiate a
+     * Request
+     *
+     * @return a RequestBuilder
+     */
+    public static function createBuilder() {
+        return new RequestBuilder();
+    }
+
 	/**
 	 * Constructs an empty request object.
      */
-    public function __construct($siteid, $getData, $postData, $requestMethod, $url) {
-    	$this->siteid = $siteid;
-        $this->getData = $getData;
-        $this->postData = $postData;
-        $this->requestMethod = $requestMethod;
-        $this->url = $url;
+    public function __construct(RequestBuilder $builder) {
+    	$this->siteid = $builder->getSiteid();
+        $this->getData = $builder->getGetData();
+        $this->postData = $builder->getPostData();
+        $this->requestMethod = $builder->getRequestMethod();
+        $this->url = $builder->getUrl();
     }
 
     /**
