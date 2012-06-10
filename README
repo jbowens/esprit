@@ -1,5 +1,14 @@
 esprit
 
-A PHP 5.3 web framework
+A PHP 5.4 web framework
 
 jbowens.org
+
+
+---
+System Requirements
+---
+
+PHP 5.4
+Apache
+Memcached

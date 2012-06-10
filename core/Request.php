@@ -11,6 +11,9 @@ namespace esprit\core;
  */
 class Request {
 
+    /* The siteid of the site version the request was submitted to */
+    protected $siteid;
+
 	/* GET data sent with the request */
 	protected $getData = array();
 	
@@ -24,34 +27,14 @@ class Request {
 	protected $url;
 	
 	/**
-	 * Processes PHP environment variables, instantiating and populating a
-	 * Request object to represent the current HTTP request.
-	 * 
-	 * @return a request object representing the received HTTP request
-	 */
-	public static function createRequestFromEnvironment() {
-		
-		$req = new Request();
-		
-		$req->requestMethod = $_SERVER['REQUEST_METHOD'];
-		$req->url = new Url( $_SERVER['REQUEST_URI'] );
-		
-		foreach($_GET as $key => $val)
-			$req->getData[$key] = $val;
-			
-		foreach($_POST as $key => $val)
-			$req->postData[$key] = $val;
-			
-		return $req;
-		
-	}
-	
-	/**
-	 * A protected constructor. This should not--and cannot--be used to create a new
-	 * request.
-	 */
-    protected function __construct() {
-    	
+	 * Constructs an empty request object.
+     */
+    public function __construct($siteid, $getData, $postData, $requestMethod, $url) {
+    	$this->siteid = $siteid;
+        $this->getData = $getData;
+        $this->postData = $postData;
+        $this->requestMethod = $requestMethod;
+        $this->url = $url;
     }
 
     /**

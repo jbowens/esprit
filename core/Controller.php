@@ -11,6 +11,9 @@ namespace esprit\core;
  *
  */
 class Controller {
+    
+    /* The cache to use for storing data in memory between requests */ 
+    protected $cache;
 
 	/* The configuration object */
 	protected $config;
@@ -30,6 +33,20 @@ class Controller {
 	public function run() {
 		
 		
+		
+	}
+
+	/**
+	 * Processes PHP environment variables, instantiating and populating a
+	 * Request object to represent the current HTTP request.
+	 * 
+	 * @return a Request object representing the received HTTP request
+	 */
+	public function createRequestFromEnvironment() {
+	
+		$req = new Request(SITE_ID, $_GET, $_POST, $_SERVER['REQUEST_METHOD'], new Url( $_SERVER['REQUEST_URI'] ));
+		
+		return $req;
 		
 	}
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sites>
+    <site>
+        <siteid>1</siteid>
+        <name>United States</name>
+        <domain>example.com</domain>
+        <localization>en-us</localization>
+        <regions>
+            <region type="country">United States</region>
+        </regions>
+        <default />
+    </site>
+</sites>

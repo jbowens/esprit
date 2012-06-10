@@ -45,7 +45,7 @@ class UrlBuilder {
             $path = substr($urlString, 0, strlen($urlString) - strlen($queryString));
         } else {
             // Relative paths are not supported
-            throw new MalformedUrlException("Unsupported path format received");
+            throw new MalformedUrlException($urlString);
         }
 
         return new Url($host, $path, $queryString, $fragmentIdentifier);
