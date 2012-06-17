@@ -15,6 +15,9 @@ class Controller {
 
 	/* The configuration object */
 	protected $config;
+
+    /* The logger used for logging major events */
+    protected $logger;
 	
 	/**
 	 * Creates a new controller from a configuration object.
@@ -23,6 +26,7 @@ class Controller {
 	 */
 	public function __construct(Config $config) {
 		$this->config = $config;
+        $this->logger = util\Logger::newInstance();
 	}
 	
 	/**
@@ -44,12 +48,21 @@ class Controller {
 	 */
 	public function createRequestFromEnvironment() {
 
-        $req = (new RequestBuilder())->siteid(SITE_ID)->getData($_GET)->postData($_POST)
+        $req = (Request::createBuilder())->siteid(SITE_ID)->getData($_GET)->postData($_POST)
                ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $_SERVER['REQUEST_URI'] ))->build();	
 		
 		return $req;
 		
 	}
+
+    /**
+     * Returns the logger used by the controller.
+     *
+     * @return util\Logger  the controller's logger
+     */
+    public function getLogger() {
+        return $this->logger;
+    }
 
     /**
      * Retrieves the session handler that should be used by the controller.
@@ -74,5 +87,4 @@ class Controller {
     }
 
 }
-
 
