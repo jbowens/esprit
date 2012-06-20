@@ -10,14 +10,14 @@ namespace esprit\core\util;
 class Logger {
 
     /* Log levels */
-    const SEVERE = 1;
-    const ERROR = 2;
-    const WARNING = 3;
-    const INFO = 4;
-    const CONFIG = 5;
-    const FINE = 6;
-    const FINER = 7;
-    const FINEST = 8;
+    const SEVERE = "SEVERE";
+    const ERROR = "ERROR";
+    const WARNING = "WARNING";
+    const INFO = "INFO";
+    const CONFIG = "CONFIG";
+    const FINE = "FINE";
+    const FINER = "FINER";
+    const FINEST = "FINEST";
 
     /* Objects listening to the logs, and recording them */
     protected $logRecorders = array();

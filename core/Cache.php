@@ -2,9 +2,9 @@
 
 namespace esprit\core;
 
-interface Cache {
-
-    
-
+/**
+ * A default cache that 
+ */
+class Cache extends Memcached {
 
 }

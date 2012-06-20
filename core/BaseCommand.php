@@ -60,6 +60,12 @@ abstract class BaseCommand implements Command
          return $this->logger;
      }
 
+    public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger) {
+        $this->config = $config;
+        $this->databaseManager = $dbm;
+        $this->logger = $logger;
+    }
+
     /**
      * Runs the command. This function is called by the controller
      * directly and should probably not be overriden.
