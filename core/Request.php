@@ -14,17 +14,17 @@ class Request {
     /* The siteid of the site version the request was submitted to */
     protected $siteid;
 
-	/* GET data sent with the request */
-	protected $getData = array();
+    /* GET data sent with the request */
+    protected $getData = array();
 	
-	/* POST data sent with the request */
-	protected $postData = array();
+    /* POST data sent with the request */
+    protected $postData = array();
 	
-	/* The request method used in sending the request */
-	protected $requestMethod;
+    /* The request method used in sending the request */
+    protected $requestMethod;
 	
-	/* The URL requested with the page load */
-	protected $url;
+    /* The URL requested with the page load */
+    protected $url;
 
     /* Dictionary of request headers */
     protected $headers;
@@ -39,8 +39,8 @@ class Request {
         return new RequestBuilder();
     }
 
-	/**
-	 * Constructs an empty request object.
+    /**
+     * Constructs an empty request object.
      */
     public function __construct(RequestBuilder $builder) {
     	$this->siteid = $builder->getSiteid();
@@ -56,11 +56,11 @@ class Request {
      * 
      * @param string $key  the get parameter to retrieve
      */
-	public function getGet($key) {
-		if( ! $this->getParamExists($key) )
-			return null;
-		else
-			return $this->getData[$key];
+    public function getGet($key) {
+        if( ! $this->getParamExists($key) )
+            return null;
+        else
+            return $this->getData[$key];
 	}
 	
 	/**
@@ -70,9 +70,9 @@ class Request {
 	 * 
 	 * @return boolean  true iff the parameter is set
 	 */
-	public function getParamExists($getParam) {
-		return isset($this->getData[$getParam]);
-	}
+    public function getParamExists($getParam) {
+        return isset($this->getData[$getParam]);
+    }
 	
 	/**
 	 * The key of the POST parameter to retrieve.
@@ -81,12 +81,12 @@ class Request {
 	 * 
 	 * @return  the parameter to return the value for
 	 */
-	public function getPost($key) {
-		if( ! $this->postParamExists($key) )
-			return null;
-		else
-			return $this->postData[$key];
-	}
+    public function getPost($key) {
+        if( ! $this->postParamExists($key) )
+            return null;
+        else
+            return $this->postData[$key];
+    }
 	
 	/**
 	 * 
@@ -124,19 +124,19 @@ class Request {
         return isset($this->headers[$key]);
     }
 
-	/**
-	 * Returns the URL requested.
-	 */
-	public function getUrl() {
-		return $this->url;
-	}
-	
-	/**
-	 * Returns the request method used for this request.
-	 */
-	public function getRequestMethod() {
-		return $this->requestMethod;
-	}
-    
+    /**
+     * Returns the URL requested.
+     */
+    public function getUrl() {
+        return $this->url;
+    }
+
+    /**
+     * Returns the request method used for this request.
+     */
+    public function getRequestMethod() {
+        return $this->requestMethod;
+    }
+
 }
 
