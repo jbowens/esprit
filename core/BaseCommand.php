@@ -72,7 +72,6 @@ abstract class BaseCommand implements Command
      *
      * @param Request $request
      * @param Response $response
-     *
      * @return Response
      */
     public function execute(Request $request, Response $response) {

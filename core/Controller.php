@@ -37,7 +37,19 @@ class Controller {
         $this->initializeSessions();
     	
 	    $request = $this->createRequestFromEnvironment();	
-		
+
+        $commandResolver = new DefaultCommandResolver();
+        $command = $commandResolver->getCommand( $request );
+
+	
+        try {
+            $command->execute();
+        } catch( Exception $e ) {
+            // TODO: Add more granular logging and add
+            // logic for actually handling exceptions
+            $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
+        }
+    	
 	}
 
 	/**

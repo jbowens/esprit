@@ -16,4 +16,9 @@ interface Command {
      */
     public function execute(Request $request, Response $response);
 
+    /**
+     * Gets the name of this command.
+     */
+    public function getName();
+
 }
