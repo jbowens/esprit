@@ -18,6 +18,9 @@ class Controller {
 
     /* The logger used for logging major events */
     protected $logger;
+
+    /* The command resolvers to use */
+    protected $commandResolvers();
 	
 	/**
 	 * Creates a new controller from a configuration object.
@@ -27,6 +30,7 @@ class Controller {
 	public function __construct(Config $config) {
 		$this->config = $config;
         $this->logger = util\Logger::newInstance();
+        $this->commandResolvers = array();
 	}
 	
 	/**
@@ -38,9 +42,16 @@ class Controller {
     	
 	    $request = $this->createRequestFromEnvironment();	
 
-        $commandResolver = new DefaultCommandResolver();
-        $command = $commandResolver->getCommand( $request );
+        $command = null;
+        foreach( $commandResolvers as $resolver ) {
+            $command = $resolver->resolve($request);
+            if( $command != null )
+                break;
+        }
 
+        if( $command == null ) {
+            //TODO: Use NoMatchingCommand command
+        }
 	
         try {
             $command->execute();

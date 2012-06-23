@@ -123,7 +123,7 @@ class Url {
      * @return string  the ($index-1)th path piece
      */
     public function getPathPiece( $index ) {
-        if( $index < 0 || $index > $this->getPathLength() )
+        if( $index < 0 || $index >= $this->getPathLength() )
             throw new IndexOutOfBoundsException($index, $this->getPathLength());
 
         if( ! isset( $this->pathPieces[$index] ) )
