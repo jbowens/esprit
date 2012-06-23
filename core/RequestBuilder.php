@@ -15,6 +15,7 @@ class RequestBuilder {
     protected $postData = array();
     protected $requestMethod;
     protected $url;
+    protected $headers;
 
     public function __construct() {
     }
@@ -48,6 +49,10 @@ class RequestBuilder {
         return $this->url;
     }
 
+    public function getHeaders() {
+        return $this->headers;
+    }
+
     /* Setters */
 
     public function siteid( $newId ) {
@@ -73,6 +78,10 @@ class RequestBuilder {
     public function url( $newUrl ) {
         $this->url = $newUrl;
         return $this;
+    }
+
+    public function headers($headers) {
+        $this->headers = $headers;
     }
 
 }

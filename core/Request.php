@@ -25,6 +25,9 @@ class Request {
 	
 	/* The URL requested with the page load */
 	protected $url;
+
+    /* Dictionary of request headers */
+    protected $headers;
 	
     /**
      * Creates a new RequestBuilder that can be used to instantiate a
@@ -44,6 +47,7 @@ class Request {
         $this->getData = $builder->getGetData();
         $this->postData = $builder->getPostData();
         $this->requestMethod = $builder->getRequestMethod();
+        $this->headers = $builder->getHeaders();
         $this->url = $builder->getUrl();
     }
 
@@ -96,6 +100,30 @@ class Request {
 		return isset($this->postData[$postParam]);
 	}
 	
+    /**
+     * Gets the value of an HTTP request header.
+     *
+     * @param string $key  the header key
+     * @return  the header value
+     */
+    public function getHeader($key) {
+        if( ! $this->headerIsSet( $key ) )
+            return null;
+        else
+            return $this->headers[$key];
+    }
+
+    /**
+     * Determines if a request header was set with the
+     * request.
+     *
+     * @param string $key  the header to check
+     * @return  true iff the request sent the given header
+     */
+    public function headerIsSet($key) {
+        return isset($this->headers[$key]);
+    }
+
 	/**
 	 * Returns the URL requested.
 	 */
