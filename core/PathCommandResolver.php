@@ -1,6 +1,6 @@
 <?php
 
-package esprit\core;
+namespace esprit\core;
 
 /**
  * A command resolver that uses the URL path of the request to search
@@ -61,9 +61,9 @@ class PathCommandResolver implements CommandResolver {
         // Clean up the path pieces into class pieces
         $classPieces = array();
         for( $i = 0; $i < $url->getPathLength(); $i++ ) {
-            $innerPieces = explode('-', $url->getPathPiece($i);
+            $innerPieces = explode('-', $url->getPathPiece($i));
             $innerPieces = array_map('ucfirst', $innerPieces);
-            array_push($classPieces, implode('', $innterPieces);
+            array_push($classPieces, implode('', $innterPieces));
         }
 
         // Search for a matching command

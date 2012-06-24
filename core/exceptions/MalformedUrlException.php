@@ -9,7 +9,8 @@ namespace core\exceptions;
  */
 class MalformedUrlException extends Exception {
 
-    protected $malformedUrl
+	/* The malformed url that was received */
+    protected $malformedUrl;
 
     public function __construct($malformedUrl) {
         $this->malformedUrl = $malformedUrl;

@@ -1,6 +1,6 @@
 <?php
 
-package esprit\core;
+namespace esprit\core;
 
 /**
  * A command resolver that uses an xml file to map requests

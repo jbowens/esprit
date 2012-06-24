@@ -105,8 +105,8 @@ class Controller {
      * Sets session preferences and begins the session.
      */
     protected function initializeSessions() {
-        SessionHandlerInterface sessionHandler = $this->getSessionHandler();
-        session_set_save_handler( sessionHandler );
+        SessionHandlerInterface $sessionHandler = $this->getSessionHandler();
+        session_set_save_handler( $sessionHandler );
         session_start();
     }
 

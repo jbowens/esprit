@@ -85,7 +85,7 @@ class Url {
      * @return string the absoute url representation of this url
      */
     public function getAbsoluteUrl( $www = false ) {
-        return 'http://' . ( $www ? : 'www.' : '' ) . 
+        return 'http://' . ( $www ? 'www.' : '' ) . 
                $this->host . 
                $this->path . 
                $this->queryString . 
