@@ -32,7 +32,36 @@ class Controller {
         $this->logger = util\Logger::newInstance();
         $this->commandResolvers = array();
 	}
+
+    /**
+     * Creates a new PathCommandResolver for BaseCommands using this contorller's
+     * config, logger and db manager.
+     *
+     * @see PathCommandResolver::__construct()
+     *
+     * @param $directories  list of directories to search in
+     * @param $ext  (optional) the extension to expect php files to have
+     * @return a PathCommandResolver
+     */
+    public function createPathCommandResolver($directories, $ext = null) {
+        return new PathCommandResolver($this->dbm, $this->config, $this->logger, $directories, $ext); 
+    }
 	
+    /**
+     * Creates a new XmlCommandResolver for BaseCommands using this controller's
+     * config, logger and db manager.
+     *
+     * @see XmlCommandResolver::__construct()
+     *
+     * @param $filepath
+     * @param $classpath
+     * @param $extension
+     * @return a XmlCommandResolver  
+     */
+    public function createXmlCommandResolver($filepath, $classpath, $extension = null) {
+        return new XmlCommandResolver($this->dbm, $this->config, $this->logger, $filepath, $classpath, $extension);
+    }
+
 	/**
 	 * Runs through the entire request to response cycle.
 	 */
