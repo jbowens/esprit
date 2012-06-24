@@ -7,7 +7,9 @@ namespace esprit\core;
  * for matching commands on the file system. For example, a request to
  * /about/team/bios would check for commands Command_About, Command_About_Team
  * and Command_About_Team_Bios. Dashes are converted into a following uppercase
- * letter like so: /about-us -> Command_AboutUs
+ * letter like so: /about-us -> Command_AboutUs.
+ *
+ * NOTE: This command resolver only supports commands that extend BaseCommand.
  *
  * @author jbowens
  */
@@ -19,6 +21,11 @@ class PathCommandResolver implements CommandResolver {
     /* The extension used by commands */
     protected $extension;
 
+    /* Data required to instantiate a BaseCommand */
+    protected $dbm;
+    protected $config;
+    protected $logger;
+
     /**
      * Constructs a new path command resolver from an array of directories. The
      * resolver will search only the directories passed to its constructor when
@@ -27,10 +34,13 @@ class PathCommandResolver implements CommandResolver {
      * @param array $directories  an array of strings (directories in the file system)
      * @param $extension  the extension of the php files in the directories
      */
-    public function __construct($directories, $extension = 'php') {
+    public function __construct(db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, $directories, $extension = 'php') {
         foreach( $directories as $dir )
             array_push($commandDirectories, $dir);
         $this->extension = $extension;
+        $this->dbm = $databaseManager;
+        $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
@@ -103,8 +113,10 @@ class PathCommandResolver implements CommandResolver {
 
                 $reflectionClass = new ReflectionClass($className);
 
-                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface("Command") )
-                    return $reflectionClass->newInstance();
+                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface("Command") && 
+                    $reflectionClass->isSubclassOf('esprit\core\BaseCommand') ) {
+                    return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
+                }
 
              }
 

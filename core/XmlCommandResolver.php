@@ -6,6 +6,8 @@ namespace esprit\core;
  * A command resolver that uses an xml file to map requests
  * to commands.
  *
+ * NOTE: This command resolver only supports commands that extend BaseCommand.
+ *
  * @jbowens
  */
 class XmlCommandResolver {
@@ -24,18 +26,28 @@ class XmlCommandResolver {
 
     /* The php extension to use/expect */
     protected $extension;
+ 
+    protected $dbm;
+    protected $config;
+    protected $logger;
     
     /**
      * Constructs a new XmlCommandResolver from an XML file outlining how
      * to resolve requests.
      *
+     * @param $databaseManager  the database manager to construct BaseCommands with
+     * @param $config  the config object to construct BaseCommands with
+     * @param $logger  the logger to construct BaseCommands with
      * @param $filepath  the filepath to the file to use
      * @param $classpath  an array of the directories to search in for the
      *                      command files
      * @param $extension  the php filename extension to expect
      */
-    public function __construct( $filepath, $classpath, $extension = 'php' ) {
+    public function __construct( db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, $filepath, $classpath, $extension = 'php' ) {
 
+        $this->dbm = $databaseManager;
+        $this->config = $config;
+        $this->logger = $logger;
         $this->xmlFilename = $filepath;
         $this->directories = $classpath;
 		$this->extension = $extension;
@@ -144,11 +156,12 @@ class XmlCommandResolver {
 
                 $reflectionClass = new ReflectionClass($className);
 
-                if( !$reflectionClass->isInstantiable() || !$reflectionClass->implementsInterface("Command") )
-                	throw new Exception($command . " is not an instantiable command.");
-                	
+                if( !$reflectionClass->isInstantiable() || !$reflectionClass->implementsInterface('esprit\core\Command') 
+                    || !$reflectionClass->isSubclassOf('esprit\core\BaseCommand') ) {
+                	throw new Exception($command . " is not an instantiable BaseCommand.");
+                }
                 
-                return $reflectionClass->newInstance();
+                return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
 
              }
 
