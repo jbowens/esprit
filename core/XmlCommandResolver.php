@@ -22,6 +22,9 @@ class XmlCommandResolver {
      */
     protected $mappings = null;
 
+    /* The php extension to use/expect */
+    protected $extension;
+    
     /**
      * Constructs a new XmlCommandResolver from an XML file outlining how
      * to resolve requests.
@@ -29,12 +32,14 @@ class XmlCommandResolver {
      * @param $filepath  the filepath to the file to use
      * @param $classpath  an array of the directories to search in for the
      *                      command files
+     * @param $extension  the php filename extension to expect
      */
-    public function __construct( $filepath, $classpath ) {
+    public function __construct( $filepath, $classpath, $extension = 'php' ) {
 
         $this->xmlFilename = $filepath;
         $this->directories = $classpath;
-
+		$this->extension = $extension;
+		
     }
 
     /**
@@ -122,9 +127,35 @@ class XmlCommandResolver {
 
     /**
      * Creates a command given the class name of a command.
+     * 
+     * @param $command  the class name of the command
+     * @return an instance of the command
      */
     protected function getCommand( $command ) {
-       // TODO: Implement 
+  
+        $filename = $command . '.' . $this->extension;
+
+        foreach( $this->directories as $directory ) {
+            $filePath = $directory . DIRECTORY_SEPARATOR . $filename;
+
+            if( file_exists( $filePath ) ) {
+
+                require_once($filePath);
+
+                $reflectionClass = new ReflectionClass($className);
+
+                if( !$reflectionClass->isInstantiable() || !$reflectionClass->implementsInterface("Command") )
+                	throw new Exception($command . " is not an instantiable command.");
+                	
+                
+                return $reflectionClass->newInstance();
+
+             }
+
+        }
+
+        return null;
+
     }
 
 }

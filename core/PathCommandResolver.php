@@ -30,6 +30,7 @@ class PathCommandResolver implements CommandResolver {
     public function __construct($directories, $extension = 'php') {
         foreach( $directories as $dir )
             array_push($commandDirectories, $dir);
+        $this->extension = $extension;
     }
 
     /**
