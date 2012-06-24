@@ -25,7 +25,7 @@ class FileLogRecorder implements LogRecorder {
     public function __construct($file, $severity) {
         $this->setCutoff( $severity );
         $this->filename = $file;
-        $this->fileHandle = fopen($file, "w");
+        $this->fileHandle = fopen($file, "a");
     }
     
     /**
