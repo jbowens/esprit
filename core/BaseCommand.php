@@ -37,7 +37,7 @@ abstract class BaseCommand implements Command
      */
     abstract function run(Request $request, Response $response);
 
-    /*
+    /**
      * Gets the datbase manager that gives the command access to the
      * databases.
      */

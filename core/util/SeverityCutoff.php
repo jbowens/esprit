@@ -24,7 +24,10 @@ trait SeverityCutoff {
 
     /**
      * Determines whether this severity cutoff accepts an event by
-     * checking if its severity is high enough. 
+     * checking if its severity is high enough.
+     *
+     * @param LogEvent $e  the log event
+     * @return true iff $e can be accepted 
      */
     public function canAccept( LogEvent $e ) {
         return $e->getSeverity() <= $this->severityCutoff;
