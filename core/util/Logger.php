@@ -38,12 +38,15 @@ class Logger {
     }
 
     /**
-     * Logs a message.
+     * Logs a log event.
      *
-     * @param $logLevel  the severity of the log event
-     * @param $message  a message describing the event
+     * @param $logEvent  the event to log
      */
-    public function log($logLevel, $message) {
+    public function log(LogEvent $logEvent) {
+        foreach( $this->logRecorders as $recorder ) {
+            if( $recorder->canAccept( $logEvent ) )
+                $recorder->record( $logEvent );
+        }
     }
 
     /**

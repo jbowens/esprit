@@ -60,6 +60,17 @@ abstract class BaseCommand implements Command
          return $this->logger;
      }
 
+    /**
+     * Logs a message to this command's logger.
+     *
+     * @param $serverity  the severity of the log event (See constants defined in Logger)
+     * @param $message  the message to log
+     * @param $data  (optional) data related to the event
+     */
+    protected function log($severity, $message, $data = null) {
+        $this->getLogger()->log( new LogEvent($severity, $this->getName(), $message, $data ) ); 
+    }
+
     public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger) {
         $this->config = $config;
         $this->databaseManager = $dbm;

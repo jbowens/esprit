@@ -19,6 +19,9 @@ class Controller {
     /* The logger used for logging major events */
     protected $logger;
 
+    /* The datbase manager used by the controller */
+    protected $dbm;
+
     /* The command resolvers to use */
     protected $commandResolvers();
 	
@@ -60,6 +63,14 @@ class Controller {
      */
     public function createXmlCommandResolver($filepath, $classpath, $extension = null) {
         return new XmlCommandResolver($this->dbm, $this->config, $this->logger, $filepath, $classpath, $extension);
+    }
+
+    /**
+     * Frees up any system resources being held and prepares for exiting. You should always
+     * call this when you're done with a Controller instance.
+     */
+    public function close() {
+        // TODO: Close shit
     }
 
 	/**
