@@ -93,6 +93,14 @@ class Controller {
             $this->error($ex, 'closing DatabaseManager');
         }
 
+        // Close any log recorders listening to the default logger
+        try {
+            for( $recorder in $this->logger->getRecorders() )
+                $recorder->close();
+        } catch( Exception $ex ) {
+            // Nothing we can do. The recorders are all gone.
+        }
+
         try {
             $this->logger->close();
         } catch( Exception $ex ) {
