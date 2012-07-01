@@ -64,11 +64,19 @@ class Database {
     }
 
     public function prepare($statement, $driver_options = array()) {
-        return $this->dbh->prepare($statement, $driver_options);
+        $stmt = $this->dbh->prepare($statement, $driver_options);
+        if( $stmt === false )
+            return $stmt;
+        else
+            return new Statement( $stmt );
     }
 
     public function query($statement) {
-        return $this->dbh->query($statement);
+        $stmt = $this->dbh->query($statement);
+        if( $stmt === false )
+            return $stmt;
+        else
+            return new Statement( $stmt );
     }
 	
     public function quote($string, $parameter_type = PDO::PARAM_STR) {
