@@ -14,7 +14,6 @@ class Logger {
     const ERROR = "ERROR";
     const WARNING = "WARNING";
     const INFO = "INFO";
-    const CONFIG = "CONFIG";
     const FINE = "FINE";
     const FINER = "FINER";
     const FINEST = "FINEST";
@@ -50,10 +49,40 @@ class Logger {
     }
 
     /**
+     * Log a severe message.
+     */
+    public function severe($message, $origin, $data = null) {
+        $this->log( new LogEvent(self::SEVERE,
+                                 $origin,
+                                 $message,
+                                 $data) );
+    }
+
+    /**
+     * Log an error message.
+     */
+    public function error($message, $origin, $data = null) {
+        $this->log( new LogEvent(self::ERROR,
+                                 $origin,
+                                 $message,
+                                 $data) );
+    }
+
+    /**
      * Log a warning message.
      */
     public function warning($message, $origin, $data = null) {
         $this->log( new LogEvent(self::WARNING,
+                                 $origin,
+                                 $message,
+                                 $data) );
+    }
+
+    /**
+     * Log an info message.
+     */
+    public function info($message, $origin, $data = null) {
+        $this->log( new LogEvent(self::INFO,
                                  $origin,
                                  $message,
                                  $data) );
@@ -98,5 +127,3 @@ class Logger {
     }
 
 }
-
-
