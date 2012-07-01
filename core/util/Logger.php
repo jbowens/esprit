@@ -50,6 +50,16 @@ class Logger {
     }
 
     /**
+     * Log a warning message.
+     */
+    public function warning($message, $origin, $data = null) {
+        $this->log( new LogEvent(self::WARNING,
+                                 $origin,
+                                 $message,
+                                 $data) );
+    }
+
+    /**
      * Add a log recorder to listen to this logger's log evnets.
      *
      * @param LogRecorder $recorder  the log recorder to add

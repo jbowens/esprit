@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use util\Logger as Logger;
+
 /**
  * A default cache that uses Memcached for caching data
  *
@@ -14,6 +16,7 @@ namespace esprit\core;
 class MemcachedCache implements Cache {
 
     const KEY_NAMESPACE = 'es_';
+    const MEMCACHED_KEY_LIMIT = 250;
 
     /* The memcached instance supporting the cache */
     protected $memcached;
@@ -21,12 +24,15 @@ class MemcachedCache implements Cache {
     /* To prevent multiple calls to memcached for the same key during the same request */
     protected $runtimeCache;
 
+    protected $logger;
+
     /**
      * Creates a new cache.
      */
-    public function __construct() {
+    public function __construct(Logger $logger) {
         // TODO: Instantiate memcached instance
         $this->runtimeCache = array();
+        $this->logger = $logger;
     }
 
     /**
@@ -93,7 +99,14 @@ class MemcachedCache implements Cache {
      * This is intended as a way to namespace caching keys.
      */
     protected function key( $key ) {
-        return self::KEY_NAMESPACE . $key;
+        $qualifiedKey = self::KEY_NAMESPACE . $key;
+        
+        if( strlen($qualifiedKey) > self::MEMCACHED_KEY_LIMIT )
+        {
+            $this->logger->warning("The cache key '" . $qualifiedKey . "' exceeds the memcached key length limit", "CACHE");
+        }
+
+        return $qualifiedKey;
     }
 
 }
