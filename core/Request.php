@@ -20,6 +20,9 @@ class Request {
     /* POST data sent with the request */
     protected $postData = array();
 	
+    /* Server environment variables */
+    protected $serverData = array();
+
     /* The request method used in sending the request */
     protected $requestMethod;
 	
@@ -46,6 +49,7 @@ class Request {
     	$this->siteid = $builder->getSiteid();
         $this->getData = $builder->getGetData();
         $this->postData = $builder->getPostData();
+        $this->serverData = $builder->getServerData();
         $this->requestMethod = $builder->getRequestMethod();
         $this->headers = $builder->getHeaders();
         $this->url = $builder->getUrl();
@@ -136,6 +140,10 @@ class Request {
      */
     public function getRequestMethod() {
         return $this->requestMethod;
+    }
+
+    public function getIpAddress() {
+        return isset($this->serverData['REMOTE_ADDR']) ? $this->serverData['REMOTE_ADDR'] : null;
     }
 
 }

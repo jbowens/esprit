@@ -13,6 +13,7 @@ class RequestBuilder {
     protected $siteid;
     protected $getData = array();
     protected $postData = array();
+    protected $serverData = array();
     protected $requestMethod;
     protected $url;
     protected $headers;
@@ -46,6 +47,10 @@ class RequestBuilder {
         return $this->postData;
     }
 
+    public function getServerData() {
+        return $this->serverData;
+    }
+
     public function getRequestMethod() {
         return $this->requestMethod;
     }
@@ -72,6 +77,11 @@ class RequestBuilder {
 
     public function postData( $newPostData ) {
         $this->postData = $newPostData;
+        return $this;
+    }
+
+    public function serverData( $newServerData ) {
+        $this->serverData = $newServerData;
         return $this;
     }
     

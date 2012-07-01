@@ -36,6 +36,7 @@ class Controller {
 	public function __construct(Config $config) {
 		$this->config = $config;
         $this->logger = util\Logger::newInstance();
+        $this->cache = new MemcachedCache($config->get('memcached_servers'), $this->logger);
         $this->commandResolvers = array();
         $this->customSessionHandler = null;
 
@@ -122,6 +123,8 @@ class Controller {
     	
 	    $request = $this->createRequestFromEnvironment();	
 
+        $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), "CONTROLLER");
+
         $command = null;
         foreach( $commandResolvers as $resolver ) {
             $command = $resolver->resolve($request);
@@ -153,7 +156,7 @@ class Controller {
 
         $req = (Request::createBuilder())->siteid(SITE_ID)->getData($_GET)->postData($_POST)
                ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $_SERVER['REQUEST_URI'] ))
-               ->headers(getallheaders())->build();	
+               ->headers(getallheaders())->serverData($_SERVER)->build();	
 		
 		return $req;
 		

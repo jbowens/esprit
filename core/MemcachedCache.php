@@ -17,6 +17,7 @@ class MemcachedCache implements Cache {
 
     const KEY_NAMESPACE = 'es_';
     const MEMCACHED_KEY_LIMIT = 250;
+    const DEFAULT_PORT = 11211;
 
     /* The memcached instance supporting the cache */
     protected $memcached;
@@ -29,8 +30,24 @@ class MemcachedCache implements Cache {
     /**
      * Creates a new cache.
      */
-    public function __construct(Logger $logger) {
-        // TODO: Instantiate memcached instance
+    public function __construct(array $servers, Logger $logger) {
+        $this->memcached = new Memcached();
+       
+        $activeServers = 0;
+
+        foreach( $servers as $server ) {
+            $port = $server['port'] ? $server['port'] : DEFAULT_PORT;
+            $success = $this->memcached->addServer($server['host'], $port );
+            
+            if( $success )
+                $activeServers++;
+            else
+                $this->logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, "CACHE");
+        }
+
+        if( $activeServers == 0 )
+            $this->logger->severe("No active Memcached servers", "CACHE", $servers);
+
         $this->runtimeCache = array();
         $this->logger = $logger;
     }
