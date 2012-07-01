@@ -17,6 +17,11 @@ class RequestBuilder {
     protected $url;
     protected $headers;
 
+    /**
+     * It is recommended that you do not use this constructor. Instead,
+     * use the static factory method Request::createBuilder() as the 
+     * implementation of the builder may change over time.
+     */
     public function __construct() {
     }
 

@@ -71,6 +71,10 @@ abstract class BaseCommand implements Command
         $this->getLogger()->log( new LogEvent($severity, $this->getName(), $message, $data ) ); 
     }
 
+    /**
+     * Constructor for the base command. The default command resolvers instantiate
+     * BaseCommands through this constructor.
+     */
     public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger) {
         $this->config = $config;
         $this->databaseManager = $dbm;

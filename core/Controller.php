@@ -23,8 +23,11 @@ class Controller {
     protected $dbm;
 
     /* The command resolvers to use */
-    protected $commandResolvers();
+    protected $commandResolvers;
 	
+    /* An optional custom session handler */
+    protected $customSessionHandler;
+
 	/**
 	 * Creates a new controller from a configuration object.
 	 * 
@@ -34,6 +37,7 @@ class Controller {
 		$this->config = $config;
         $this->logger = util\Logger::newInstance();
         $this->commandResolvers = array();
+        $this->customSessionHandler = null;
 	}
 
     /**
@@ -66,11 +70,34 @@ class Controller {
     }
 
     /**
+     * Appends a new command resolver onto the list of resolvers to use. Since resolvers
+     * are used in the order that they're appended, you should make note of the order
+     * you insert command resolvers.
+     *
+     * CommandResolver $resolver  a new resolver to use
+     */
+    public function appendCommandResolver(CommandResolver $resolver) {
+        array_push($this->commandResolvers, $resolver);
+    }
+
+    /**
      * Frees up any system resources being held and prepares for exiting. You should always
-     * call this when you're done with a Controller instance.
+     * call this when you're done with a Controller instance. After calling this method, you
+     * cannot trust any Controller instantiated objects to still be in a usuable state as 
+     * database connections, file handles, etc will all have been closed.
      */
     public function close() {
-        // TODO: Close shit
+        try {
+            $this->dbm->close();
+        } catch( Exception $ex ) {
+            $this->error($ex, 'closing DatabaseManager');
+        }
+
+        try {
+            $this->logger->close();
+        } catch( Exception $ex ) {
+            // Well shit. 
+        }
     }
 
 	/**
@@ -134,11 +161,20 @@ class Controller {
      * @return a SessionHandlerInterface object
      */
     public function getSessionHandler() {
-       if( ! $config->settingExists("session_handler") || $config->get("session_handler") == "default" )
-           return new SessionHandler();
-       else
-           return new SessionHandler();
-       // TODO: Update line above 
+        if( $this->customSessionHandler != null)
+            return $this->customSessionHandler;
+        else
+            return new SessionHandler();
+    }
+
+    /**
+     * Sets a custom session handler to use. If this function is not called, the
+     * default session handler defined in the php.ini will be used.
+     *
+     * @param SessionHandlerInterface $sessionHandler
+     */
+    public function setCustomSessionHandler(SessionHandlerInterface $sessionHandler) {
+        $this->customSessionHandler = $sessionHandler;
     }
 
     /**
@@ -148,6 +184,16 @@ class Controller {
         SessionHandlerInterface $sessionHandler = $this->getSessionHandler();
         session_set_save_handler( $sessionHandler );
         session_start();
+    }
+
+    /**
+     * Logs an error that occurred within the controller.
+     *
+     * @param Exception $ex  the exception of the error
+     * @param $sourceDesc  a string describing the source of the error
+     */
+    protected function error(Exception $ex, $sourceDesc) {
+        $this->logger(...);
     }
 
 }
