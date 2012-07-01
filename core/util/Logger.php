@@ -89,6 +89,36 @@ class Logger {
     }
 
     /**
+     * Log a fine message.
+     */
+    public function fine($message, $origin, $data = null) {
+        $this->log( new LogEvent( self::FINE,
+                                  $origin,
+                                  $message,
+                                  $data) );
+    }
+
+    /**
+     * Logs a finer message.
+     */
+    public function finer($message, $origin, $data = null) {
+        $this->log( new LogEvent( self::FINER,
+                                  $origin,
+                                  $message,
+                                  $data) );
+    }
+
+    /**
+     * Logs a finest message.
+     */
+    public function finest($message, $origin, $data = null) {
+        $this->log( new LogEvent( self::FINEST,
+                                  $origin,
+                                  $message,
+                                  $data) );
+    }
+
+    /**
      * Add a log recorder to listen to this logger's log evnets.
      *
      * @param LogRecorder $recorder  the log recorder to add

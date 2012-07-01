@@ -77,9 +77,11 @@ class DatabaseManager {
 			$pass = $this->defaultPass;
 		
         try {	
-		    $this->databaseConnections[$handle] = new PDO($handle, $dsn, $user, $pass, array());
+		    $this->databaseConnections[$handle] = new Database($handle, $dsn, $user, $pass, $this->logger, array());
+
             $this->logger->info("Connected to " . $dsn . " as " .$user . " under handle " . $handle, "DATABASE");
-		} catch(PDOException $ex) {
+		
+        } catch(PDOException $ex) {
             $this->logger->severe("Error connecting to " . $dsn, "DATABASE", array( 'handle' => $handle,
                                                                                     'dsn'    => $dsn,
                                                                                     'user'   => $user ));
