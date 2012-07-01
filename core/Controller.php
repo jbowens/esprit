@@ -41,7 +41,8 @@ class Controller {
 
         $this->dbm = new DatabaseManager($config->get("db_default_dsn"),
                                          $config->get("db_default_user"),
-                                         $config->get("db_default_pass"));
+                                         $config->get("db_default_pass"),
+                                         $this->logger);
 	}
 
     /**

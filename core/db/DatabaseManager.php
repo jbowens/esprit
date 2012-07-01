@@ -2,6 +2,8 @@
 
 namespace esprit\core\db;
 
+use \esprit\core\util\Logger as Logger;
+
 /**
  * The DatabaseManager handles all connections to databases. Multiple connections
  * may be maintained through the manager. The manager has a default connection that
@@ -20,6 +22,8 @@ class DatabaseManager {
 	
 	/* The default password */
 	protected $defaultPass;
+
+    protected $logger;
 	
 	/**
 	 * Creates a new database manager. This requres a default DSN and corresponding
@@ -28,10 +32,12 @@ class DatabaseManager {
 	 * @param string $defaultDsn  the dsn of the default database
 	 * @param string $defaultUser  the default database username
 	 * @param string $defaultPass  the default database password
+     * @param Logger $logger  the logger to use for db operations
 	 */
-	public function __construct($defaultDsn, $defaultUser, $defaultPass) {
+	public function __construct($defaultDsn, $defaultUser, $defaultPass, $logger) {
 		$this->defaultUser = $defaultUser;
 		$this->defaultPass = $defaultPass;
+        $this->logger = $logger;
 		$this->connectToDatabase("default", $defaultDsn, $defaultUser, $defaultPass) ;
 	}
 	
@@ -72,7 +78,11 @@ class DatabaseManager {
 		
         try {	
 		    $this->databaseConnections[$handle] = new PDO($handle, $dsn, $user, $pass, array());
+            $this->logger->info("Connected to " . $dsn . " as " .$user . " under handle " . $handle, "DATABASE");
 		} catch(PDOException $ex) {
+            $this->logger->severe("Error connecting to " . $dsn, "DATABASE", array( 'handle' => $handle,
+                                                                                    'dsn'    => $dsn,
+                                                                                    'user'   => $user ));
             throw new \esprit\core\exceptions\DatabaseConnectionException( $ex );
         }
 	}

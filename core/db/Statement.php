@@ -2,6 +2,8 @@
 
 namespace esprit\core\db;
 
+use \esprit\core\util\Logger as Logger;
+
 /**
  * A wrapper for PDOStatements. Allows for additional functionality
  * to be added into database queries.
@@ -11,9 +13,11 @@ namespace esprit\core\db;
 class Statement {
 	
     protected $stmt;
+    protected $logger;
 
-	function __construct(PDOStatement $originalStatement) {
+	function __construct(PDOStatement $originalStatement, Logger $logger) {
 		$this->stmt = $originalStatement;
+        $this->logger = $logger;
 	}
 
     // Forward all method calls to the $stmt

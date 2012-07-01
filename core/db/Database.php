@@ -2,6 +2,8 @@
 
 namespace \esprit\core\db;
 
+use \esprit\core\util\Logger as Logger;
+
 /**
  * A database wrapper for PDO. Allows for more functionality to be built onto PDO
  * 
@@ -11,6 +13,8 @@ class Database {
 
     protected $dbh;
 
+    protected $logger;
+
 	/**
 	 * Default constructor for a datbase. Constructs from a DSN.
 	 * 
@@ -19,8 +23,9 @@ class Database {
 	 * @param string $password
 	 * @param array $driver_options
 	 */
-	public function __construct($dsn, $username, $password, $driver_options = array()) {
+	public function __construct($dsn, $username, $password, $logger, $driver_options = array()) {
 	
+        $this->logger = $logger;
 		$this->dbh = new PDO($dsn, $username, $password, $driver_options);
 
 	}
@@ -66,7 +71,7 @@ class Database {
         if( $stmt === false )
             return $stmt;
         else
-            return new Statement( $stmt );
+            return new Statement( $stmt, $logger );
     }
 
     public function query($statement) {
@@ -74,7 +79,7 @@ class Database {
         if( $stmt === false )
             return $stmt;
         else
-            return new Statement( $stmt );
+            return new Statement( $stmt, $logger );
     }
 	
     public function quote($string, $parameter_type = PDO::PARAM_STR) {
