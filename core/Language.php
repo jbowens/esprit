@@ -3,15 +3,15 @@
 namespace esprit\core;
 
 /**
- * Represents a language in the translation system.
+ * Represents a language in the translation system. This class is immutable.
  *
  * @author jbowens
  */
 class Language {
 
-    protected $languageid;          // Numerical unique identifer
-    protected $identifier;          // String unique identifer
-    protected $parentid;            // Numerical id of the ancestor, or null if a root
+    private $languageid;          // Numerical unique identifer
+    private $identifier;          // String unique identifer
+    private $parentid;            // Numerical id of the ancestor, or null if a root
 
     /**
      * If possible, use one of the static factory methods instead of using this

@@ -46,6 +46,8 @@ class TranslationManager implements TranslationSource {
      */
     protected function getAncestors($language) {
 
+        $ancestors = array();
+
     }
 
 }
