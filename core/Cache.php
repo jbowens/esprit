@@ -28,4 +28,11 @@ interface Cache {
      */
     public function set( $key, $val, $expire = 0 );
 
+    /**
+     * Deletes the key, value association with the given key from the cache.
+     *
+     * @param $key  (string) the key of the association to delete
+     */
+    public function delete($key);
+
 }

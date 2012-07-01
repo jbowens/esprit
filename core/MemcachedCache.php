@@ -45,4 +45,11 @@ class MemcachedCache implements Cache {
         return $memcached->get( $key );
     }
 
+    /**
+     * @see Cache.delete($key)
+     */
+    public function delete( $key ) {
+        return $memcahced->delete( $key );
+    }
+
 }
