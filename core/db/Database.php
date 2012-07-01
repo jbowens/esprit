@@ -22,8 +22,6 @@ class Database {
 	public function __construct($dsn, $username, $password, $driver_options = array()) {
 	
 		$this->dbh = new PDO($dsn, $username, $password, $driver_options);
-		
-		$this->dbh->setAttribute(self::ATTR_STATEMENT_CLASS, array('Statement', array($this)));
 
 	}
 
