@@ -71,6 +71,22 @@ class Logger {
             unset( $this->logRecorders[$key] );
      }
 
+    /**
+     * Returns all the log recorders attached to this Logger.
+     */
+    public function getRecorders() {
+        return $this->logRecorders;
+    }
+
+    /**
+     * Closes the logger, releasing any system resources held by the Logger,
+     * BUT NOT ANY RESOURCES HELD BY RECORDERS. The recorders must be closed
+     * separately as they may be attached to multiple Logger instances,
+     */
+    public void close() {
+        // For the default logger implementation, nothing to do here.
+    }
+
 }
 
 
