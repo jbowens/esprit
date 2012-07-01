@@ -3,14 +3,12 @@
 namespace esprit\core\db;
 
 /**
- * 
  * The DatabaseManager handles all connections to databases. Multiple connections
  * may be maintained through the manager. The manager has a default connection that
  * is used when a handle is not given. The DatabaseManager uses PDO, so any database
  * software that has a PHP/PDO driver may be used.
  * 
  * @author jbowens
- *
  */
 class DatabaseManager {
 
@@ -24,7 +22,6 @@ class DatabaseManager {
 	protected $defaultPass;
 	
 	/**
-	 * 
 	 * Creates a new database manager. This requres a default DSN and corresponding
 	 * default user and password. 
 	 * 
@@ -39,7 +36,6 @@ class DatabaseManager {
 	}
 	
 	/**
-	 * 
 	 * Returns the datbase connection associated with the given handle.
 	 * 
 	 * @param string $handle  the handle of the database connection
@@ -63,6 +59,8 @@ class DatabaseManager {
 	 * @param string $dsn  the dsn of the database
 	 * @param string $user  (optional) the database username
 	 * @param string $pass  (optional) the datbaase password
+     *
+     * @throws DatabaseConnectionException  if the connection attempt fails
 	 */
 	public function connectToDatabase($handle, $dsn, $user = null, $pass = null) {
 		
@@ -71,9 +69,12 @@ class DatabaseManager {
 		
 		if( $pass == null )
 			$pass = $this->defaultPass;
-			
-		$this->databaseConnections[$handle] = new PDO($handle, $dsn, $user, $pass, array());
 		
+        try {	
+		    $this->databaseConnections[$handle] = new PDO($handle, $dsn, $user, $pass, array());
+		} catch(PDOException $ex) {
+            throw new \esprit\core\exceptions\DatabaseConnectionException( $ex );
+        }
 	}
 	
 }

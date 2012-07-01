@@ -1,3 +1,11 @@
 {
-    'NotFoundCommand': 'Command_ContentNotFound'
+    "meta": {
+        "description": "A default configuration file for esprit, illustrating common options and their values.",
+        "esprit_version": "1.0a"
+    },
+
+    "db_default_dsn": "mysql:host=localhost;dbname=esprit_test;charset=UTF-8",
+    "db_default_user": "esprit",
+    "db_default_pass": "nachos",
+    "NotFoundCommand": "Command_ContentNotFound"
 }
