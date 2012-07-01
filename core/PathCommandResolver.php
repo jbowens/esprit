@@ -113,7 +113,7 @@ class PathCommandResolver implements CommandResolver {
 
                 $reflectionClass = new ReflectionClass($className);
 
-                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface("Command") && 
+                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface('esprit\core\Command') && 
                     $reflectionClass->isSubclassOf('esprit\core\BaseCommand') ) {
                     return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
                 }
