@@ -35,4 +35,12 @@ interface Cache {
      */
     public function delete($key);
 
+    /**
+     * Determines is a key/val pair is cached with the given key.
+     *
+     * @param $key  (stirng) the key to check
+     * @return true iff the key is set in the cache
+     */
+    public function isCached($key);
+
 }

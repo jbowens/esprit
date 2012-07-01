@@ -1,6 +1,6 @@
 <?php
 
-namespace esprit;
+use esprit;
 
 $config = core\Config::createFromJSON("data/config.json");
 $controller = new core\Controller( $config );
