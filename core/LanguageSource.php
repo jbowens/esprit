@@ -81,8 +81,8 @@ class LanguageSource {
     }
 
     protected function cache( Language $lang ) {
-        $this->cache->set('lang_', $lang->getLanguageId());
-        $this->cache->set('lang_ident_' . $lang->getIdentifier());
+        $this->cache->set('lang_' . $lang->getLanguageId(), $lang);
+        $this->cache->set('lang_ident_' . $lang->getIdentifier(), $lang);
         $this->saveInLocalCache( $lang );
     }
 

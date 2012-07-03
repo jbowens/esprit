@@ -137,7 +137,7 @@ class Controller {
         }
 	
         try {
-            $command->execute();
+            $output = $command->execute();
         } catch( Exception $e ) {
             // TODO: Add more granular logging and add
             // logic for actually handling exceptions
