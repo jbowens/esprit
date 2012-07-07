@@ -62,7 +62,7 @@ class LanguageSource {
             return $this->identifierMap[$identifier];
 
         if( $this->cache->isCached( 'lang_ident_' . $identifier ) ) {
-            $lang = $this->cache->get( 'land_ident_' . $identifier );
+            $lang = $this->cache->get( 'lang_ident_' . $identifier );
             $this->saveInLocalCache( $lang );
             return $lang;
         }

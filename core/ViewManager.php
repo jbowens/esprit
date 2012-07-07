@@ -40,6 +40,7 @@ class ViewManager {
             // TODO: Use an appropriate default view... 404? 500 internal server error? 
         }
 
+        $view->display( $output );
 
     }
 
