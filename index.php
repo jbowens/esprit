@@ -1,6 +1,6 @@
 <?php
 
-use esprit;
+require_once "autoloader.php";
 
 $config = core\Config::createFromJSON("data/config.json");
 $controller = new core\Controller( $config );

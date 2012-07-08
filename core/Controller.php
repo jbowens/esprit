@@ -209,7 +209,30 @@ class Controller {
      * @param $sourceDesc  a string describing the source of the error
      */
     protected function error(Exception $ex, $sourceDesc) {
-        $this->logger(...);
+        $this->logger->log( LogEventFactory::createFromException($ex, $sourceDesc) ); 
+    }
+
+    /**
+     * Defines an autoloader for esprit classes.
+     */
+    public static function autoload( $class ) {
+        $classPieces = explode("\\", $class);
+
+        if( count($classPieces) == 0 )
+            return false;
+
+        if( $classPieces[0] != 'esprit' )
+            return false;
+
+        unset($classPieces[0]);
+
+        $file = implode('/', $class).'.php';
+
+        if( @file_exists( __DIR__ . DIRECTORY_SEPARATOR . $file ) )
+        {
+            require_once( __DIR__ . DIRECTORY_SEPARATOR . $file );
+            return true;
+        }
     }
 
 }
