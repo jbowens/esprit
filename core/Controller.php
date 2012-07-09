@@ -227,7 +227,7 @@ class Controller {
 
         unset($classPieces[0]);
 
-        $file = implode('/', $class).'.php';
+        $file = implode('/', $classPieces).'.php';
 
         if( @file_exists( __DIR__ . DIRECTORY_SEPARATOR . $file ) )
         {
