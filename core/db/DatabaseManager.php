@@ -77,7 +77,7 @@ class DatabaseManager {
 			$pass = $this->defaultPass;
 		
         try {	
-		    $this->databaseConnections[$handle] = new Database($handle, $dsn, $user, $pass, $this->logger, array());
+		    $this->databaseConnections[$handle] = new Database($dsn, $user, $pass, $this->logger, array());
 
             $this->logger->info("Connected to " . $dsn . " as " .$user . " under handle " . $handle, "DATABASE");
 		
