@@ -2,7 +2,7 @@
 
 namespace esprit\core;
 
-use util\Logger as Logger;
+use \esprit\core\util\Logger as Logger;
 
 /**
  * A default cache that uses Memcached for caching data
