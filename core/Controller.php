@@ -1,6 +1,8 @@
 <?php
 
 namespace esprit\core;
+use \SessionHandler as SessionHandler;
+use \SessionHandlerInterface as SessionHandlerInterface;
 
 /**
  * The primary controller for the framework. This controller creates the initial
