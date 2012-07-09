@@ -3,6 +3,7 @@
 namespace esprit\core\db;
 
 use \esprit\core\util\Logger as Logger;
+use \PDOException as PDOException;
 
 /**
  * The DatabaseManager handles all connections to databases. Multiple connections
