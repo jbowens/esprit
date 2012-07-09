@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use \esprit\core\exceptions\BadConfigFileException as BadConfigFileException;
+
 /**
  * Stores installation-specific configuration options for the framework. These options are
  * initially loaded from config.xml. This should not be used for storing session or request
@@ -77,6 +79,30 @@ class Config {
 	 */
 	public function settingExists($key) {
 		return isset($this->options[$key]);
-	}
+    }
+
+    /**
+     * Constructs a config object from a json file.
+     *
+     * @param String $filename  the file to use
+     * @throws BadConfigFileException if there's an error in the file
+     */
+    public static function createFromJSON( $filename ) {
+        //TODO: Cache config data somehow
+        if( ! file_exists( $filename ) )
+            throw new BadConfigFileException( $filename . " does not exist." );
+
+        $json = file_get_contents( $filename );
+        $data = json_decode($json, true);
+
+        if( $data == null )
+            throw new BadConfigFileException( $filename . " is malformed json" );
+
+        $config = new Config();
+        foreach( $data as $key => $val )
+            $config->set($key, $val);
+
+        return $config;
+    }
 	
 }
