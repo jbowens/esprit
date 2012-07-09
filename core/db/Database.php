@@ -1,7 +1,8 @@
 <?php
 
-namespace \esprit\core\db;
+namespace esprit\core\db;
 
+use \PDO as PDO;
 use \esprit\core\util\Logger as Logger;
 
 /**
