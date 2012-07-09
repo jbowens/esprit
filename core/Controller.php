@@ -101,7 +101,7 @@ class Controller {
 
         // Close any log recorders listening to the default logger
         try {
-            for( $this->logger->getRecorders() as $recorder )
+            foreach( $this->logger->getRecorders() as $recorder )
                 $recorder->close();
         } catch( Exception $ex ) {
             // Nothing we can do. The recorders are all gone.
