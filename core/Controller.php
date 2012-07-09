@@ -40,10 +40,10 @@ class Controller {
         $this->commandResolvers = array();
         $this->customSessionHandler = null;
 
-        $this->dbm = new DatabaseManager($config->get("db_default_dsn"),
-                                         $config->get("db_default_user"),
-                                         $config->get("db_default_pass"),
-                                         $this->logger);
+        $this->dbm = new db\DatabaseManager($config->get("db_default_dsn"),
+                                            $config->get("db_default_user"),
+                                            $config->get("db_default_pass"),
+                                            $this->logger);
 	}
 
     /**
