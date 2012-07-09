@@ -16,7 +16,7 @@ namespace esprit\core;
 class PathCommandResolver implements CommandResolver {
 
     /* A list of directories to search */
-    protected $commandDirectories = array();
+    protected $commandDirectories;
 
     /* The extension used by commands */
     protected $extension;
@@ -35,8 +35,9 @@ class PathCommandResolver implements CommandResolver {
      * @param $extension  the extension of the php files in the directories
      */
      public function __construct(db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, array $directories, $extension = 'php') {
+        $this->commandDirectories = array();
         foreach( $directories as $dir )
-            array_push($commandDirectories, $dir);
+            array_push($this->commandDirectories, $dir);
         $this->extension = $extension;
         $this->dbm = $databaseManager;
         $this->config = $config;
