@@ -33,7 +33,7 @@ class MemcachedCache implements Cache {
     public function __construct(array $servers, Logger $logger) {
 
         $this->logger = $logger;
-        $this->memcached = new Memcached();
+        $this->memcached = new \Memcached();
 
         $activeServers = 0;
 
