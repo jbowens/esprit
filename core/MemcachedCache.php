@@ -31,8 +31,10 @@ class MemcachedCache implements Cache {
      * Creates a new cache.
      */
     public function __construct(array $servers, Logger $logger) {
+
+        $this->logger = $logger;
         $this->memcached = new Memcached();
-       
+
         $activeServers = 0;
 
         foreach( $servers as $server ) {
@@ -49,7 +51,6 @@ class MemcachedCache implements Cache {
             $this->logger->severe("No active Memcached servers", "CACHE", $servers);
 
         $this->runtimeCache = array();
-        $this->logger = $logger;
     }
 
     /**
