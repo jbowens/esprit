@@ -152,7 +152,7 @@ class Logger {
      * BUT NOT ANY RESOURCES HELD BY RECORDERS. The recorders must be closed
      * separately as they may be attached to multiple Logger instances,
      */
-    public void close() {
+    public function close() {
         // For the default logger implementation, nothing to do here.
     }
 
