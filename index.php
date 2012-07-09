@@ -6,7 +6,7 @@ $config = esprit\core\Config::createFromJSON("data/config.json");
 $controller = new esprit\core\Controller( $config );
 
 // Setup the command resolvers
-$pathResolver = $controller->createPathCommandResolver('./commands/', 'php');
+$pathResolver = $controller->createPathCommandResolver(array('./commands/'), 'php');
 $controller->appendCommandResolver( $pathResolver );
 
 // Respond to the user's request

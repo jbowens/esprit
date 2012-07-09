@@ -97,6 +97,7 @@ class RequestBuilder {
 
     public function headers($headers) {
         $this->headers = $headers;
+        return $this;
     }
 
 }

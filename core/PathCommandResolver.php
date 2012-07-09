@@ -34,7 +34,7 @@ class PathCommandResolver implements CommandResolver {
      * @param array $directories  an array of strings (directories in the file system)
      * @param $extension  the extension of the php files in the directories
      */
-    public function __construct(db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, $directories, $extension = 'php') {
+     public function __construct(db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, array $directories, $extension = 'php') {
         foreach( $directories as $dir )
             array_push($commandDirectories, $dir);
         $this->extension = $extension;

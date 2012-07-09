@@ -21,10 +21,11 @@ class Database {
 	 * 
 	 * @param string $dsn
 	 * @param string $username
-	 * @param string $password
+     * @param string $password
+     * @param Logger $logger
 	 * @param array $driver_options
 	 */
-	public function __construct($dsn, $username, $password, $logger, $driver_options = array()) {
+	public function __construct($dsn, $username, $password, Logger $logger, $driver_options = array()) {
 	
         $this->logger = $logger;
 		$this->dbh = new PDO($dsn, $username, $password, $driver_options);

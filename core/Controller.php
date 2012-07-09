@@ -58,7 +58,7 @@ class Controller {
      * @param $ext  (optional) the extension to expect php files to have
      * @return a PathCommandResolver
      */
-    public function createPathCommandResolver($directories, $ext = null) {
+    public function createPathCommandResolver(array $directories = array(), $ext = null) {
         return new PathCommandResolver($this->dbm, $this->config, $this->logger, $directories, $ext); 
     }
 	
@@ -157,6 +157,7 @@ class Controller {
 	public function createRequestFromEnvironment() {
 
         //TODO: Update with support for actual site id 
+        $url = new Url($_SERVER['HOST'], $_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']);
         $req = Request::createBuilder()->siteid(1)->getData($_GET)->postData($_POST)
                ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $_SERVER['REQUEST_URI'] ))
                ->headers(getallheaders())->serverData($_SERVER)->build();	

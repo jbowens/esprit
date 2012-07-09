@@ -19,9 +19,6 @@ class Url {
     /* The query string of this url */
     protected $queryString;
 
-    /* The fragment identifier (hash) of the url */
-    protected $fragmentIdentifier;
-
     /* The individual pieces of the path */
     protected $pathPieces;
 
@@ -33,13 +30,11 @@ class Url {
      * @param string $host  the host or domain of the url
      * @param string $path  the path on the file system
      * @param string $queryString  the GET query string
-     * @param string $fragmentIdentifier  the fragment identifier of the url
      */
-    public function __construct($host, $path, $queryString, $fragmentIdentifier) {
+    public function __construct($host, $path, $queryString) {
         $this->host = $host;
         $this->path = $path;
         $this->queryString = $queryString;
-        $this->fragmentIdentifier = $fragmentIdentifier;
         $this->pathPieces = self::createPiecesFromPath( $this->path );
     }
 
@@ -70,15 +65,6 @@ class Url {
         return $this->queryString;
     }
 
-    /**
-     * Returns the fragment identifier / hash of the url.
-     *
-     * @return string the fragment identifier of the url
-     */
-    public function getFragmentIdentifier() {
-        return $this->fragmentIdentifier;
-    }
-
     /*
      * Returns the absolute url string representation of this url.
      *
@@ -88,8 +74,7 @@ class Url {
         return 'http://' . ( $www ? 'www.' : '' ) . 
                $this->host . 
                $this->path . 
-               $this->queryString . 
-               '#' . ( ($this->fragmentIdentifer != null && $this->fragmentIdentifier != '') ? '#' . $this->fragmentIdentifier : '' );
+               $this->queryString;
     }
 
     /**
@@ -99,9 +84,7 @@ class Url {
      */
     public function getAbsolutePath() {
         return $this->path .
-               $this->queryString .
-               '#' . ( ( $this->fragmentIdentifier != null && $this->fragmentIdentifier != '') ? '#' . $this->fragmentIdentifier : '' );
-
+               $this->queryString;
     }
 
     /**
