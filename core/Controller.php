@@ -154,7 +154,8 @@ class Controller {
 	 */
 	public function createRequestFromEnvironment() {
 
-        $req = (Request::createBuilder())->siteid(SITE_ID)->getData($_GET)->postData($_POST)
+        //TODO: Update with support for actual site id 
+        $req = Request::createBuilder()->siteid(1)->getData($_GET)->postData($_POST)
                ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $_SERVER['REQUEST_URI'] ))
                ->headers(getallheaders())->serverData($_SERVER)->build();	
 		
