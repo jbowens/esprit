@@ -36,7 +36,7 @@ class Controller {
 	public function __construct(Config $config) {
 		$this->config = $config;
         $this->logger = util\Logger::newInstance();
-        $this->cache = new MemcachedCache($config->get('memcached_servers'), $this->logger);
+        $this->cache = new MemcachedCache($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $this->logger);
         $this->commandResolvers = array();
         $this->customSessionHandler = null;
 
