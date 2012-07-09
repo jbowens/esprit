@@ -2,6 +2,8 @@
 
 namespace esprit;
 
+require_once "core/Controller.php";
+
 /**
  * This file adds an autoloader for all default esprit classes.
  */
