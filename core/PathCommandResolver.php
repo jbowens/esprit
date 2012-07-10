@@ -75,7 +75,7 @@ class PathCommandResolver implements CommandResolver {
         for( $i = 0; $i < $url->getPathLength(); $i++ ) {
             $innerPieces = explode('-', $url->getPathPiece($i));
             $innerPieces = array_map('ucfirst', $innerPieces);
-            array_push($classPieces, implode('', $innterPieces));
+            array_push($classPieces, implode('', $innerPieces));
         }
 
         // Search for a matching command
@@ -102,7 +102,7 @@ class PathCommandResolver implements CommandResolver {
      * Retrieves a command from the command string.
      */
     protected function getCommand( $commandStr ) {
-        $className = $this->getClassName();
+        $className = $this->getClassName( $commandStr );
         $filename = $className . '.' . $this->extension;
 
         foreach( $this->commandDirectories as $directory ) {
