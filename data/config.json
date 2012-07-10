@@ -7,5 +7,6 @@
     "db_default_dsn": "mysql:host=localhost;dbname=esprit_test;charset=utf8",
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
-    "NotFoundCommand": "Command_ContentNotFound"
+
+    "FallbackCommand": "\esprit\core\commands\Command_DefaultFallback"
 }

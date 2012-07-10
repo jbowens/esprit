@@ -1,8 +1,14 @@
 <?php
 
 namespace esprit\core;
+
+use \Exception;
 use \SessionHandler as SessionHandler;
 use \SessionHandlerInterface as SessionHandlerInterface;
+
+use \esprit\core\util\LogEventFactory;
+use \esprit\core\util\Logger;
+use \esprit\core\exceptions\UnserviceableRequestException as UnserviceableRequestException;
 
 /**
  * The primary controller for the framework. This controller creates the initial
@@ -11,7 +17,10 @@ use \SessionHandlerInterface as SessionHandlerInterface;
  * @author jbowens
  */
 class Controller {
-    
+
+    const LOG_ORIGIN = "CONTROLLER";
+    const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
+
     /* The cache to use for storing data in memory between requests */ 
     protected $cache;
 
@@ -120,32 +129,60 @@ class Controller {
 	 * Runs through the entire request to response cycle.
 	 */
 	public function run() {
-	
-        $this->initializeSessions();
-    	
-	    $request = $this->createRequestFromEnvironment();	
 
-        $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), "CONTROLLER");
-
-        $command = null;
-        foreach( $this->commandResolvers as $resolver ) {
-            $command = $resolver->resolve($request);
-            if( $command != null )
-                break;
-        }
-
-        if( $command == null ) {
-            //TODO: Use NoMatchingCommand command
-        }
-	
         try {
-            $output = $command->execute();
-        } catch( Exception $e ) {
-            // TODO: Add more granular logging and add
-            // logic for actually handling exceptions
-            $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
+
+            $this->initializeSessions();
+            
+            $request = $this->createRequestFromEnvironment();	
+
+            $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), self::LOG_ORIGIN);
+
+            // Identify the command that should be run
+            $command = null;
+            foreach( $this->commandResolvers as $resolver ) {
+                $command = $resolver->resolve($request);
+                if( $command != null )
+                    break;
+            }
+
+            // If the request wasn't resolved to command, use the fallback.
+            if( $command == null )
+            {
+                if( $this->config->settingExists('FallbackCommand') ) {
+                    $fallbackCmdName = $this->config->get('FallbackCommand');
+                } else {
+                    $fallbackCmdName = self::DEFAULT_FALLBACK_COMMAND;
+                }
+
+                $class = new ReflectionClass( $fallbackCmdName );
+                if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
+                    throw new UnserviceableRequestException( $request );
+                
+                $command = $class->newInstance($this->config, $this->dbm, $this->logger);
+
+                $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
+            }
+        
+            try {
+                $output = $command->execute();
+            } catch( Exception $e ) {
+                // TODO: Add more granular logging and add
+                // logic for actually handling exceptions
+                $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
+            }
+
+        } catch( UnserviceableRequestException $exception ) {
+            // Log this
+            $this->logger->logEvent( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+            $this->dieGracefully();
+        } catch( Exception $exception ) {
+            // Don't expose internal details of the exception to the user. Just exit.
+            return false;
         }
-    	
+
+        return true;
+            
 	}
 
 	/**
@@ -214,6 +251,31 @@ class Controller {
      */
     protected function error(Exception $ex, $sourceDesc) {
         $this->logger->log( LogEventFactory::createFromException($ex, $sourceDesc) ); 
+    }
+
+    /**
+     * This method may be called to abruptly end excecution but still print
+     * an error message back to the user.
+     */
+    protected function dieGracefully( $message = null ) {
+
+        if( ! $message )
+            $message = 'The server was unable to service your request.';
+
+        header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+        
+        $html =
+                """<!DOCTYPE html>
+                   <html>
+                    <head>
+                     <title>Internal Server Error</title>
+                    </head>
+                    <body>
+                     <h1>Internal Server Error</h1>
+                     <p>""" . $message . """</p>
+                    </body>
+                    </html>""";
+        die( $html );
     }
 
 }
