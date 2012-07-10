@@ -159,7 +159,7 @@ class Controller {
         //TODO: Update with support for actual site id 
         $url = new Url($_SERVER['SERVER_NAME'], $_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']);
         $req = Request::createBuilder()->siteid(1)->getData($_GET)->postData($_POST)
-               ->requestMethod($_SERVER['REQUEST_METHOD'])->url(new Url( $url ))
+               ->requestMethod($_SERVER['REQUEST_METHOD'])->url( $url )
                ->headers(getallheaders())->serverData($_SERVER)->build();	
 		
 		return $req;
