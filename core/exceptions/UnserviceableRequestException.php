@@ -23,7 +23,7 @@ class NonserviceableRequestException extends \RuntimeException {
     }
 
     public function getMessage() {
-        return "Received an unservicable request from the user to " . $this->request->getUrl()->getPath();
+        return "Received an unserviceable request from the user to " . $this->request->getUrl()->getPath();
     }
 
 }

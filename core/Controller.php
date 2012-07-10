@@ -265,7 +265,7 @@ class Controller {
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
         
         $html =
-                """<!DOCTYPE html>
+                <<<'EOT'<!DOCTYPE html>
                    <html>
                     <head>
                      <title>Internal Server Error</title>
@@ -274,7 +274,8 @@ class Controller {
                      <h1>Internal Server Error</h1>
                      <p>""" . $message . """</p>
                     </body>
-                    </html>""";
+                    </html>
+EOT;
         die( $html );
     }
 
