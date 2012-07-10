@@ -8,5 +8,5 @@
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
 
-    "FallbackCommand": "\esprit\core\commands\Command_DefaultFallback"
+    "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"
 }
