@@ -16,7 +16,7 @@ abstract class TemplateParser {
     protected $logger;
     protected $config;
 
-    protected $output;
+    protected $response;
 
     /**
      * Default constructor for a template parser.
@@ -43,12 +43,12 @@ abstract class TemplateParser {
     public abstract function displayTemplate( $template );
 
     /**
-     * Sets the output object the parser should use. The output object should be
+     * Sets the response object the parser should use. The response object should be
      * used to populate the tempalte parser's variables. It would be a good idea
-     * to override this to load the output variables into the template parser.
+     * to override this to load the response variables into the template parser.
      */
-    public function loadOutput( Output $output ) {
-        $this->output = $output;
+    public function loadResponse( Response $response ) {
+        $this->response = $response;
     }
 
 }

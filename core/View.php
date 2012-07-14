@@ -14,10 +14,10 @@ namespace esprit\core;
 interface View {
 
     /**
-     * Print the presentation of the output to stdout.
+     * Print the presentation of the response to stdout.
      *
-     * @param Output $output  the output to display
+     * @param Response $response  the response to display
      */
-    public function display( Output $output ); 
+    public function display( Response $response ); 
 
 }

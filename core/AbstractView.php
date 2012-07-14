@@ -19,15 +19,23 @@ abstract class AbstractView implements View {
     }
 
     /**
-     * See View.display(Output $output);
+     * See View.display(Response $response);
      */
-    public function display(Output $output) {
-        $this->generateOutput( $output );
+    public function display(Response $response) {
+        $this->generateOutput( $response );
     }
 
     /**
      * This is the method that should actually generate the output.
      */
-    protected abstract function generateOutput(Output $output);
+    protected abstract function generateOutput(Response $response);
 
+    /**
+     * Sets the HTTP status to the given status.
+     *
+     * @param HttpStatusCode $status  the http status to set
+     */
+    protected function setStatus(HttpStatusCode $status) {
+        http_response_code($status->getCode());
+    }
 }
