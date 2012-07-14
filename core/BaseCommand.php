@@ -90,7 +90,7 @@ abstract class BaseCommand implements Command
      * @return Response
      */
     public function execute(Request $request, Response $response) {
-        return $this->run();
+        return $this->run($request, $response);
     }
 
 }
