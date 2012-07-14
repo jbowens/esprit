@@ -95,7 +95,7 @@ class DatabaseManager {
      *
      * @param string $handle  the handle referring to the connection
      */
-    public function close($handle) {
+    public function closeConnection($handle) {
         if( ! isset( $this->databaseConnections[$handle] ) )
             throw new NonexistentDatabaseException("No database with the handle " . $handle . " exists.");
         $this->databaseConnections[$handle]->close();
@@ -108,7 +108,7 @@ class DatabaseManager {
      */
     public function close() {
         foreach( $this->databaseConnections as $handle => $db ) {
-            $this->close($handle);
+            $this->closeConnection($handle);
         }
     }
 
