@@ -264,18 +264,16 @@ class Controller {
 
         header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
         
-        $html =
-                <<<'EOT'<!DOCTYPE html>
+        $html = "<!DOCTYPE html>
                    <html>
                     <head>
                      <title>Internal Server Error</title>
                     </head>
                     <body>
                      <h1>Internal Server Error</h1>
-                     <p>""" . $message . """</p>
+                     <p>" . $message . "</p>
                     </body>
-                    </html>
-EOT;
+                    </html>";
         die( $html );
     }
 
