@@ -21,6 +21,7 @@ class Controller {
 
     const LOG_ORIGIN = "CONTROLLER";
     const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
+    const DEFAULT_TIMEZONE = 'America/New_York';
 
     /* The cache to use for storing data in memory between requests */ 
     protected $cache;
@@ -132,6 +133,12 @@ class Controller {
 	public function run() {
 
         try {
+
+            // Set the timezone
+            if( $this->config->settingExists('default_timezone') )
+                date_default_timezone_set($this->config->get('default_timezone'));
+            else
+                date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
             $this->initializeSessions();
             

@@ -8,5 +8,7 @@
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
 
+    "default_timezone": "America/New_York",
+
     "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"
 }
