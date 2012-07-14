@@ -5,6 +5,7 @@ namespace esprit\core;
 use \Exception;
 use \SessionHandler as SessionHandler;
 use \SessionHandlerInterface as SessionHandlerInterface;
+use \ReflectionClass as ReflectionClass;
 
 use \esprit\core\util\LogEventFactory;
 use \esprit\core\util\Logger;
