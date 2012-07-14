@@ -89,6 +89,28 @@ class DatabaseManager {
             throw new \esprit\core\exceptions\DatabaseConnectionException( $ex );
         }
 	}
-	
+
+    /**
+     * Closes a database connection.
+     *
+     * @param string $handle  the handle referring to the connection
+     */
+    public function close($handle) {
+        if( ! isset( $this->databaseConnections[$handle] ) )
+            throw new NonexistentDatabaseException("No database with the handle " . $handle . " exists.");
+        $this->databaseConnections[$handle]->close();
+        unset($this->databaseConnctions[$handle]);
+    }
+
+    /**
+     * Releases all system resources being used by the database manager, including
+     * including closing all current database connections managed by the manager.
+     */
+    public function close() {
+        foreach( $this->databaseConnections as $handle => $db ) {
+            $this->close($handle);
+        }
+    }
+
 }
 
