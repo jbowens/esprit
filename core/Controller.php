@@ -142,7 +142,8 @@ class Controller {
 
             $this->initializeSessions();
             
-            $request = $this->createRequestFromEnvironment();	
+            $request = $this->createRequestFromEnvironment();
+            $response = new Response();
 
             $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), self::LOG_ORIGIN);
 
@@ -173,7 +174,7 @@ class Controller {
             }
         
             try {
-                $output = $command->execute();
+                $output = $command->execute($request, $response);
             } catch( Exception $e ) {
                 // TODO: Add more granular logging and add
                 // logic for actually handling exceptions
