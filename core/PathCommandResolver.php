@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use \ReflectionClass as ReflectionClass;
+
 /**
  * A command resolver that uses the URL path of the request to search
  * for matching commands on the file system. For example, a request to
