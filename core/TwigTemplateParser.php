@@ -44,7 +44,7 @@ class TwigTemplateParser extends TemplateParser {
         $options = array();
         if( isset( $twigSettings['cache'] ) )
             $options['cache'] = $twigSettings['cache'];
-        $this->twig = new Twig_Environment($loader, $options);
+        $this->twig = new \Twig_Environment($loader, $options);
     }
 
     public function templateExists( $template ) {
