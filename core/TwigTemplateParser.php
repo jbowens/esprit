@@ -17,8 +17,8 @@ class TwigTemplateParser extends TemplateParser {
 
     protected $twig;
 
-    public function __construct(Logger $logger, Config $config) {
-        parent::__construct($logger, $config);
+    public function __construct(Config $config, Logger $logger) {
+        parent::__construct($config, $logger);
         
         if( ! $config->settingExists("twig") )
             throw new TwigConfigurationException("Couldn't find twig options in config file.");
@@ -48,6 +48,7 @@ class TwigTemplateParser extends TemplateParser {
 
     public function templateExists( $template ) {
         //TODO: Implement
+        return true;
     }
 
     public function displayTemplate( $template ) {

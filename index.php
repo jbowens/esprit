@@ -9,6 +9,10 @@ $controller = new esprit\core\Controller( $config );
 $pathResolver = $controller->createPathCommandResolver(array('./commands/'), 'php');
 $controller->appendCommandResolver( $pathResolver );
 
+// Setup the view resolvers
+$pathViewResolver = $controller->createPathViewResolver(array('./views/'), 'php');
+$controller->appendViewResolver( $pathViewResolver );
+
 // Respond to the user's request
 $controller->run();
 

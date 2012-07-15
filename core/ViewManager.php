@@ -24,6 +24,9 @@ class ViewManager {
         $this->config = $config;
         $this->logger = $logger;
         $this->viewResolvers = array();
+
+        // TODO: Add support for other template parsers besides Twig
+        $this->templateParser = new TwigTemplateParser($config, $logger);
     }
 
     /**
@@ -55,6 +58,13 @@ class ViewManager {
      */
     public function addViewResolver(ViewResolver $viewResolver) {
         array_push($this->$viewResolvers, $viewResolver);
+    }
+
+    /**
+     * Retrieves the template parser used by this view manager.
+     */
+    public function getTemplateParser() {
+        return $this->templateParser;
     }
 
 }

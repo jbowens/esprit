@@ -21,7 +21,7 @@ abstract class TemplateParser {
     /**
      * Default constructor for a template parser.
      */
-    public function __construct(Logger $logger, Config $config) {
+    public function __construct(Config $config, Logger $logger) {
         $this->logger = $logger;
         $this->config = $config;
     }

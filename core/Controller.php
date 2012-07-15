@@ -92,6 +92,16 @@ class Controller {
         return new XmlCommandResolver($this->dbm, $this->config, $this->logger, $filepath, $classpath, $extension);
     }
 
+    /**
+     * Creates a new PathViewResolver for AbstractViews using this controller's config,
+     * logger and template parser.
+     *
+     * @see PathViewResolver::__construct()
+     *
+     * @param array $directories  an array of directories to search for matching views
+     * @param string $ext  the extension view class files will use (defaults to php)
+     * @return a PathViewResolver instance
+     */
     public function createPathViewResolver(array $directories = array(), $ext = null) {
         return new PathViewResolver($directories, $this->config, $this->logger, $this->viewManager->getTemplateParser(), $ext);
     }
