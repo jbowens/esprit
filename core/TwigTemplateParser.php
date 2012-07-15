@@ -30,7 +30,7 @@ class TwigTemplateParser extends TemplateParser {
         
         if( ! isset($twigSettings['templates_dir']) )
             $this->logger->warning(self::LOG_SOURCE, "No twig templates_dir configuration option. Template parser will be using only default esprit templates.");
-        elseif( ! is_dir($twigSettings['template_dir']) )
+        elseif( ! is_dir($twigSettings['templates_dir']) )
             $this->logger->error(self::LOG_SOURCE, "Twig templates_dir does not exist or is not a directory.");
 
         // Include the Twig autoloader
