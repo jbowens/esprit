@@ -10,13 +10,13 @@ namespace esprit\core\util;
 class Logger {
 
     /* Log levels */
-    const SEVERE = "SEVERE";
-    const ERROR = "ERROR";
-    const WARNING = "WARNING";
-    const INFO = "INFO";
-    const FINE = "FINE";
-    const FINER = "FINER";
-    const FINEST = "FINEST";
+    const SEVERE = 1;
+    const ERROR = 2;
+    const WARNING = 3;
+    const INFO = 4;
+    const FINE = 5;
+    const FINER = 6;
+    const FINEST = 7;
 
     /* Objects listening to the logs, and recording them */
     protected $logRecorders = array();
@@ -156,4 +156,29 @@ class Logger {
         // For the default logger implementation, nothing to do here.
     }
 
+    /**
+     * Converts a severity constant into a string representing the severity.
+     * This is messy as hell, but php doesn't support enums... I would like to
+     * replace this at some point with something more elegant.
+     */
+    public static function severityToString( $severity ) {
+        switch( $severity ) {
+            case self::SEVERE:
+                return "SEVERE";
+            case self::ERROR:
+                return "ERROR";
+            case self::WARNING:
+                return "WARNING"
+            case self::INFO:
+                return "INFO";
+            case self::FINE:
+                return "FINE";
+            case self::FINER:
+                return "FINER";
+            case self::FINEST:
+                return "FINEST";
+            case default:
+                return "UNKNOWN";
+        }
+    }
 }

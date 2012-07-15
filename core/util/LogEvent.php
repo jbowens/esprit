@@ -86,7 +86,7 @@ class LogEvent {
      * @return  a human readable representation of the log event
      */
     public function toString() {
-        return $this->getSeverity() . " [".$this->getOrigin()."]: " . $this->getMessage();
+        return Logger::severityToString($this->getSeverity()) . " [".$this->getOrigin()."]: " . $this->getMessage();
     }
 
 }

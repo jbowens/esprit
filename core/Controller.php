@@ -174,7 +174,7 @@ class Controller {
             }
         
             try {
-                $output = $command->execute($request, $response);
+                $response = $command->execute($request, $response);
             } catch( Exception $e ) {
                 // TODO: Add more granular logging and add
                 // logic for actually handling exceptions
@@ -271,7 +271,7 @@ class Controller {
         if( ! $message )
             $message = 'The server was unable to service your request.';
 
-        header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error', true, 500);
+        http_response_code(500);
         
         $html = "<!DOCTYPE html>
                    <html>
