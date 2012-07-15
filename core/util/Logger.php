@@ -177,7 +177,7 @@ class Logger {
                 return "FINER";
             case self::FINEST:
                 return "FINEST";
-            case default:
+            default:
                 return "UNKNOWN";
         }
     }
