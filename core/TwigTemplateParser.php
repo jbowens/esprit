@@ -52,7 +52,7 @@ class TwigTemplateParser extends TemplateParser {
     }
 
     public function displayTemplate( $template ) {
-        $templateFile = $template . '.' self::TEMPLATE_EXTENSION;
+        $templateFile = $template . '.' . self::TEMPLATE_EXTENSION;
         $temp = $this->twig->loadTemplate($templateFile);
         echo $temp->render( $this->getVariables() );
     }
