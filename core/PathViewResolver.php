@@ -119,4 +119,8 @@ class PathViewResolver implements ViewResolver {
         return null;
     }
 
+    protected function getClassName( $viewStr ) {
+        return 'View_' . $viewStr;
+    }
+
 } 

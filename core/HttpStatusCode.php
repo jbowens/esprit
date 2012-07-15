@@ -1,9 +1,11 @@
 <?php
 
-namespace \esprit\core;
+namespace esprit\core;
 
 /**
  * Enum-ish class for HTTP Status codes
+ *
+ * @author jbowens
  */
 abstract class HttpStatusCode {
 

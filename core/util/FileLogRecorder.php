@@ -34,7 +34,7 @@ class FileLogRecorder implements LogRecorder {
      * Records the LogEvent to a file.
      */
     public function record(LogEvent $event) {
-        fwrite($this->fileHandle, $event->toString());
+        fwrite($this->fileHandle, $event->toString() . "\n");
     }
 
     /**

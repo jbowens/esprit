@@ -24,7 +24,8 @@ class FallbackView extends AbstractView {
         $this->setStatus( new InternalServerError() ); 
 
         $this->templateParser->loadResponse( $response );
-        $this->templateParser->displayTemplate( self::TEMPLATE );
+
+        $ret = $this->templateParser->displayTemplate( self::TEMPLATE );
     }
 
 }

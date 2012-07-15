@@ -44,8 +44,8 @@ class ViewManager {
         }
 
         if( $view == null ) {
-            $this->logger->error("No matching view found", 'ViewManager', $response);
-            // TODO: Use an appropriate default view... 404? 500 internal server error? 
+            $this->logger->error("No matching view found for " . $response->getRequest()->getUrl()->getPath(), 'ViewManager', $response);
+            $view = new \esprit\core\views\FallbackView($this->config, $this->logger, $this->templateParser);
         }
 
         $view->display( $response );

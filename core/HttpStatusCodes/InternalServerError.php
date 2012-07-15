@@ -1,6 +1,6 @@
 <?php
 
-namespace \esprit\core\HttpStatusCodes;
+namespace esprit\core\HttpStatusCodes;
 
 use \esprit\core\HttpStatusCode as HttpStatusCode;
 

@@ -50,7 +50,14 @@ class Controller {
 	 * @param Config $config the config object to use
 	 */
 	public function __construct(Config $config) {
-		$this->config = $config;
+        $this->config = $config;
+
+        // Set the timezone
+        if( $this->config->settingExists('default_timezone') )
+            date_default_timezone_set($this->config->get('default_timezone'));
+        else
+            date_default_timezone_set(self::DEFAULT_TIMEZONE);
+
         $this->logger = util\Logger::newInstance();
         $this->cache = new MemcachedCache($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $this->logger);
         $this->commandResolvers = array();
@@ -161,12 +168,6 @@ class Controller {
 	public function run() {
 
         try {
-
-            // Set the timezone
-            if( $this->config->settingExists('default_timezone') )
-                date_default_timezone_set($this->config->get('default_timezone'));
-            else
-                date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
             $this->initializeSessions();
             
