@@ -57,7 +57,7 @@ class ViewManager {
      * views.
      */
     public function addViewResolver(ViewResolver $viewResolver) {
-        array_push($this->$viewResolvers, $viewResolver);
+        array_push($this->viewResolvers, $viewResolver);
     }
 
     /**
