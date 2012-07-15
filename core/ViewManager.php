@@ -12,11 +12,16 @@ use esprit\core\util\Logger as Logger;
  */
 class ViewManager {
 
+    protected $config;
+
     protected $logger;
 
     protected $viewResolvers;
 
-    public function __construct(Logger $logger) {
+    protected $templateParser;
+
+    public function __construct(Config $config, Logger $logger) {
+        $this->config = $config;
         $this->logger = $logger;
         $this->viewResolvers = array();
     }

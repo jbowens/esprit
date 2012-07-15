@@ -41,6 +41,9 @@ class Controller {
     /* An optional custom session handler */
     protected $customSessionHandler;
 
+    /* The view manager that handles presentation of responses */
+    protected $viewManager;
+
 	/**
 	 * Creates a new controller from a configuration object.
 	 * 
@@ -57,6 +60,7 @@ class Controller {
                                             $config->get("db_default_user"),
                                             $config->get("db_default_pass"),
                                             $this->logger);
+        $this->viewManager = new ViewManager($config, $this->logger);
 	}
 
     /**
@@ -88,15 +92,29 @@ class Controller {
         return new XmlCommandResolver($this->dbm, $this->config, $this->logger, $filepath, $classpath, $extension);
     }
 
+    public function createPathViewResolver(array $directories = array(), $ext = null) {
+        return new PathViewResolver($directories, $this->config, $this->logger, $this->viewManager->getTemplateParser(), $ext);
+    }
+
     /**
      * Appends a new command resolver onto the list of resolvers to use. Since resolvers
      * are used in the order that they're appended, you should make note of the order
      * you insert command resolvers.
      *
-     * CommandResolver $resolver  a new resolver to use
+     * @param CommandResolver $resolver  a new resolver to use
      */
     public function appendCommandResolver(CommandResolver $resolver) {
         array_push($this->commandResolvers, $resolver);
+    }
+
+    /**
+     * Appends a new view resolver onto the list of resolvers to use. Resolvers are used
+     * in the order that they're appended.
+     *
+     * @param ViewResolver $resolver  a new resolver to use
+     */
+    public function appendViewResolver(ViewResolver $resolver) {
+       $this->viewManager->addViewResolver( $resolver ); 
     }
 
     /**
@@ -143,7 +161,7 @@ class Controller {
             $this->initializeSessions();
             
             $request = $this->createRequestFromEnvironment();
-            $response = new Response();
+            $response = new Response($request);
 
             $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), self::LOG_ORIGIN);
 
@@ -180,6 +198,8 @@ class Controller {
                 // logic for actually handling exceptions
                 $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
             }
+
+            $this->viewManager->display( $response );
 
         } catch( UnserviceableRequestException $exception ) {
             // Log this

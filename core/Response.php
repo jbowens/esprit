@@ -10,8 +10,19 @@ namespace esprit\core;
  */
 class Response {
 
+    /* The request that this is a response to */
+    protected $request;
+
     /* A store of computed values to be passed on to the view */
     protected $output = array();
+
+    public function __construct(Request $request) {
+        $this->request = $request;
+    }
+
+    public function getRequest() {
+        return $this->request;
+    }
 
     /**
      * Sets a response data value.

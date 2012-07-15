@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use \esprit\core\util\Logger as Logger;
+
 /**
  * An abstract class of View that implements some basic functionality
  * most views can benefit from. For a view to be instantiable through
@@ -12,9 +14,13 @@ namespace esprit\core;
  */
 abstract class AbstractView implements View {
 
+    protected $config;
+    protected $logger;
     protected $templateParser;
 
-    public function __construct(TemplateParser $templateParser) {
+    public function __construct(Config $config, Logger $logger, TemplateParser $templateParser) {
+        $this->config = $config;
+        $this->logger = $logger;
         $this->templateParser = $templateParser;
     }
 
