@@ -168,7 +168,7 @@ class Logger {
             case self::ERROR:
                 return "ERROR";
             case self::WARNING:
-                return "WARNING"
+                return "WARNING";
             case self::INFO:
                 return "INFO";
             case self::FINE:
