@@ -11,4 +11,9 @@
     "default_timezone": "America/New_York",
 
     "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"
+
+    "twig": {
+        "twig_autoloader": "/home/mysite/Twig/Autoloader.php",
+        "templates_dir": "/home/mysite/templates"    
+    }
 }

@@ -91,6 +91,15 @@ class DatabaseManager {
 	}
 
     /**
+     * Determines if there is a connection with the given handle.
+     *
+     * @param string $handle  the handle to check
+     */
+    public function connectionExists($handle) {
+        return isset($this->databaseConnections[$handle]) && $this->databaseConnections[$handle]->checkConnection();
+    }
+
+    /**
      * Closes a database connection.
      *
      * @param string $handle  the handle referring to the connection

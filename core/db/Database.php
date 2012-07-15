@@ -113,7 +113,7 @@ class Database {
     /**
      * Checks to ensure we're still connected to the database.
      */
-    protected function checkConnection() {
+    public function checkConnection() {
         if( $this->dbh == null )
             throw new NonexistentDatabaseException("That database connection was closed.");
     }

@@ -38,4 +38,5 @@ abstract class AbstractView implements View {
     protected function setStatus(HttpStatusCode $status) {
         http_response_code($status->getCode());
     }
+
 }

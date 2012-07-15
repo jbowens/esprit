@@ -56,6 +56,10 @@ class Response {
     public function __set($key, $val) {
         return $this->set($key, $val);
     }
+
+    public function getAsArray() {
+        return $this->output;
+    }
 }
 
 

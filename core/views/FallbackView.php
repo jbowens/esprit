@@ -17,11 +17,14 @@ use \esprit\core\HttpStatusCodes\InternalServerError as InternalServerError;
  */
 class FallbackView extends AbstractView {
 
+    const TEMPLATE = "FatalError";
+
     public function generateOutput( Response $response )
     {
         $this->setStatus( new InternalServerError() ); 
 
+        $this->templateParser->loadResponse( $response );
+        $this->templateParser->displayTemplate( self::TEMPLATE );
     }
-
 
 }

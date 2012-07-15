@@ -51,4 +51,7 @@ abstract class TemplateParser {
         $this->response = $response;
     }
 
+    public function getVariables() {
+        return $this->response->getAsArray();
+    }
 }
