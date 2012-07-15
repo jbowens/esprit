@@ -36,8 +36,8 @@ class TwigTemplateParser extends TemplateParser {
         // Include the Twig autoloader
         require_once($twigSettings['twig_autoloader']);
         \Twig_Autoloader::register();
-       
-        $loader = new \Twig_Loader_Filesystem('../data/templates');
+
+        $loader = new \Twig_Loader_Filesystem( $config->get('esprit_data') . DIRECTORY_SEPARATOR . 'templates' );
         if( isset($twigSetting['template_dir']) )
             $loader->addPath( $twigSettings['template_dir'] );
 

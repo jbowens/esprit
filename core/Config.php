@@ -33,7 +33,7 @@ class Config {
 		foreach($xml->children() as $option) {
 			$config->set($option->getName(), (String) $option);
 		}
-		
+
 		return $config;
 		
 	}
@@ -42,7 +42,18 @@ class Config {
 	 * Creates a new config instance.
 	 */
 	protected function __construct() {
-		$this->options = array();
+        $this->options = array();
+
+        // Populate the magic values
+        $this->set('esprit_core', __DIR__);
+
+        $pathPieces = explode('/', __DIR__);
+        if( count($pathPieces) > 0 )
+            unset($pathPieces[count($pathPieces)-1]);
+        $root = implode('/', $pathPieces);
+
+        $this->set('esprit_root', $root);
+        $this->set('esprit_data', $root . DIRECTORY_SEPARATOR . 'data');
 	}
 	
 	/**
