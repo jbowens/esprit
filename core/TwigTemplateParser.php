@@ -2,6 +2,7 @@
 
 namespace esprit\core;
 
+use \esprit\core\util\Logger as Logger;
 use \esprit\core\exceptions\TwigConfigurationException as TwigConfigurationException;
 
 /**
