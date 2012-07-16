@@ -10,5 +10,6 @@ System Requirements
 ---
 
 PHP 5.4
-Apache
+Apache 2.2
 Memcached
+Twig

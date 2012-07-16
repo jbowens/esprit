@@ -22,6 +22,7 @@ class Controller {
     const LOG_ORIGIN = "CONTROLLER";
     const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
     const DEFAULT_TIMEZONE = 'America/New_York';
+    const DEFAULT_VIEW = '\esprit\core\views\DefaultView';
 
     /* The cache to use for storing data in memory between requests */ 
     protected $cache;
@@ -112,6 +113,21 @@ class Controller {
     public function createPathViewResolver(array $directories = array(), $ext = null) {
         return new PathViewResolver($directories, $this->config, $this->logger, $this->viewManager->getTemplateParser(), $ext);
     }
+
+    /**
+     * Constructs a new CatchallViewResolver with the given view. If no view is provided,
+     * the default view will be used.
+     *
+     * @param View $view  the view the catchall should use
+     * @return a CatchallViewResolver
+     */
+    public function createCatchallViewResolver($view = null) {
+        if( $view == null ) {
+            $reflClass = new \ReflectionClass( self::DEFAULT_VIEW );
+            $view = $reflClass->newInstance( $this->config, $this->logger, $this->viewManager->getTemplateParser() );
+        }
+        return new CatchallViewResolver( $view );
+    } 
 
     /**
      * Appends a new command resolver onto the list of resolvers to use. Since resolvers
@@ -218,6 +234,7 @@ class Controller {
             $this->dieGracefully();
         } catch( Exception $exception ) {
             // Don't expose internal details of the exception to the user. Just exit.
+            $this->logger->logEvent( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             return false;
         }
 

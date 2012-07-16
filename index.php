@@ -13,6 +13,9 @@ $controller->appendCommandResolver( $pathResolver );
 $pathViewResolver = $controller->createPathViewResolver(array('/var/www//views/'), 'php');
 $controller->appendViewResolver( $pathViewResolver );
 
+$catchall = $controller->createCatchallViewResolver();
+$controller->appendViewResolver( $catchall );
+
 // Respond to the user's request
 $controller->run();
 
