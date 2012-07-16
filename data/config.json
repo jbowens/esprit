@@ -4,6 +4,8 @@
         "esprit_version": "1.0a"
     },
 
+    "debug": false,
+
     "db_default_dsn": "mysql:host=localhost;dbname=esprit_test;charset=utf8",
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
@@ -14,6 +16,10 @@
 
     "twig": {
         "twig_autoloader": "/home/mysite/Twig/Autoloader.php",
-        "templates_dir": "/home/mysite/templates"    
+        "templates_dir": "/home/mysite/templates",
+        "options": {
+            "cache": "/home/mysite/twigcache",
+            "debug": false
+        }
     }
 }

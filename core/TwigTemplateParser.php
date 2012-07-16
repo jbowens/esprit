@@ -17,6 +17,7 @@ class TwigTemplateParser extends TemplateParser {
     const TEMPLATE_EXTENSION = 'html';
 
     protected $twig;
+    protected $twigLoader;
 
     public function __construct(Config $config, Logger $logger) {
         parent::__construct($config, $logger);
@@ -37,14 +38,21 @@ class TwigTemplateParser extends TemplateParser {
         require_once($twigSettings['twig_autoloader']);
         \Twig_Autoloader::register();
 
-        $loader = new \Twig_Loader_Filesystem( $config->get('esprit_data') . DIRECTORY_SEPARATOR . 'templates' );
-        if( isset($twigSetting['templates_dir']) )
-            $loader->addPath( $twigSettings['templates_dir'] );
+        $templateDirs = array();
+
+        if( isset($twigSettings['templates_dir']) )
+            array_push($templateDirs, $twigSettings['templates_dir']);
+        array_push($templateDirs, $config->get('esprit_data') . DIRECTORY_SEPARATOR . 'templates');
+
+        $this->twigLoader = new \Twig_Loader_Filesystem( $templateDirs ); 
 
         $options = array();
-        if( isset( $twigSettings['cache'] ) )
-            $options['cache'] = $twigSettings['cache'];
-        $this->twig = new \Twig_Environment($loader, $options);
+        if( isset($twigSettings['options']) && is_array($twigSettings['options']) ) {
+            $options = $twigSettings['options'];
+        }
+        if( $config->settingExists('debug') && $config->get('debug') )
+            $options['debug'] = true;
+        $this->twig = new \Twig_Environment($this->twigLoader, $options);
     }
 
     public function templateExists( $template ) {
@@ -53,9 +61,13 @@ class TwigTemplateParser extends TemplateParser {
     }
 
     public function displayTemplate( $template ) {
-        $templateFile = $template . '.' . self::TEMPLATE_EXTENSION;
-        $temp = $this->twig->loadTemplate($templateFile);
-        echo $temp->render( $this->getVariables() );
+        try {
+            $templateFile = $template . '.' . self::TEMPLATE_EXTENSION;
+            $temp = $this->twig->loadTemplate($templateFile);
+            echo $temp->render( $this->getVariables() );
+        } catch( \Twig_Error $exception ) {
+            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_SOURCE ) ); 
+        }
     }
 
 }

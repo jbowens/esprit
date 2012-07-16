@@ -8,7 +8,7 @@ namespace esprit\core\exceptions;
  *
  * @author jbowens
  */
-class BadConfigFileException extends InvalidArgumentException {
+class BadConfigFileException extends \InvalidArgumentException {
 
 
 }
