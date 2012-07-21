@@ -42,7 +42,7 @@ class PathCommandResolver implements CommandResolver {
      * @param CommandSource $commandSource  another command source to use
      */
     public function registerSource(CommandSource $commandSource) {
-        array_push($this->commandSources, $commandSource);
+        array_unshift($this->commandSources, $commandSource);
     }
 
     /**

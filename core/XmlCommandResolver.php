@@ -49,7 +49,7 @@ class XmlCommandResolver implements CommandResolver {
      * @param CommandSource $source  the command source to register
      */
     public function registerSource( CommandSource $source ) {
-        array_push( $this->commandSources, $source );
+        array_unshift( $this->commandSources, $source );
     }
 
     /**
