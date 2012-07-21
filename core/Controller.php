@@ -69,37 +69,22 @@ class Controller {
                                             $config->get("db_default_pass"),
                                             $this->logger);
         $this->viewManager = new ViewManager($config, $this->logger);
-	}
+    }
 
     /**
-     * Creates a new PathCommandResolver for BaseCommands using this contorller's
-     * config, logger and db manager.
-     *
-     * @see PathCommandResolver::__construct()
-     *
-     * @param $directories  list of directories to search in
-     * @param $ext  (optional) the extension to expect php files to have
-     * @return a PathCommandResolver
+     * Creates a new CommandResolverFactory.
      */
-    public function createPathCommandResolver(array $directories = array(), $ext = null) {
-        return new PathCommandResolver($this->dbm, $this->config, $this->logger, $directories, $ext); 
+    public function createCommandResolverFactory() {
+        return new CommandResolverFactory($this->config, $this->logger, $this->dbm);
+    }
+
+    /**
+     * Creates a BaseCommandSource with the given data.
+     */
+    public function createBaseCommandSource($namespace, $directory) {
+        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $namespace, $directory);
     }
 	
-    /**
-     * Creates a new XmlCommandResolver for BaseCommands using this controller's
-     * config, logger and db manager.
-     *
-     * @see XmlCommandResolver::__construct()
-     *
-     * @param $filepath
-     * @param $classpath
-     * @param $extension
-     * @return a XmlCommandResolver  
-     */
-    public function createXmlCommandResolver($filepath, $classpath, $extension = null) {
-        return new XmlCommandResolver($this->dbm, $this->config, $this->logger, $filepath, $classpath, $extension);
-    }
-
     /**
      * Creates a new PathViewResolver for AbstractViews using this controller's config,
      * logger and template parser.

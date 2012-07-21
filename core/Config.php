@@ -53,6 +53,7 @@ class Config {
         $root = implode('/', $pathPieces);
 
         $this->set('esprit_root', $root);
+        $this->set('esprit_commands', __DIR__ . DIRECTORY_SEPARATOR . 'commands');
         $this->set('esprit_data', $root . DIRECTORY_SEPARATOR . 'data');
 	}
 	

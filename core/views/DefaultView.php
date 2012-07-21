@@ -15,6 +15,7 @@ use \esprit\core\Response as Response;
 class DefaultView extends AbstractView {
 
     const DEFAULT_TEMPLATE = "Default";
+    const FALLBACK_TEMPLATE = "404";
     const LOG_SOURCE = "DefaultView";
 
     public function generateOutput( Response $response )
@@ -54,8 +55,10 @@ class DefaultView extends AbstractView {
         }
 
         // Log an error if we didn't find an appropriate template
-        if( $innerTemplate == null )
+        if( $innerTemplate == null ) {
             $this->logger->error("Could not find a default template for request with path " . $path, self::LOG_SOURCE);
+            $innerTemplate = self::FALLBACK_TEMPLATE;
+        }
 
         // Pass the inner template on to the default template to include
         $this->templateParser->setVariable( 'DefaultView_innerTemplate', $this->templateParser->getResourceName( $innerTemplate ) );

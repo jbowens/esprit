@@ -14,6 +14,8 @@ use \esprit\core\Response as Response;
  */
 class Command_DefaultFallback extends BaseCommand {
 
+    const COMMAND_NAME = "DefaultFallback";
+
     /**
      * See BaseCommand.run(Request $request, Response $response) 
      */
@@ -23,6 +25,10 @@ class Command_DefaultFallback extends BaseCommand {
         
         return $response;
 
+    }
+
+    public function getName() {
+        return self::COMMAND_NAME;
     }
 
 } 

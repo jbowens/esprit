@@ -17,44 +17,36 @@ use \ReflectionClass as ReflectionClass;
  */
 class PathCommandResolver implements CommandResolver {
 
-    /* A list of directories to search */
-    protected $commandDirectories;
+    const LOG_SOURCE = "PathCommandResolver";
 
-    /* The extension used by commands */
-    protected $extension;
+    /* A list of sources to use */
+    protected $commandSources;
 
-    /* Data required to instantiate a BaseCommand */
-    protected $dbm;
     protected $config;
     protected $logger;
 
     /**
-     * Constructs a new path command resolver from an array of directories. The
-     * resolver will search only the directories passed to its constructor when
-     * resolving commands.
-     *
-     * @param array $directories  an array of strings (directories in the file system)
-     * @param $extension  the extension of the php files in the directories
+     * Constructs a new PathCommandResolver. Command sources need to be registered with the resolver
+     * for the resolver to actually resolve to any commands.
      */
-     public function __construct(db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, array $directories, $extension = 'php') {
-        $this->commandDirectories = array();
-        foreach( $directories as $dir )
-            array_push($this->commandDirectories, $dir);
-        $this->extension = $extension;
-        $this->dbm = $databaseManager;
+    public function __construct(Config $config, util\Logger $logger) {
         $this->config = $config;
         $this->logger = $logger;
+
+        $this->commandSources = array();
     }
 
     /**
-     * Gets the full class name from the command string.
+     * Adds a command source to the list of sources used by the resolver.
+     *
+     * @param CommandSource $commandSource  another command source to use
      */
-    protected function getClassName( $commandStr ) {
-        return 'Command_' . $commandStr;
+    public function registerSource(CommandSource $commandSource) {
+        array_push($this->commandSources, $commandSource);
     }
 
     /**
-     * Searches the file system for a command that matches the path of
+     * Searches the command sources for a command that matches the path of
      * the requested url.
      *
      * @param Request $req  the request
@@ -67,9 +59,15 @@ class PathCommandResolver implements CommandResolver {
 
         // Treat the index as a special case
         if( $path == "/" || $path == "" || $url->getPathPiece(0) == "" ) {
-            $command = $this->getCommand("Index");
-            if( $command != null )
-                return $command;
+
+            $command = $this->getCommand( 'Index' ); 
+
+            if( $command == null ) {
+                // No command sources had an index command
+                $this->logger->error("No Index command found in the given command sources", self::LOG_SOURCE);
+            }
+
+            return $command;
         }
 
         // Clean up the path pieces into class pieces
@@ -104,29 +102,17 @@ class PathCommandResolver implements CommandResolver {
      * Retrieves a command from the command string.
      */
     protected function getCommand( $commandStr ) {
-        $className = $this->getClassName( $commandStr );
-        $filename = $className . '.' . $this->extension;
 
-        foreach( $this->commandDirectories as $directory ) {
-            $filePath = $directory . DIRECTORY_SEPARATOR . $filename;
-
-            if( file_exists( $filePath ) ) {
-
-                require_once($filePath);
-
-                $reflectionClass = new ReflectionClass($className);
-
-                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface('esprit\core\Command') && 
-                    $reflectionClass->isSubclassOf('esprit\core\BaseCommand') ) {
-                    return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
-                }
-
-             }
-
+        foreach( $this->commandSources as $source )
+        {
+            if( $source->isCommandDefined( $commandStr ) )
+            {
+                return $source->instantiateCommand( $commandStr );
+            }
         }
 
+        // The command is not defined in any of the provided command sources
         return null;
-
     }
 
 }
