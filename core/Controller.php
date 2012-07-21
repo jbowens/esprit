@@ -60,7 +60,7 @@ class Controller {
             date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
         $this->logger = util\Logger::newInstance();
-        $this->cache = new MemcachedCache($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $this->logger);
+        $this->cache = new MemcachedCache($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $config, $this->logger);
         $this->commandResolvers = array();
         $this->customSessionHandler = null;
 

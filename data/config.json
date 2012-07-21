@@ -10,6 +10,10 @@
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
 
+    "memcached": {
+        "key_prefix": "yourapp_"
+    },
+
     "default_timezone": "America/New_York",
 
     "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"

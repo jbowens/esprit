@@ -25,13 +25,18 @@ class MemcachedCache implements Cache {
     /* To prevent multiple calls to memcached for the same key during the same request */
     protected $runtimeCache;
 
+    protected $config;
     protected $logger;
+
+    /* The application-specific key namespace to use */
+    protected $keyNamespace;
 
     /**
      * Creates a new cache.
      */
-    public function __construct(array $servers, Logger $logger) {
+    public function __construct(array $servers, Config $config, Logger $logger) {
 
+        $this->config = $config;
         $this->logger = $logger;
         $this->memcached = new \Memcached();
 
@@ -51,6 +56,8 @@ class MemcachedCache implements Cache {
             $this->logger->severe("No active Memcached servers", "CACHE", $servers);
 
         $this->runtimeCache = array();
+        $memcachedSettings = $config->settingExists("memcached") ? $config->get("memcached") : array();
+        $this->keyNamespace = isset($memcachedSettings['key_prefix']) ? $memcachedSettings['key_prefix'] : KEY_NAMESPACE;
     }
 
     /**
@@ -117,7 +124,7 @@ class MemcachedCache implements Cache {
      * This is intended as a way to namespace caching keys.
      */
     protected function key( $key ) {
-        $qualifiedKey = self::KEY_NAMESPACE . $key;
+        $qualifiedKey = $this->keyNamespace . $key;
         
         if( strlen($qualifiedKey) > self::MEMCACHED_KEY_LIMIT )
         {
