@@ -6,17 +6,15 @@ namespace esprit\core;
  * A command resolver that uses an xml file to map requests
  * to commands.
  *
- * NOTE: This command resolver only supports commands that extend BaseCommand.
- *
  * @jbowens
  */
-class XmlCommandResolver {
+class XmlCommandResolver implements CommandResolver {
 
     /* Filename to configure the resolver */
     protected $xmlFilename;
 
-    /* The directories to search in for commands */
-    protected $directories;
+    /* The command sources to search in for commands */
+    protected $commandSources;
 
     /**
      * The mappings contained within the xml file. These
@@ -24,10 +22,6 @@ class XmlCommandResolver {
      */
     protected $mappings = null;
 
-    /* The php extension to use/expect */
-    protected $extension;
- 
-    protected $dbm;
     protected $config;
     protected $logger;
     
@@ -35,23 +29,27 @@ class XmlCommandResolver {
      * Constructs a new XmlCommandResolver from an XML file outlining how
      * to resolve requests.
      *
-     * @param $databaseManager  the database manager to construct BaseCommands with
-     * @param $config  the config object to construct BaseCommands with
-     * @param $logger  the logger to construct BaseCommands with
+     * @param $config  an esprit config object
+     * @param $logger  an esprit logger
      * @param $filepath  the filepath to the file to use
-     * @param $classpath  an array of the directories to search in for the
-     *                      command files
-     * @param $extension  the php filename extension to expect
      */
-    public function __construct( db\DatabaseManager $databaseManager, Config $config, util\Logger $logger, $filepath, $classpath, $extension = 'php' ) {
+    public function __construct( Config $config, util\Logger $logger, $filepath ) {
 
-        $this->dbm = $databaseManager;
         $this->config = $config;
         $this->logger = $logger;
         $this->xmlFilename = $filepath;
-        $this->directories = $classpath;
-		$this->extension = $extension;
-		
+        $this->commandSources = array();
+
+    }
+
+    /**
+     * Registers a command source with the resolver so that commands from the source
+     * may be used when resolving commands.
+     *
+     * @param CommandSource $source  the command source to register
+     */
+    public function registerSource( CommandSource $source ) {
+        array_push( $this->commandSources, $source );
     }
 
     /**
@@ -144,27 +142,13 @@ class XmlCommandResolver {
      * @return an instance of the command
      */
     protected function getCommand( $command ) {
-  
-        $filename = $command . '.' . $this->extension;
 
-        foreach( $this->directories as $directory ) {
-            $filePath = $directory . DIRECTORY_SEPARATOR . $filename;
-
-            if( file_exists( $filePath ) ) {
-
-                require_once($filePath);
-
-                $reflectionClass = new ReflectionClass($className);
-
-                if( !$reflectionClass->isInstantiable() || !$reflectionClass->implementsInterface('esprit\core\Command') 
-                    || !$reflectionClass->isSubclassOf('esprit\core\BaseCommand') ) {
-                	throw new Exception($command . " is not an instantiable BaseCommand.");
-                }
-                
-                return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
-
-             }
-
+        foreach( $this->commandSources as $source )
+        {
+            if( $source->isCommandDefined( $command ) )
+            {
+                return $source->instantiateCommand( $command );
+            }
         }
 
         return null;
