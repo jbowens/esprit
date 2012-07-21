@@ -16,6 +16,11 @@
 
     "default_timezone": "America/New_York",
 
+    "css": {
+        "sources": ["home/mysite/css"],
+        "compressed_dir": "/home/mysite/css-compressed"
+    },
+
     "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"
 
     "twig": {

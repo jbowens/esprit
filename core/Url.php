@@ -123,6 +123,8 @@ class Url {
      * @return array  an array of individual directories of the path
      */
     protected static function createPiecesFromPath( $path ) {
+        if( $path[0] == DIRECTORY_SEPARATOR )
+            $path = substr($path, 1);
         return explode( DIRECTORY_SEPARATOR, $path );
     }
 

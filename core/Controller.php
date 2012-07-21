@@ -190,7 +190,7 @@ class Controller {
             $request = $this->createRequestFromEnvironment();
             $response = new Response($request);
 
-            $this->logger->finest("Request from " . $request->getIpAddress() . " " . date("r"), self::LOG_ORIGIN);
+            $this->logger->finest("Request from " . $request->getIpAddress() . " to " . $request->getUrl()->getPath() . " " . date("r"), self::LOG_ORIGIN);
 
             // Identify the command that should be run
             $command = null;
@@ -217,7 +217,9 @@ class Controller {
 
                 $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
             }
-        
+
+            $this->logger->finest('Going to use command: ' . get_class($command), self::LOG_ORIGIN);
+
             try {
                 $response = $command->execute($request, $response);
             } catch( Exception $e ) {
@@ -230,11 +232,11 @@ class Controller {
 
         } catch( UnserviceableRequestException $exception ) {
             // Log this
-            $this->logger->logEvent( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             $this->dieGracefully();
         } catch( Exception $exception ) {
             // Don't expose internal details of the exception to the user. Just exit.
-            $this->logger->logEvent( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             return false;
         }
 
