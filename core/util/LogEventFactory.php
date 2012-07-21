@@ -17,7 +17,7 @@ class LogEventFactory {
      * @param $origin  a string representation of the log event source
      * @return a LogEvent for the exception
      */
-    public static function createFromException(Exception $e, $origin) {
+    public static function createFromException(\Exception $e, $origin) {
         return new LogEvent(Logger::ERROR, $origin, $e->getMessage(), $e);
     }
 

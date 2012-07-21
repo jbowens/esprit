@@ -3,6 +3,7 @@
 namespace esprit\core;
 
 use \esprit\core\util\Logger as Logger;
+use \esprit\core\util\LogEventFactory as LogEventFactory;
 use \esprit\core\exceptions\TwigConfigurationException as TwigConfigurationException;
 
 /**
@@ -55,19 +56,35 @@ class TwigTemplateParser extends TemplateParser {
         $this->twig = new \Twig_Environment($this->twigLoader, $options);
     }
 
+    /**
+     * Checks for the existence of the given template.
+     */
     public function templateExists( $template ) {
-        //TODO: Implement
-        return true;
+        $paths = $this->twigLoader->getPaths();
+
+        foreach( $paths as $path ) {
+            if( file_exists( $path . $this->getResourceName( $template ) ) )
+                return true;
+        }
+
+        return false;
     }
 
     public function displayTemplate( $template ) {
         try {
-            $templateFile = $template . '.' . self::TEMPLATE_EXTENSION;
+            $templateFile = $this->getResourceName( $template );
             $temp = $this->twig->loadTemplate($templateFile);
             echo $temp->render( $this->getVariables() );
         } catch( \Twig_Error $exception ) {
             $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_SOURCE ) ); 
         }
+    }
+
+    /**
+     * See TemplateParser.getResourceName($templateName)
+     */
+    public function getResourceName( $templateName ) {
+        return $templateName . '.' . self::TEMPLATE_EXTENSION;
     }
 
 }

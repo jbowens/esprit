@@ -13,10 +13,13 @@ use esprit\Core\util\Logger as Logger;
  */
 abstract class TemplateParser {
 
+    const LOG_SOURCE = "TemplateParser";
+
     protected $logger;
     protected $config;
 
     protected $response;
+    protected $otherVariables;
 
     /**
      * Default constructor for a template parser.
@@ -24,6 +27,7 @@ abstract class TemplateParser {
     public function __construct(Config $config, Logger $logger) {
         $this->logger = $logger;
         $this->config = $config;
+        $this->otherVariables = array();
     }
 
     /**
@@ -43,6 +47,31 @@ abstract class TemplateParser {
     public abstract function displayTemplate( $template );
 
     /**
+     * Takes a template and returns the name of the template resource
+     * that it uses. For example, if you store templates on the filesystem,
+     * this method should return the filename of the given template.
+     */
+    public abstract function getResourceName( $template );
+
+    /**
+     * Sets a variable in the templating engine. Always use string keys for variables.
+     * Integer keys can cause undefined behavior when merged with the values retrieved
+     * from the Response object.
+     *
+     * @param string $key  the key of the variable
+     * @param $val  the value to save in the variable
+     *
+     * @throws InvalidArgumentException when given a non-string variable name
+     */
+    public function setVariable( $key, $val ) {
+        if( ! is_string($key) ) {
+            $this->logger->error("Received non-string variable name, \"" . $key . "\"", self::LOG_SOURCE);
+            throw new \InvalidArgumentException("Received nonstring variable name");
+        }
+        $this->otherVariables[$key] = $val;
+    }
+
+    /**
      * Sets the response object the parser should use. The response object should be
      * used to populate the tempalte parser's variables. It would be a good idea
      * to override this to load the response variables into the template parser.
@@ -51,7 +80,13 @@ abstract class TemplateParser {
         $this->response = $response;
     }
 
+    /**
+     * Returns an associative array of the variables that should be defined within
+     * the templating scope.
+     */
     public function getVariables() {
-        return $this->response->getAsArray();
+        // Because $this->otherVariables appears second, if a key appears in both arrays
+        // the value in $this->otherVariables will be taken.
+        return array_merge($this->response->getAsArray(), $this->otherVariables);
     }
 }

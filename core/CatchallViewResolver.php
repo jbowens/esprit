@@ -24,7 +24,7 @@ class CatchallViewResolver implements ViewResolver {
      * @see ViewResolver.resolve(Response $response)
      */
     public function resolve(Response $response) {
-        return $view;
+        return $this->view;
     }
 
 }
