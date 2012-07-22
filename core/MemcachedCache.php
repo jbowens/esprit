@@ -15,6 +15,7 @@ use \esprit\core\util\Logger as Logger;
  */
 class MemcachedCache implements Cache {
 
+    const LOG_SOURCE = "MEMCACHED";
     const KEY_NAMESPACE = 'es_';
     const MEMCACHED_KEY_LIMIT = 250;
     const DEFAULT_PORT = 11211;
@@ -46,14 +47,17 @@ class MemcachedCache implements Cache {
             $port = $server['port'] ? $server['port'] : DEFAULT_PORT;
             $success = $this->memcached->addServer($server['host'], $port );
             
-            if( $success )
+            if( $success ) {
                 $activeServers++;
+                $this->logger->finer("Connected to memcached server " . $server['host'] . ":".$port, self::LOG_SOURCE);
+            }
             else
                 $this->logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, "CACHE");
         }
 
-        if( $activeServers == 0 )
-            $this->logger->severe("No active Memcached servers", "CACHE", $servers);
+        if( $activeServers <= 0 ) {
+            $this->logger->severe("No active Memcached servers", self::LOG_SOURCE, $servers);
+        }
 
         $this->runtimeCache = array();
         $memcachedSettings = $config->settingExists("memcached") ? $config->get("memcached") : array();
@@ -71,8 +75,9 @@ class MemcachedCache implements Cache {
     public function set( $key, $val, $expire = 0 ) {
         if( isset( $this->runtimeCache[$key] ) )
             unset($this->runtimeCache[$key]);
-
-        $this->memcached->set($this->key($key), $val, $expire);
+        $success = $this->memcached->set($this->key($key), $val, $expire);
+        if( ! $success )
+            $this->logger->warning("Unable to save cache key " . $key . ", memcached message: " . $this->memcached->getResultMessage(), self::LOG_SOURCE);
     }
 
     /**
@@ -96,6 +101,7 @@ class MemcachedCache implements Cache {
      * @see Cache.isCached($key)
      */
     public function isCached( $key ) {
+
         if( isset($this->runtimeCache[$key]) )
             return true;
 

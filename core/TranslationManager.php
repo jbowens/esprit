@@ -48,13 +48,12 @@ class TranslationManager implements TranslationSource {
 
         $ancestors = $this->getAncestors($language);
 
-        die(count($ancestors));
-
         foreach( $ancestors as $ancestor )
         {
             $localizedString = $this->getLocalized($translationIdentifier, $ancestor);
-            if( $localizedString != null )
+            if( $localizedString != null ) {
                 return $localizedString;
+            }
         }
 
         // The string doesn't exist
@@ -78,7 +77,7 @@ class TranslationManager implements TranslationSource {
         $localizedString = $localizedString === false ? null : $localizedString;
         // Cache this localized string
         $this->cache->set($cacheKey, $localizedString);
-        
+
         return $localizedString;
     }
 

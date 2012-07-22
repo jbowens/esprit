@@ -23,11 +23,10 @@ class Translator {
 
     public function translate( $translationIdentifier ) {
 
-        $this->logger->finest( 'Translating ' . $translationIdentifier . ' into language ' . $this->language, self::LOG_SOURCE );
-
         try
         {
-            return $this->translationSource->getTranslation($translationIdentifier, $this->language);
+            $translation = $this->translationSource->getTranslation($translationIdentifier, $this->language);
+            return $translation;
         }
         catch( exceptions\InvalidTranslationIdentifier $e )
         {

@@ -22,6 +22,12 @@ class Logger {
     protected $logRecorders = array();
 
     /**
+     *  A list of previously logged events. When a new log recorder is added, they'll
+     *  receive all relevant previously logged log events.
+     */
+    protected $logEventBacklog = array();
+
+    /**
      * Create a new logger.
      */
     public static function newInstance() {
@@ -46,6 +52,7 @@ class Logger {
             if( $recorder->canAccept( $logEvent ) )
                 $recorder->record( $logEvent );
         }
+        array_push( $this->logEventBacklog, $logEvent );
     }
 
     /**
@@ -126,6 +133,12 @@ class Logger {
     public function addLogRecorder(LogRecorder $recorder) {
         if( ! in_array( $recorder, $this->logRecorders ) )
             array_push($this->logRecorders, $recorder);
+
+        // Inform the log about any previous log events
+        foreach( $this->logEventBacklog as $previousEvent ) {
+            if( $recorder->canAccept( $previousEvent ) )
+                $recorder->record( $previousEvent );
+        }
     }
 
     /**

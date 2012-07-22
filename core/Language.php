@@ -18,7 +18,7 @@ class Language {
      * constructor explicitly.
      */
     public function __construct($id, $strIdentifer, $parentid) {
-        $this->locationid = $id;
+        $this->languageid = $id;
         $this->identifier = $strIdentifer;
         $this->parentid = $parentid;
     }

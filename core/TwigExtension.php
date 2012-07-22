@@ -16,7 +16,7 @@ class TwigExtension extends \Twig_Extension {
     }
 
     public function translate($identifier) {
-        $this->translator->translate($identifier);
+        return $this->translator->translate($identifier);
     }
 
     public function getName() {

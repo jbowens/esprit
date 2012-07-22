@@ -10,6 +10,13 @@
     "db_default_user": "esprit",
     "db_default_pass": "nachos",
 
+    "memcached_servers": [
+            {
+                "host": "localhost",
+                "port": 11211
+            }
+        ],
+
     "memcached": {
         "key_prefix": "yourapp_"
     },
