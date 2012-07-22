@@ -8,7 +8,7 @@ namespace esprit\core\exceptions;
  * 
  * @author jbowens
  */
-class NonexistentDatabaseException extends Exception {
+class NonexistentDatabaseException extends \Exception {
 
 }
 

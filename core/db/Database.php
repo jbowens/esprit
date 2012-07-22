@@ -83,7 +83,7 @@ class Database {
         if( $stmt === false )
             return $stmt;
         else
-            return new Statement( $stmt, $logger );
+            return new Statement( $stmt, $this->logger );
     }
 
     public function query($statement) {

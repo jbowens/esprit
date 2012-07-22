@@ -21,7 +21,7 @@ class LanguageSource {
     protected $idMap;
     protected $identifierMap;
 
-    public function __construct(DatabaseManager $dbm, Cache $cache = null) {
+    public function __construct(db\DatabaseManager $dbm, Cache $cache = null) {
         $this->dbm = $dbm;
         $this->cache = $cache;
         $this->idMap = array();
@@ -71,7 +71,11 @@ class LanguageSource {
 
         $stmt = $db->prepare( self::SQL_LANG_BY_IDENTIFIER );
         $stmt->execute(array( $identifier ));
-        $langData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $langData = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if( ! $langData['languageid'] )
+            throw new exceptions\NonexistentLanguageException( $identifier );
+
         $lang = Language::createFromArray( $langData );
 
         $this->cache( $lang );

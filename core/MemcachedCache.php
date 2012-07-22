@@ -101,7 +101,7 @@ class MemcachedCache implements Cache {
 
         $val = $this->memcached->get( $this->key($key) );
 
-        if( $this->memcached->getResultCode() == Memcached::RES_NOTFOUND )
+        if( $this->memcached->getResultCode() == \Memcached::RES_NOTFOUND )
             return false;
         else {
             $this->runtimeCache[$key] = $val;

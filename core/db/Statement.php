@@ -11,17 +11,21 @@ use \esprit\core\util\Logger as Logger;
  * @author jbowens
  */
 class Statement {
-	
+
+    const LOG_ORIGIN = 'DATABASE';
+
     protected $stmt;
     protected $logger;
 
-	function __construct(PDOStatement $originalStatement, Logger $logger) {
+	function __construct(\PDOStatement $originalStatement, Logger $logger) {
 		$this->stmt = $originalStatement;
         $this->logger = $logger;
 	}
 
     public function execute( $input_parameters = array() ) {
-        $this->logger->fine( 'Executing query: ' . $this->queryString, 'DATABASE', $input_parameters );
+        $this->logger->fine( 'Executing query: ' . $this->stmt->queryString, self::LOG_ORIGIN, $input_parameters );
+        $result = $this->stmt->execute( $input_parameters );
+        return $result;
     }
 
     // Forward all method calls to the $stmt

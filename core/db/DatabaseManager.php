@@ -50,8 +50,8 @@ class DatabaseManager {
 	 * 
 	 * @return  a database connection (a PDO object)
 	 */
-	public function getDb($handle) {
-		if( ! isset( $this->datbaseConnections[$handle] ) )
+	public function getDb($handle = "default") {
+		if( ! isset( $this->databaseConnections[$handle] ) )
 			throw new \esprit\core\exceptions\NonexistentDatabaseException();
 		else
 			return $this->databaseConnections[$handle];

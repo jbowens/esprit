@@ -7,16 +7,14 @@ namespace esprit\core\exceptions;
  *
  * @author jbowens
  */
-class InvalidTranslationIdentifier extends InvalidArgumentException {
+class InvalidTranslationIdentifier extends \InvalidArgumentException {
 
     protected $translationIdentifier;
 
-    public function __cosntruct( $identifier ) {
+    public function __construct( $identifier ) {
         $this->translationIdentifier = $identifier;
-    }
 
-    public function getMessage() {
-        return "[TRANS] Queried non-existent translation identifier: " . $this->translationIdentifier;
+        parent::__construct("[TRANS] Queried non-existent translation identifier: " . $this->translationIdentifier);
     }
 
 }

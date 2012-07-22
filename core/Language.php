@@ -27,7 +27,7 @@ class Language {
         return $this->languageid;
     }
 
-    public function getIdentifer() {
+    public function getIdentifier() {
         return $this->identifier;
     }
 
@@ -41,7 +41,7 @@ class Language {
      * come straight from the database.
      */
     public static function createFromArray( $arr ) {
-        return new Language($arr['languageid'], $arr['identifer'], $arr['parentid']);
+        return new Language($arr['languageid'], $arr['identifier'], $arr['parentid']);
     }
 
 }

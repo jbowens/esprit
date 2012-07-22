@@ -12,6 +12,9 @@ COLLATE = utf8_bin;
 -- Create an index on the language identifer
 CREATE UNIQUE INDEX strid_index ON languages (identifier) USING BTREE;
 
+-- Insert us-english, the root of the language tree
+INSERT INTO languages(identifier, name) VALUES('en-US', 'English (US)');
+
 -- Create the translations table
 CREATE TABLE IF NOT EXISTS `translations` (
     translationid           SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,

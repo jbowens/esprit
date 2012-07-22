@@ -12,21 +12,26 @@ use esprit\core\util\Logger as Logger;
  */
 class ViewManager {
 
+    const LOG_SOURCE = "VIEW_MANAGER";
+
     protected $config;
-
     protected $logger;
-
+    protected $cache;
     protected $viewResolvers;
-
     protected $templateParser;
+    protected $translationSource;
+    protected $translator;
 
-    public function __construct(Config $config, Logger $logger) {
+    public function __construct(Config $config, Logger $logger, TranslationSource $translationSource) {
         $this->config = $config;
         $this->logger = $logger;
         $this->viewResolvers = array();
 
         // TODO: Add support for other template parsers besides Twig
-        $this->templateParser = new TwigTemplateParser($config, $logger);
+        $this->translationSource = $translationSource;
+        $this->translator = new Translator($logger, $translationSource, 'en-US');
+        $this->templateParser = new TwigTemplateParser($config, $logger, $this->translator);
+        $this->templateParser->setVariable('ts', $translationSource);
     }
 
     /**
@@ -44,9 +49,11 @@ class ViewManager {
         }
 
         if( $view == null ) {
-            $this->logger->error("No matching view found for " . $response->getRequest()->getUrl()->getPath(), 'ViewManager', $response);
+            $this->logger->error("No matching view found for " . $response->getRequest()->getUrl()->getPath(), self::LOG_SOURCE, $response);
             $view = new \esprit\core\views\FallbackView($this->config, $this->logger, $this->templateParser);
         }
+
+        $this->logger->finest("Going to use view " . get_class( $view ), self:: LOG_SOURCE);
 
         $view->display( $response );
 

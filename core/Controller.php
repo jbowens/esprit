@@ -44,6 +44,9 @@ class Controller {
     /* The view manager that handles presentation of responses */
     protected $viewManager;
 
+    /* The language soruce to use throughout */
+    protected $languageSource;
+
 	/**
 	 * Creates a new controller from a configuration object.
 	 * 
@@ -67,7 +70,10 @@ class Controller {
                                             $config->get("db_default_user"),
                                             $config->get("db_default_pass"),
                                             $this->logger);
-        $this->viewManager = new ViewManager($config, $this->logger);
+
+        $this->languageSource = new LanguageSource( $this->dbm, $this->cache ); 
+
+        $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource());
     }
 
     /**
@@ -307,6 +313,10 @@ class Controller {
                     </body>
                     </html>";
         die( $html );
+    }
+
+    protected function createTranslationSource() {
+        return new TranslationManager($this->dbm->getDb(), $this->cache, $this->languageSource); 
     }
 
 }

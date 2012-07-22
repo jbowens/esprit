@@ -20,7 +20,7 @@ class TwigTemplateParser extends TemplateParser {
     protected $twig;
     protected $twigLoader;
 
-    public function __construct(Config $config, Logger $logger) {
+    public function __construct(Config $config, Logger $logger, Translator $translator) {
         parent::__construct($config, $logger);
         
         if( ! $config->settingExists("twig") )
@@ -54,6 +54,8 @@ class TwigTemplateParser extends TemplateParser {
         if( $config->settingExists('debug') && $config->get('debug') )
             $options['debug'] = true;
         $this->twig = new \Twig_Environment($this->twigLoader, $options);
+    
+        $this->twig->addExtension( new TwigExtension( $translator ) );
     }
 
     /**

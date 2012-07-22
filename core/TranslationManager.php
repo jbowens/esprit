@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use \esprit\core\exceptions\InvalidTranslationIdentifier as InvalidTranslationIdentifier;
+
 /**
  * The TranslationManager is a source of localized strings. It uses
  * memcached to store localized strings in memory. The localized strings are
@@ -20,7 +22,7 @@ class TranslationManager implements TranslationSource {
     protected $db;
 
     /* Cache of localized strings */
-    protected $translationCache;
+    protected $cache;
 
     protected $languageSource;
 
@@ -28,9 +30,9 @@ class TranslationManager implements TranslationSource {
      * Creates a new TranslationManager given a cache and a key prefix to prepend
      * on all data saved in the cache.
      */
-    public function __construct( Database $db, Cache $cache, LanguageSource $langSource, $keyPrefix = 'tm_' ) {
+    public function __construct( db\Database $db, Cache $cache, LanguageSource $langSource, $keyPrefix = 'tm_' ) {
         $this->db = $db;
-        $this->translationCache = $cache;
+        $this->cache = $cache;
         $this->languageSource = $langSource;
         $this->cacheKeyPrefix = $keyPrefix;
     }
@@ -46,9 +48,11 @@ class TranslationManager implements TranslationSource {
 
         $ancestors = $this->getAncestors($language);
 
-        for( $i = 0; $i < count($ancestors); $i++ )
+        die(count($ancestors));
+
+        foreach( $ancestors as $ancestor )
         {
-            $localizedString = $this->getLocalized($translationIdentifier, $ancestors[$i]);
+            $localizedString = $this->getLocalized($translationIdentifier, $ancestor);
             if( $localizedString != null )
                 return $localizedString;
         }
@@ -68,7 +72,7 @@ class TranslationManager implements TranslationSource {
 
         // Get from database
         $stmt = $this->db->prepare( self::SQL_GET_TRANSLATION_STRING_BY_IDENTIFER );
-        $stmt->execute->array( $language->getLanguageId(), $translationIdentifier );
+        $stmt->execute(array( $language->getLanguageId(), $translationIdentifier ));
 
         $localizedString = $stmt->fetchColumn();
         $localizedString = $localizedString === false ? null : $localizedString;
@@ -86,7 +90,7 @@ class TranslationManager implements TranslationSource {
 
         $ancestors = array();
 
-        $language = $langSource->getLanguageByIdentifier( $languageIdentifier );
+        $language = $this->languageSource->getLanguageByIdentifier( $languageIdentifier );
         array_push( $ancestors, $language );
 
         if( $language->getParentId() != null ) {
