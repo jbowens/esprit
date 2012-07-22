@@ -23,6 +23,9 @@ abstract class BaseCommand implements Command
     /* The config options store to be used by the command */
     protected $config;
 
+    /* The cache for the command to use */
+    protected $cache;
+
     /**
      * Takes the incoming request data and produces the output data that
      * may be used by the view to produce the output. Any user-created
@@ -75,10 +78,11 @@ abstract class BaseCommand implements Command
      * Constructor for the base command. The default command resolvers instantiate
      * BaseCommands through this constructor.
      */
-    public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger) {
+    public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger, Cache $cache) {
         $this->config = $config;
         $this->databaseManager = $dbm;
         $this->logger = $logger;
+        $this->cache = $cache;
     }
 
     /**

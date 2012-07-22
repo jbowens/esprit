@@ -14,6 +14,7 @@ class BaseCommandSource implements CommandSource {
     protected $config;
     protected $logger;
     protected $dbm;
+    protected $cache;
     protected $namespace;
     protected $directory;
 
@@ -21,10 +22,11 @@ class BaseCommandSource implements CommandSource {
      * Creates a new BaseCommandSource. This source will look in the given directory for commands. The provided
      * namespace should be the namespace of all commands within the directory.
      */
-    public function __construct(Config $config, util\Logger $logger, db\DatabaseManager $dbm, $namespace, $directory) {
+    public function __construct(Config $config, util\Logger $logger, db\DatabaseManager $dbm, Cache $cache, $namespace, $directory) {
         $this->config = $config;
         $this->logger = $logger;
         $this->dbm = $dbm;
+        $this->cache = $cache;
         $this->namespace = $namespace;
         $this->directory = $directory;
     }
@@ -60,7 +62,7 @@ class BaseCommandSource implements CommandSource {
         $className = $this->getClassName( $commandName );
 
         $reflectionClass = new \ReflectionClass( $this->namespace . "\\" . $className);
-        return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger);
+        return $reflectionClass->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
 
     }
 

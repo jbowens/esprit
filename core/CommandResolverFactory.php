@@ -12,13 +12,15 @@ class CommandResolverFactory {
     protected $config;
     protected $logger;
     protected $dbm;
+    protected $cache;
 
     protected $espritCommandSource;
 
-    public function __construct(Config $config, util\Logger $logger, db\DatabaseManager $dbm) {
+    public function __construct(Config $config, util\Logger $logger, db\DatabaseManager $dbm, Cache $cache) {
         $this->config = $config;
         $this->logger = $logger;
         $this->dbm = $dbm;
+        $this->cache = $cache;
     }
 
     /**
@@ -64,7 +66,7 @@ class CommandResolverFactory {
 
     protected function getEspritSource() {
         if( $this->espritCommandSource == null )
-            $this->espritCommandSource = new BaseCommandSource($this->config, $this->logger, $this->dbm, '\esprit\core\commands', $this->config->get('esprit_commands'));
+            $this->espritCommandSource = new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, '\esprit\core\commands', $this->config->get('esprit_commands'));
 
         return $this->espritCommandSource;
     }

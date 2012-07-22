@@ -74,13 +74,54 @@ class Controller {
         $this->languageSource = new LanguageSource( $this->dbm, $this->cache ); 
 
         $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource());
+        $this->setupResolvers();
+    }
+
+    /**
+     * Setup resolvers from the configuration options.
+     */
+    protected function setupResolvers() {
+
+        $default_resolvers = $this->config->get("default_resolvers");
+        $cmdResolverFactory = $this->createCommandResolverFactory();
+        $viewResolverFactory = $this->createViewResolverFactory();
+
+        // Setup default command sources
+        $commandSourceDefs = $this->config->settingExists("base_command_sources") ? $this->config->get("base_command_sources") : array();
+        $commandSources = array();
+        foreach( $commandSourceDefs as $def ) {
+            array_push( $commandSources, $this->createBaseCommandSource( $def['namespace'], $def['directory'] ) );
+        }
+
+        // Setup default view sources
+        $viewSourceDefs = $this->config->settingExists("default_view_sources") ? $this->config->get("default_view_sources") : array();
+        $viewSources = array();
+        foreach( $viewSourceDefs as $def ) {
+            array_push( $viewSources, $this->createDefaultViewSource( $def['namespace'], $def['directory'] ) );
+        }
+
+        // Add the path command resolver
+        if( isset($default_resolvers['use_path_command_resolver']) && $default_resolvers['use_path_command_resolver'] ) {
+            $this->appendCommandResolver( $cmdResolverFactory->createPathCommandResolver( $commandSources ) ); 
+        }
+
+        // Add the path view resolver
+        if( isset($default_resolvers['use_path_view_resolver']) && $default_resolvers['use_path_view_resolver'] ) {
+            $this->appendViewResolver( $viewResolverFactory->createPathViewResolver( $viewSources ) );
+        }
+
+        // Add the path catchall resolver
+        if( isset($default_resolvers['use_catchall_view_resolver']) && $default_resolvers['use_catchall_view_resolver'] ) {
+            $this->appendViewResolver( $viewResolverFactory->createCatchallViewResolver() );
+        }
+
     }
 
     /**
      * Creates a new CommandResolverFactory.
      */
     public function createCommandResolverFactory() {
-        return new CommandResolverFactory($this->config, $this->logger, $this->dbm);
+        return new CommandResolverFactory($this->config, $this->logger, $this->dbm, $this->cache);
     }
 
     /**
@@ -94,7 +135,7 @@ class Controller {
      * Creates a BaseCommandSource with the given data.
      */
     public function createBaseCommandSource($namespace, $directory) {
-        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $namespace, $directory);
+        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, $namespace, $directory);
     }
 
     /**
@@ -192,7 +233,7 @@ class Controller {
                 if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
                     throw new UnserviceableRequestException( $request );
                 
-                $command = $class->newInstance($this->config, $this->dbm, $this->logger);
+                $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
 
                 $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
             }

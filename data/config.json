@@ -28,7 +28,27 @@
         "compressed_dir": "/home/mysite/css-compressed"
     },
 
-    "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback"
+    "FallbackCommand": "\\esprit\\core\\commands\\Command_DefaultFallback",
+
+    "base_command_sources": [
+        {
+            "namespace": "\\myapp\\commands",
+            "directory": "/var/www/commands"
+        }
+    ],
+
+    "default_view_sources": [
+        {
+            "namespace": "\\myapp\\views",
+            "directory": "/var/www/views"
+        }
+    ],
+
+    "default_resolvers": {
+        "use_path_command_resolver": true,
+        "use_path_view_resolver": true,
+        "use_catchall_view_resolver": true
+    },
 
     "twig": {
         "twig_autoloader": "/home/mysite/Twig/Autoloader.php",
