@@ -14,10 +14,9 @@ use \esprit\core\util\Logger as Logger;
 class PathViewResolver implements ViewResolver {
 
     const LOG_ORIGIN = "PATH_VIEW_RESOLVER";
-    const DEFAULT_EXTENSION = 'php';
 
-    /* The directories where the views are located */
-    protected $viewDirectories;
+    /* The sources for views */
+    protected $viewSources;
 
     /* Config settings */
     protected $config;
@@ -28,23 +27,20 @@ class PathViewResolver implements ViewResolver {
     /* The template parser to use */
     protected $templateParser;
 
-    /* The extension used by the view files */
-    protected $extension;
-
-    public function __construct(array $dirs, Config $config, Logger $logger, TemplateParser $templateParser, $extension = self::DEFAULT_EXTENSION) {
-        $this->viewDirectories = $dirs;
+    public function __construct(Config $config, Logger $logger, TemplateParser $templateParser) {
+        $this->viewSources = array();
         $this->config = $config;
         $this->logger = $logger;
         $this->templateParser = $templateParser;
-        $this->extension = $extension;
+    }
 
-        // Validate the directories
-        foreach( $this->viewDirectories as $key => $dir ) {
-            if( ! is_dir( $dir ) ) {
-                $this->logger->error($dir . " does not exist or is not a directory", self::LOG_ORIGIN);
-                unset($this->viewDirectories[$key]);
-            }
-        }
+    /**
+     * Register a source for views.
+     *
+     * @param ViewSource $source  the source to register
+     */
+    public function registerSource(ViewSource $source) {
+        array_unshift($this->viewSources, $source);
     }
 
     /**
@@ -94,33 +90,16 @@ class PathViewResolver implements ViewResolver {
      * @param $viewStr  the view to instantiate
      */
     protected function getView( $viewStr ) {
-
-        $className = $this->getClassName( $viewStr );
-        $filename = $className . '.' . $this->extension;
-
-        foreach( $this->viewDirectories as $directory ) {
-            $filePath = $directory . DIRECTORY_SEPARATOR . $filename;
-
-            if( file_exists( $filePath ) ) {
-
-                require_once($filePath);
-
-                $reflectionClass = new ReflectionClass($className);
-
-                if( $reflectionClass->isInstantiable() && $reflectionClass->implementsInterface('esprit\core\View') && 
-                    $reflectionClass->isSubclassOf('esprit\core\AbstractView') ) {
-                    return $reflectionClass->newInstance($this->config, $this->logger, $this->templateParser);
-                }
-
-             }
-
+        
+        foreach( $this->viewSources as $source )
+        {
+            if( $source->isViewDefined( $viewStr ) )
+            {
+                return $source->instantiateView( $viewStr );
+            }
         }
 
         return null;
-    }
-
-    protected function getClassName( $viewStr ) {
-        return 'View_' . $viewStr;
     }
 
 } 

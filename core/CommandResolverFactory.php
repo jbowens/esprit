@@ -64,7 +64,7 @@ class CommandResolverFactory {
 
     protected function getEspritSource() {
         if( $this->espritCommandSource == null )
-            $this->espritCommandSource = new BaseCommandSource($this->config, $this->logger, $this->dbm, "\esprit\core\commands", $this->config->get('esprit_commands'));
+            $this->espritCommandSource = new BaseCommandSource($this->config, $this->logger, $this->dbm, '\esprit\core\commands', $this->config->get('esprit_commands'));
 
         return $this->espritCommandSource;
     }

@@ -54,6 +54,7 @@ class Config {
 
         $this->set('esprit_root', $root);
         $this->set('esprit_commands', __DIR__ . DIRECTORY_SEPARATOR . 'commands');
+        $this->set('esprit_view', __DIR__ . DIRECTORY_SEPARATOR . 'views' );
         $this->set('esprit_data', $root . DIRECTORY_SEPARATOR . 'data');
 	}
 	

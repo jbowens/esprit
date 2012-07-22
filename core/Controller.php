@@ -22,7 +22,6 @@ class Controller {
     const LOG_ORIGIN = "CONTROLLER";
     const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
     const DEFAULT_TIMEZONE = 'America/New_York';
-    const DEFAULT_VIEW = '\esprit\core\views\DefaultView';
 
     /* The cache to use for storing data in memory between requests */ 
     protected $cache;
@@ -79,40 +78,29 @@ class Controller {
     }
 
     /**
+     * Creats a new ViewResolverFactory.
+     */
+    public function createViewResolverFactory() {
+        return new ViewResolverFactory($this->config, $this->logger, $this->viewManager->getTemplateParser());
+    }
+
+    /**
      * Creates a BaseCommandSource with the given data.
      */
     public function createBaseCommandSource($namespace, $directory) {
         return new BaseCommandSource($this->config, $this->logger, $this->dbm, $namespace, $directory);
     }
-	
-    /**
-     * Creates a new PathViewResolver for AbstractViews using this controller's config,
-     * logger and template parser.
-     *
-     * @see PathViewResolver::__construct()
-     *
-     * @param array $directories  an array of directories to search for matching views
-     * @param string $ext  the extension view class files will use (defaults to php)
-     * @return a PathViewResolver instance
-     */
-    public function createPathViewResolver(array $directories = array(), $ext = null) {
-        return new PathViewResolver($directories, $this->config, $this->logger, $this->viewManager->getTemplateParser(), $ext);
-    }
 
     /**
-     * Constructs a new CatchallViewResolver with the given view. If no view is provided,
-     * the default view will be used.
-     *
-     * @param View $view  the view the catchall should use
-     * @return a CatchallViewResolver
+     * Creates a DefaultViewSource with the given data.
      */
-    public function createCatchallViewResolver($view = null) {
-        if( $view == null ) {
-            $reflClass = new \ReflectionClass( self::DEFAULT_VIEW );
-            $view = $reflClass->newInstance( $this->config, $this->logger, $this->viewManager->getTemplateParser() );
-        }
-        return new CatchallViewResolver( $view );
-    } 
+    public function createDefaultViewSource($namespace, $directory) {
+        return new DefaultViewSource($this->config,
+                                     $this->logger,
+                                     $this->viewManager->getTemplateParser(),
+                                     $namespace,
+                                     $directory);
+    }
 
     /**
      * Appends a new command resolver onto the list of resolvers to use. Since resolvers
