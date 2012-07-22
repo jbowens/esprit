@@ -166,7 +166,9 @@ class Logger {
      * separately as they may be attached to multiple Logger instances,
      */
     public function close() {
-        // For the default logger implementation, nothing to do here.
+        // Unset references
+        $this->logEventBacklog = array();
+        $this->logRecorders = array();
     }
 
     /**

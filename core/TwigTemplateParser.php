@@ -65,7 +65,8 @@ class TwigTemplateParser extends TemplateParser {
         $paths = $this->twigLoader->getPaths();
 
         foreach( $paths as $path ) {
-            if( file_exists( $path . $this->getResourceName( $template ) ) )
+            $fullFilename = $path . DIRECTORY_SEPARATOR . $this->getResourceName( $template );
+            if( file_exists( $fullFilename ) )
                 return true;
         }
 
