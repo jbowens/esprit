@@ -11,16 +11,10 @@ class CommandResolverFactory {
 
     protected $config;
     protected $logger;
-    protected $dbm;
-    protected $cache;
 
-    protected $espritCommandSource;
-
-    public function __construct(Config $config, util\Logger $logger, db\DatabaseManager $dbm, Cache $cache) {
+    public function __construct(Config $config, util\Logger $logger) {
         $this->config = $config;
         $this->logger = $logger;
-        $this->dbm = $dbm;
-        $this->cache = $cache;
     }
 
     /**
@@ -33,9 +27,6 @@ class CommandResolverFactory {
      */
     public function createPathCommandResolver(array $commandSources = array()) {
         $resolver = new PathCommandResolver($this->config, $this->logger); 
-
-        $espritCommandSource = $this->getEspritSource();
-        $resolver->registerSource( $espritCommandSource );
 
         foreach( $commandSources as $source )
             $resolver->registerSource( $source );
@@ -56,7 +47,6 @@ class CommandResolverFactory {
     public function createXmlCommandResolver($filepath, array $commandSources = array()) {
         
         $resolver = new XmlCommandResolver($this->config, $this->logger, $filepath);
-        $resolver->registerSource( $espritCommandSource );
 
         foreach( $commandSources as $source )
             $resolver->registerSource( $source );
@@ -64,10 +54,4 @@ class CommandResolverFactory {
         return $resolver;
     }
 
-    protected function getEspritSource() {
-        if( $this->espritCommandSource == null )
-            $this->espritCommandSource = new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, '\esprit\core\commands', $this->config->get('esprit_commands'));
-
-        return $this->espritCommandSource;
-    }
 }

@@ -85,7 +85,7 @@ class TranslationManager implements TranslationSource {
      * Returns an array of the ancestor of a language in order, starting
      * at (and including) the language itself, continuning until the tree root.
      */
-    protected function getAncestors($languageIdentifier) {
+    public function getAncestors($languageIdentifier) {
 
         $ancestors = array();
 

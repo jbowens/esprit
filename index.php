@@ -3,7 +3,7 @@
 require_once "autoloader.php";
 
 $config = esprit\core\Config::createFromJSON("data/config.json");
-$controller = new esprit\core\Controller( $config );
+$controller = esprit\core\Controller::createController( $config );
 
 // Setup the command resolvers
 $pathResolver = $controller->createPathCommandResolver(array('/var/www/commands/'), 'php');

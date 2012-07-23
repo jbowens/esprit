@@ -47,8 +47,21 @@ class Controller {
     /* The language soruce to use throughout */
     protected $languageSource;
 
+    /**
+     * Creates a new controller from the given configuration object.
+     *
+     * @param Config $config  configuration settings
+     */
+    public static function createController(Config $config) {
+        if( $config->get("debug") )
+            return new debug\DebugController($config);
+        else
+            return new Controller($config);
+    }
+
 	/**
-	 * Creates a new controller from a configuration object.
+     * Creates a new controller from a configuration object. Do not use this directly.
+     * Instead, use Controller::createController().
 	 * 
 	 * @param Config $config the config object to use
 	 */
@@ -88,11 +101,12 @@ class Controller {
 
         // Setup default command sources
         $commandSourceDefs = $this->config->settingExists("base_command_sources") ? $this->config->get("base_command_sources") : array();
-        $commandSources = array();
+        $commandSources = array( $this->createEspritCommandSource() );
+        
         foreach( $commandSourceDefs as $def ) {
             array_push( $commandSources, $this->createBaseCommandSource( $def['namespace'], $def['directory'] ) );
         }
-
+        
         // Setup default view sources
         $viewSourceDefs = $this->config->settingExists("default_view_sources") ? $this->config->get("default_view_sources") : array();
         $viewSources = array();
@@ -121,7 +135,7 @@ class Controller {
      * Creates a new CommandResolverFactory.
      */
     public function createCommandResolverFactory() {
-        return new CommandResolverFactory($this->config, $this->logger, $this->dbm, $this->cache);
+        return new CommandResolverFactory($this->config, $this->logger);
     }
 
     /**
@@ -168,6 +182,13 @@ class Controller {
      */
     public function appendViewResolver(ViewResolver $resolver) {
        $this->viewManager->addViewResolver( $resolver ); 
+    }
+
+    /**
+     * Returns a command source that can instantiate all default Esprit commands.
+     */
+    public function createEspritCommandSource() {
+        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, '\esprit\core\commands', $this->config->get('esprit_commands'));
     }
 
     /**
@@ -283,6 +304,13 @@ class Controller {
 	}
 
     /**
+     * Returns the config used by the controller.
+     */
+    public function getConfig() {
+        return $this->config;
+    }
+
+    /**
      * Returns the logger used by the controller.
      *
      * @return util\Logger  the controller's logger
@@ -356,7 +384,7 @@ class Controller {
         die( $html );
     }
 
-    protected function createTranslationSource() {
+    public function createTranslationSource() {
         return new TranslationManager($this->dbm->getDb(), $this->cache, $this->languageSource); 
     }
 
