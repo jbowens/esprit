@@ -43,4 +43,19 @@ interface Cache {
      */
     public function isCached($key);
 
+    /**
+     * Accesses the given namespace of the cache.
+     *
+     * @param string $key  the namespace to access
+     * @return Cache  a cache object in the given namespace
+     */
+    public function accessNamespace( $namespace );
+
+    /**
+     * Returns the namespace of this cache.
+     *
+     * @return String  this cache's root namespace
+     */
+    public function getNamespace();
+
 }

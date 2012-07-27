@@ -25,11 +25,13 @@ class DebugController extends Controller {
     }
 
     protected function setupResolvers() {
-        parent::setupResolvers();
-
+    
         // Add debug resolvers
         $this->appendCommandResolver( new DebugCommandResolver( $this ) );
-        $this->appendViewResolver( new DebugViewResolver() );
+        $this->appendViewResolver( new DebugViewResolver($this->config, $this->logger, $this->viewManager->getTemplateParser()) );
+
+        parent::setupResolvers();
+   
     }
 
 }

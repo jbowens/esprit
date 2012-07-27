@@ -2,6 +2,11 @@
 
 namespace esprit\core;
 
+/**
+ * A cache that saves nothing. Useful stuff.
+ *
+ * @author jbowens
+ */
 class BlackholeCache implements Cache {
 
     public function get( $key ) {

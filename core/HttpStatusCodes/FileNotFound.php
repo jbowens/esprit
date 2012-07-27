@@ -2,7 +2,7 @@
 
 namespace esprit\core\HttpStatusCodes;
 
-use \esprit\core\HttpStatusCode as HttpStatusCode;
+use \esprit\core\HttpStatusCode;
 
 class FileNotFound extends HttpStatusCode {
 
