@@ -8,16 +8,13 @@ namespace esprit\core\exceptions;
  *
  * @author jbowens
  */
-class DatabaseConnectionException extends Exception {
+class DatabaseConnectionException extends \Exception {
 
     protected $pdoException;
 
-    public function __construct( PDOException $exception ) {
+    public function __construct( \PDOException $exception ) {
         $this->pdoException = $exception;
-    }
-
-    public function getMessage() {
-        return "[DB] " . $this->pdoException->getMessage();
+        $this->message = "[DB] " . $this->pdoException->getMessage();
     }
 
     public function getErrorInfo() {

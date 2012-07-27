@@ -16,7 +16,8 @@ use \esprit\core\util\Logger as Logger;
 class MemcachedCache implements Cache {
 
     const LOG_SOURCE = "MEMCACHED";
-    const KEY_NAMESPACE = 'es_';
+    const APP_NAMESPACE = 'es';
+    const NAMESPACE_SEPARATOR = '\\';
     const MEMCACHED_KEY_LIMIT = 250;
     const DEFAULT_PORT = 11211;
 
@@ -29,39 +30,53 @@ class MemcachedCache implements Cache {
     protected $config;
     protected $logger;
 
-    /* The application-specific key namespace to use */
-    protected $keyNamespace;
+    /* The cache namespace to use */
+    protected $namespace;
 
     /**
      * Creates a new cache.
      */
-    public function __construct(array $servers, Config $config, Logger $logger) {
+    public static function connectToMemcached(array $servers, Config $config, Logger $logger) {
 
-        $this->config = $config;
-        $this->logger = $logger;
-        $this->memcached = new \Memcached();
+        $memcached = new \Memcached();
 
         $activeServers = 0;
 
         foreach( $servers as $server ) {
-            $port = $server['port'] ? $server['port'] : DEFAULT_PORT;
-            $success = $this->memcached->addServer($server['host'], $port );
+            $port = $server['port'] ? $server['port'] : self::DEFAULT_PORT;
+            $success = $memcached->addServer($server['host'], $port );
             
             if( $success ) {
                 $activeServers++;
-                $this->logger->finer("Connected to memcached server " . $server['host'] . ":".$port, self::LOG_SOURCE);
+                $logger->finer("Connected to memcached server " . $server['host'] . ":".$port, self::LOG_SOURCE);
             }
             else
-                $this->logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, "CACHE");
+                $logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, "CACHE");
         }
 
         if( $activeServers <= 0 ) {
-            $this->logger->severe("No active Memcached servers", self::LOG_SOURCE, $servers);
+            $logger->severe("No active Memcached servers", self::LOG_SOURCE, $servers);
         }
 
+        return new MemcachedCache($memcached, $config, $logger);
+        
+    }
+
+    /**
+     * Do not use this constructor directly. Use MemcacedCache::connectToMemcached(...)
+     */
+    public function __construct(\Memcached $memcached, Config $config, Logger $logger, $namespace = null)
+    {
         $this->runtimeCache = array();
+        
         $memcachedSettings = $config->settingExists("memcached") ? $config->get("memcached") : array();
-        $this->keyNamespace = isset($memcachedSettings['key_prefix']) ? $memcachedSettings['key_prefix'] : KEY_NAMESPACE;
+        if( $namespace == null || $namespace == "" )
+            $namespace = isset($memcachedSettings['key_prefix']) ? $memcachedSettings['key_prefix'] : APP_NAMESPACE;
+        $this->namespace = $namespace;
+        
+        $this->memcached = $memcached;
+        $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
@@ -138,6 +153,25 @@ class MemcachedCache implements Cache {
         }
 
         return $qualifiedKey;
+    }
+
+    /**
+     * @see Cache.accessNamespace()
+     */
+    public function accessNamespace( $namespace ) {
+        if( $namespace[0] == self::NAMESPACE_SEPARATOR )
+            $absoluteNamespace = $namespace;
+        else
+            $absoluteNamespace = $this->namespace . self::NAMESPACE_SEPARATOR . $namespace;
+
+        return new MemcachedCache( $this->memcached, $this->config, $this->logger, $absoluteNamespace);
+    }
+
+    /**
+     * @see Cache.getNamespace()
+     */
+    public function getNamespace() {
+        return $this->namespace;
     }
 
 }
