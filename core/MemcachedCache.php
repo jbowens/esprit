@@ -145,7 +145,7 @@ class MemcachedCache implements Cache {
      * This is intended as a way to namespace caching keys.
      */
     protected function key( $key ) {
-        $qualifiedKey = $this->keyNamespace . $key;
+        $qualifiedKey = $this->namespace . $key;
         
         if( strlen($qualifiedKey) > self::MEMCACHED_KEY_LIMIT )
         {

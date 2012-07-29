@@ -3,6 +3,7 @@
 namespace esprit\core\debug;
 
 use \esprit\core\Controller;
+use \esprit\core\TwigTemplateParser;
 
 /**
  * A DebugController that provides additional debug-mode
@@ -28,7 +29,12 @@ class DebugController extends Controller {
     
         // Add debug resolvers
         $this->appendCommandResolver( new DebugCommandResolver( $this ) );
-        $this->appendViewResolver( new DebugViewResolver($this->config, $this->logger, $this->viewManager->getTemplateParser()) );
+
+        // The debug templates are written in Twig, so we need the TwigTemplateParser, which is not necessarily the
+        // one being used elsehwere
+        $twigTemplateParser = new TwigTemplateParser($this->config, $this->logger, $this->viewManager->getTranslator() );
+        $twigTemplateParser->addTemplatePath( __DIR__ . DIRECTORY_SEPARATOR . 'templates' );
+        $this->appendViewResolver( new DebugViewResolver($this->config, $this->logger, $twigTemplateParser) );
 
         parent::setupResolvers();
    

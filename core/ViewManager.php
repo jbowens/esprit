@@ -60,6 +60,13 @@ class ViewManager {
     }
 
     /**
+     * Gets the translator used by the view.
+     */
+    public function getTranslator() {
+        return $this->translator;
+    }
+
+    /**
      * Adds a view resolver to the list of resolvers used when pairing Response objects with
      * views.
      */

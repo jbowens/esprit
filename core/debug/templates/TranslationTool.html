@@ -3,6 +3,60 @@
     <head>
         <title>esprit - Translation Tool</title>
     </head>
+    <script type="text/javascript" src="/static/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+        tt = {};
+        tt.createKey = function(str) {
+            str = str.replace(/\s/g, '_');
+            str = str.replace(/_+/g, '_');
+            str = str.replace(/[^A-z0-9_]/g, '');
+            if( str.length > 30 )
+                str = str.substring(0, 30);
+            return str;
+        };
+
+        $(document).ready(function(e) {
+            if( $("#t_1") ) {
+                $("#t_1").keyup(function(evt) {
+                    $("#new-translation-identifier").text( tt.createKey($(evt.srcElement).val()) );
+                });
+            }
+        });
+    </script>
+    <style type="text/css">
+        body { font-family: 'Lucida Grande',Verdana, Arial, sans-serif; }
+        h1 { margin: 0.2em 0; }
+        h2 { margin: 0.2em 0; color: #10446E; }
+        div#page-contents { margin: 3em; }
+        label { color: #333; }
+        #create-new-translation-string form { margin: 1em; }
+        #create-new-translation-string table { margin-top: 2em; }
+        #create-new-translation-string form table td { padding: 0.75em 1em; }
+        #create-new-translation-string input.translationInput { width: 20em; font-size: 1.1em; }
+        #create-new-translation-string th { font-size: 0.750em; color: #555; }
+        #create-new-translation-string #new-translation-identifier { font-weight: bold; }
+    </style>
     <body>
+        <h1>Translation Tool</h1>
+        <div id="page-contents">
+            <div id="create-new-translation-string">
+                <h2>Create a new string</h2>
+                <form method="post" action="/TranslationTool/create-string">
+                    <div>The translation key for your new string will be <span id="new-translation-identifier">-</span>.</div>
+                    <table cellspacing="0">
+                        <tr><th>Language</th><th>Use?</th><th>Translation</th></tr>
+                        {% for lang in languages %}
+                        <tr>
+                            <td><label for="t_{{lang.getLanguageId()}}">{{ lang.getIdentifier() }}</label></td>
+                            <td><input type="checkbox" class="checkbox" value="1" name="use_t_{{ lang.getLanguageId() }}" {% if lang.getLanguageId() == 1 %}CHECKED {% endif %}/></td>
+                            <td><input type="text" class="text translationInput" id="t_{{ lang.getLanguageId() }}" name="t_{{ lang.getLanguageId() }}" /></td></tr>
+                        {% else %}
+                        <tr><td colspan="2">No languages exist in the database.</td></tr>
+                        {% endfor %}
+                    </table>
+                    <input type="submit" class="submit" value="Create string" />
+                </form>
+            </div>
+        </div>
     </body>
 </html>

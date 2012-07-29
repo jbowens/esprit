@@ -92,7 +92,7 @@ class Database {
         if( $stmt === false )
             return $stmt;
         else
-            return new Statement( $stmt, $logger );
+            return new Statement( $stmt, $this->logger );
     }
 	
     public function quote($string, $parameter_type = PDO::PARAM_STR) {

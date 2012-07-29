@@ -31,7 +31,9 @@ class Command_TranslationTool extends BaseCommand {
      * See BaseCommand.run(Request $request, Response $response) 
      */
     public function run(Request $request, Response $response) {
-        
+
+        $languages = $this->translationTool->getLanguages();
+        $response->set('languages', $languages);         
 
         return $response;
 

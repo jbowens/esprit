@@ -23,6 +23,13 @@ class TranslationTool {
         $this->translationManager = $translationManager;
     }
 
-
+    /**
+     * Gets languages relevant for translation.
+     *
+     * @return array of Language objects
+     */
+    public function getLanguages() {
+       return $this->langSource->getAllLanguages(); 
+    }
 
 }

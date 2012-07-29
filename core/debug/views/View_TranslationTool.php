@@ -12,7 +12,9 @@ class View_TranslationTool extends AbstractView {
     public function generateOutput( Response $response )
     {
         $this->templateParser->loadResponse( $response );
-        die('translation tool!');
+        
+        $this->templateParser->displayTemplate( 'TranslationTool' );
+    
     }
 
 }

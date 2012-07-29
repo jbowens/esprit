@@ -90,4 +90,13 @@ class TwigTemplateParser extends TemplateParser {
         return $templateName . '.' . self::TEMPLATE_EXTENSION;
     }
 
+    /**
+     * Adds a template path to search for templates.
+     *
+     * @param string $path
+     */
+    public function addTemplatePath( $path ) {
+        $this->twigLoader->addPath( $path );
+    }
+
 }

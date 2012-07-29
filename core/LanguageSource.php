@@ -12,6 +12,7 @@ class LanguageSource {
 
     const SQL_LANG_BY_ID = "SELECT `languageid`, `identifier`, `parentid` FROM `languages` WHERE `languageid` = ?";
     const SQL_LANG_BY_IDENTIFIER = "SELECT `languageid`, `identifier`, `parentid` FROM `languages` WHERE `identifier` = ?";
+    const SQL_ALL_LANGS = "SELECT `languageid`, `identifier`, `parentid` FROM `languages`";
 
     protected $dbm;
     protected $cache;
@@ -82,6 +83,28 @@ class LanguageSource {
 
         return $lang;
 
+    }
+
+    /**
+     * Returns all active languages in the language database.
+     */
+    public function getAllLanguages() {
+
+        $db = $this->dbm->getDb();
+    
+        $stmt = $db->query( self::SQL_ALL_LANGS );
+        $langArrays = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        $languages = array();
+
+        foreach( $langArrays as $langData )
+        {
+            $langObject = Language::createFromArray( $langData );
+            $this->cache( $langObject );
+            array_push($languages, $langObject);
+        }
+
+        return $languages;
     }
 
     protected function cache( Language $lang ) {

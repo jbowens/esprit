@@ -40,7 +40,7 @@ class Language {
      * language's attributes. This function expects the array to
      * come straight from the database.
      */
-    public static function createFromArray( $arr ) {
+    public static function createFromArray( array $arr ) {
         return new Language($arr['languageid'], $arr['identifier'], $arr['parentid']);
     }
 
