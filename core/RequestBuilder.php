@@ -10,7 +10,7 @@ namespace esprit\core;
 class RequestBuilder {
 
     /* Request properties */
-    protected $siteid;
+    protected $site;
     protected $getData = array();
     protected $postData = array();
     protected $serverData = array();
@@ -35,8 +35,8 @@ class RequestBuilder {
 
     /* Getters */
 
-    public function getSiteid() {
-        return $this->siteid;
+    public function getSite() {
+        return $this->site;
     }
 
     public function getGetData() {
@@ -65,8 +65,8 @@ class RequestBuilder {
 
     /* Setters */
 
-    public function siteid( $newId ) {
-        $this->siteid = $newId;
+    public function site( Site $site ) {
+        $this->site = $site;
         return $this;
     }
 

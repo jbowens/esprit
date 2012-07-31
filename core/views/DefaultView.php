@@ -61,10 +61,11 @@ class DefaultView extends AbstractView {
         }
 
         // Pass the inner template on to the default template to include
-        $this->templateParser->setVariable( 'DefaultView_innerTemplate', $this->templateParser->getResourceName( $innerTemplate ) );
+        $template = $this->templateParser->getResourceName( $innerTemplate ); 
+        $this->templateParser->setVariable( 'DefaultView_innerTemplate', $template );
 
         // Display it
-        $this->templateParser->displayTemplate( self::DEFAULT_TEMPLATE );
+        $this->templateParser->displayTemplate( $innerTemplate );
     }
 
 }

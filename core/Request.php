@@ -11,8 +11,8 @@ namespace esprit\core;
  */
 class Request {
 
-    /* The siteid of the site version the request was submitted to */
-    protected $siteid;
+    /* The site of the site version the request was submitted to */
+    protected $site;
 
     /* GET data sent with the request */
     protected $getData = array();
@@ -46,7 +46,7 @@ class Request {
      * Constructs an empty request object.
      */
     public function __construct(RequestBuilder $builder) {
-    	$this->siteid = $builder->getSiteid();
+    	$this->site = $builder->getSite();
         $this->getData = $builder->getGetData();
         $this->postData = $builder->getPostData();
         $this->serverData = $builder->getServerData();
@@ -103,7 +103,21 @@ class Request {
 	public function postParamExists($postParam) {
 		return isset($this->postData[$postParam]);
 	}
-	
+
+    /**
+     * Returns an associative array of received GET parameters.
+     */
+    public function getGetParams() {
+        return $this->getData;
+    }
+
+    /**
+     * Returns an associative array of received POST parameters.
+     */
+    public function getPostParams() {
+        return $this->postData;
+    }
+
     /**
      * Gets the value of an HTTP request header.
      *
@@ -142,8 +156,18 @@ class Request {
         return $this->requestMethod;
     }
 
+    /**
+     * Returns the ip address that the request originated from.
+     */
     public function getIpAddress() {
         return isset($this->serverData['REMOTE_ADDR']) ? $this->serverData['REMOTE_ADDR'] : null;
+    }
+
+    /**
+     * Returns the site that the request came into.
+     */
+    public function getSite() {
+        return $this->site;
     }
 
 }

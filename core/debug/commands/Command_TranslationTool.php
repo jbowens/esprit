@@ -33,7 +33,24 @@ class Command_TranslationTool extends BaseCommand {
     public function run(Request $request, Response $response) {
 
         $languages = $this->translationTool->getLanguages();
-        $response->set('languages', $languages);         
+        
+        if( $request->getGet('do') == "create-string" )
+        {
+            $identifier = $this->translationTool->getNewIdentifier( $request->getPost('suggested_identifier') );
+            $languagesTranslated = 0;
+            foreach( $languages as $l ) {
+                if( $request->getPost( 'use_t_' . $l->getLanguageId() ) && $request->postParamExists('t_'. $l->getLanguageId()) ) {
+                    $this->translationTool->setTranslation( $l, $identifier, $request->getPost('t_' . $l->getLanguageId()) );
+                    $languagesTranslated++;
+                }
+            }
+            $response->set('newTranslationIdentifier', $identifier);
+            $response->set('languagesTranslated', $languagesTranslated);
+        }
+        else
+        {
+            $response->set('languages', $languages);         
+        }
 
         return $response;
 

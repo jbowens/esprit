@@ -23,6 +23,9 @@ class Controller {
     const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
     const DEFAULT_TIMEZONE = 'America/New_York';
 
+    /* The website the request came into */
+    protected $site;
+
     /* The cache to use for storing data in memory between requests */ 
     protected $cache;
 
@@ -85,8 +88,9 @@ class Controller {
                                             $this->logger);
 
         $this->languageSource = new LanguageSource( $this->dbm, $this->cache ); 
+        $this->site = $this->determineSite();
 
-        $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource());
+        $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource(), $this->site->getLanguage());
         $this->setupResolvers();
     }
 
@@ -293,9 +297,16 @@ class Controller {
 	 */
 	public function createRequestFromEnvironment() {
 
-        //TODO: Update with support for actual site id 
-        $url = new Url($_SERVER['SERVER_NAME'], $_SERVER['REQUEST_URI'], $_SERVER['QUERY_STRING']);
-        $req = Request::createBuilder()->siteid(1)->getData($_GET)->postData($_POST)
+        $this->logger->finest("Received query string of " . $_SERVER['QUERY_STRING'], self::LOG_ORIGIN);
+
+        //TODO: Update with support for actual site id
+        if( strlen($_SERVER['QUERY_STRING']) )
+            $qsLength = strlen($_SERVER['QUERY_STRING']) + 1;
+        else
+            $qsLength = 0;
+        
+        $url = new Url($_SERVER['SERVER_NAME'], substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['REQUEST_URI']) - $qsLength), $_SERVER['QUERY_STRING']);
+        $req = Request::createBuilder()->site($this->site)->getData($_GET)->postData($_POST)
                ->requestMethod($_SERVER['REQUEST_METHOD'])->url( $url )
                ->headers(getallheaders())->serverData($_SERVER)->build();	
 		
@@ -386,6 +397,14 @@ class Controller {
 
     public function createTranslationSource() {
         return new TranslationManager($this->dbm->getDb(), $this->cache, $this->languageSource); 
+    }
+
+    /**
+     * Determines which site the request came into.
+     */
+    public function determineSite() {
+        // TODO: Actually implement
+        return new Site(1, "zippychat.com", $this->languageSource->getLanguageByIdentifier("en-US"));
     }
 
 }

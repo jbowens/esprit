@@ -22,14 +22,14 @@ class ViewManager {
     protected $translationSource;
     protected $translator;
 
-    public function __construct(Config $config, Logger $logger, TranslationSource $translationSource) {
+    public function __construct(Config $config, Logger $logger, TranslationSource $translationSource, Language $language) {
         $this->config = $config;
         $this->logger = $logger;
         $this->viewResolvers = array();
 
         // TODO: Add support for other template parsers besides Twig
         $this->translationSource = $translationSource;
-        $this->translator = new Translator($logger, $translationSource, 'en-US');
+        $this->translator = new Translator($logger, $translationSource, $language->getIdentifier());
         $this->templateParser = new TwigTemplateParser($config, $logger, $this->translator);
         $this->templateParser->setVariable('ts', $translationSource);
     }

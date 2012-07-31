@@ -21,6 +21,10 @@ class Translator {
         $this->language = $language;
     }
 
+    /**
+     * Translates the given translation identifier into this Translator's defined
+     * language.
+     */
     public function translate( $translationIdentifier ) {
 
         try
@@ -38,6 +42,13 @@ class Translator {
             $this->logger->log( util\LogEventFactory::createFromException( $e, self::LOG_SOURCE) );
             return "";
         }
+    }
+
+    /**
+     * Get the language identifier of the language this Translator translates to.
+     */
+    public function getLanguageIdentifier() {
+        return $this->language;
     }
 
 }
