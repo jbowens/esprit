@@ -49,6 +49,14 @@ abstract class BaseCommand implements Command
      }
 
     /**
+     * Gets the Cache object that should used by this command for
+     * caching.
+     */
+    protected function getCache() {
+        return $this->cache;
+    }
+
+    /**
      * Gets this Config object that should be used by this command when
      * querying configuration settings.
      */
