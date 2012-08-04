@@ -16,6 +16,9 @@ class Response {
     /* A store of computed values to be passed on to the view */
     protected $output = array();
 
+    /* The class name of the command that serviced this request. */
+    protected $commandClass;
+
     public function __construct(Request $request) {
         $this->request = $request;
     }
@@ -88,6 +91,27 @@ class Response {
     public function getAsArray() {
         return $this->output;
     }
-}
 
+    /**
+     * Sets the command class to the given string.
+     *
+     * @param $className  the class of the command that serviced the request
+     */
+    public function setCommandClass( $className )
+    {
+        $this->commandClass = $className;
+    } 
+
+    /**
+     * Gets the class name of the command that serviced the request.
+     *
+     * @return the string of the class name that serviced the request (with
+     *         the namespace included)
+     */
+    public function getCommandClass() 
+    {
+        return $this->commandClass;
+    }
+
+}
 

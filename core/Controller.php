@@ -273,6 +273,10 @@ class Controller {
                 $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
             }
 
+            // Save the class name in case the view layer needs it
+            $commandClassName = get_class( $command );
+            $response->setCommandClass( $commandClassName );
+
             $this->viewManager->display( $response );
 
         } catch( UnserviceableRequestException $exception ) {
@@ -404,7 +408,7 @@ class Controller {
      */
     public function determineSite() {
         // TODO: Actually implement
-        return new Site(1, "zippychat.com", $this->languageSource->getLanguageByIdentifier("en-US"));
+        return new Site(1, $_SERVER['HTTP_HOST'], $this->languageSource->getLanguageByIdentifier("en-US"));
     }
 
 }
