@@ -133,6 +133,12 @@ class Controller {
             $this->appendViewResolver( $viewResolverFactory->createCatchallViewResolver() );
         }
 
+        // Add the xml view resolver
+        if( isset($default_resolvers['xml_view_resolver_filepath']) ) {
+            $this->appendViewResolver( $viewResolverFactory->createXmlViewResolver( $default_resolvers['xml_view_resolver_filepath'], 
+                                                                                    $viewSources );
+        }
+
     }
 
     /**

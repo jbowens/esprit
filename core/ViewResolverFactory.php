@@ -26,7 +26,7 @@ class ViewResolverFactory  {
     /**
      * Creates a new PathViewResolver.
      *
-     * @param array $viewSources  (optional) an array of viewSources to include
+     * @param array $viewSources  (optional) an array of ViewSources to include
      */
     public function createPathViewResolver(array $viewSources = array())
     {
@@ -52,6 +52,25 @@ class ViewResolverFactory  {
             $view = $reflClass->newInstance( $this->config, $this->logger, $this->templateParser );
         }
         return new CatchallViewResolver( $view );
+    }
+
+    /**
+     * Creates a new XmlViewResolver
+     *
+     * @param $xmlFilename  the filename of the XML file that defines the mappings
+     * @param array $viewSources  (optional) an array of ViewSources to use
+     */
+    public function createXmlViewResolver( $xmlFilename, array $viewSources = array() )
+    {
+        $resolver = new XmlViewResolver( $this->config, $this->logger, $xmlFilename );
+
+        $resolver->registerSource( $this->getEspritSource() );
+
+        foreach( $viewSources as $source ) {
+            $resolver->registerSource( $source );
+        }
+
+        return $resolver;
     }
 
     /**
