@@ -128,15 +128,15 @@ class Controller {
             $this->appendViewResolver( $viewResolverFactory->createPathViewResolver( $viewSources ) );
         }
 
-        // Add the path catchall resolver
-        if( isset($default_resolvers['use_catchall_view_resolver']) && $default_resolvers['use_catchall_view_resolver'] ) {
-            $this->appendViewResolver( $viewResolverFactory->createCatchallViewResolver() );
-        }
-
         // Add the xml view resolver
         if( isset($default_resolvers['xml_view_resolver_filepath']) ) {
             $this->appendViewResolver( $viewResolverFactory->createXmlViewResolver( $default_resolvers['xml_view_resolver_filepath'], 
-                                                                                    $viewSources );
+                                                                                    $viewSources ) );
+        }
+
+        // Add the path catchall resolver
+        if( isset($default_resolvers['use_catchall_view_resolver']) && $default_resolvers['use_catchall_view_resolver'] ) {
+            $this->appendViewResolver( $viewResolverFactory->createCatchallViewResolver() );
         }
 
     }

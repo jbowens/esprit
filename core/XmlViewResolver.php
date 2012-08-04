@@ -10,6 +10,8 @@ namespace esprit\core;
  */
 class XmlViewResolver implements ViewResolver {
 
+    const LOG_SOURCE = "XML_VIEW_RESOLVER";
+
     /* Filename to configure the resolver */
     protected $xmlFilename;
 
@@ -64,8 +66,8 @@ class XmlViewResolver implements ViewResolver {
         {
 
             // Check if the mapping is applicable
-            if( $mapping['command'] == $resp->getClassCommand() )
-            { 
+            if( $mapping['command'] == $resp->getCommandClass() )
+            {
                 // This mapping applies
                 return $this->getView( $mapping['view'] );
             }
@@ -80,7 +82,7 @@ class XmlViewResolver implements ViewResolver {
      * Determines if the mappings have been loaded from the xml file.
      */
     protected function areMappingsLoaded() {
-        return ($mappings != null);
+        return ($this->mappings != null);
     }
 
     /**
@@ -102,7 +104,7 @@ class XmlViewResolver implements ViewResolver {
             {
                 $mapArr = array();
                 $mapArr['command'] = (string) $mapping->command[0];
-                $mapArr['view'] = (string) $mapping-view[0];
+                $mapArr['view'] = (string) $mapping->view[0];
                 array_push($this->mappings, $mapArr);
             }
 
@@ -127,6 +129,8 @@ class XmlViewResolver implements ViewResolver {
                 return $source->instantiateView( $view );
             }
         }
+
+        $this->logger->error("Could not find view " . $view, self::LOG_SOURCE);
 
         return null;
 

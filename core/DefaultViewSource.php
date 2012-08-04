@@ -10,6 +10,7 @@ namespace esprit\core;
  */
 class DefaultViewSource implements ViewSource {
 
+    const LOG_SOURCE = "DEFAULT_VIEW_SOURCE";
     const FILE_EXTENSION = 'php';
 
     protected $config;
@@ -34,6 +35,31 @@ class DefaultViewSource implements ViewSource {
 
     // @See ViewSource.isViewDefined()
     public function isViewDefined( $viewName ) {
+
+        // If there's a namespace extract the class name and verify that the namespaces
+        // match 
+        if( stripos( $viewName, "\\" ) !== false )
+        {
+            // There's a namespace included in the view name, so this namespace must match exactly
+            $clippedSourceNamespace = ($this->namespace[0] == "\\") ? substr($this->namespace, 1) : $this->namespace;
+            $clippedView = ($viewName[0] == "\\") ? substr($viewName, 1) : $viewName;
+
+            $namePieces = explode("\\", $viewName);
+            $className = $namePieces[count($namePieces)-1];
+            unset($namePieces[count($namePieces)-1]);
+            $namespace = implode("\\", $namePieces);
+
+            // Check the namespaces
+            if( $namespace != $clippedSourceNamespace )
+            {
+                // The namespaces did not match
+                $this->info( "The namespace for " . $viewName . " did not match " . $this->namespace, self::LOG_SOURCE );
+                return false;
+            }
+
+            $viewName = $className;
+        }
+
         $className = $this->getClassName( $viewName );
         $filename = $className . '.' . self::FILE_EXTENSION;
         $absolutePath = $this->directory . DIRECTORY_SEPARATOR . $filename;
@@ -55,6 +81,18 @@ class DefaultViewSource implements ViewSource {
 
     // @See ViewSource.instantiateView()
     public function instantiateView( $viewName ) {
+
+        // Extract the class name if there's a namespace in here
+        if( stripos( $viewName, "\\" ) !== false )
+        {
+            // There's a namespace included in the view name, so this namespace must match exactly
+            $clippedSourceNamespace = ($this->namespace[0] == "\\") ? substr($this->namespace, 1) : $this->namespace;
+            $clippedView = ($viewName[0] == "\\") ? substr($viewName, 1) : $viewName;
+
+            $namePieces = explode("\\", $viewName);
+            $viewName = $namePieces[count($namePieces)-1];
+        }
+
         $className = $this->getClassName( $viewName );
 
         $reflectionClass = new \ReflectionClass( $this->namespace . "\\" . $className);
@@ -62,6 +100,6 @@ class DefaultViewSource implements ViewSource {
     }
 
     protected function getClassName( $viewName ) {
-        return "View_" . $viewName;
+        return $viewName;
     }
 }
