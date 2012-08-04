@@ -14,6 +14,7 @@ class RequestBuilder {
     protected $getData = array();
     protected $postData = array();
     protected $serverData = array();
+    protected $session;
     protected $requestMethod;
     protected $url;
     protected $headers;
@@ -63,6 +64,10 @@ class RequestBuilder {
         return $this->headers;
     }
 
+    public function getSession() {
+        return $this->session;
+    }
+
     /* Setters */
 
     public function site( Site $site ) {
@@ -97,6 +102,11 @@ class RequestBuilder {
 
     public function headers($headers) {
         $this->headers = $headers;
+        return $this;
+    }
+
+    public function session( Session $session ) {
+        $this->session = $session;
         return $this;
     }
 

@@ -316,9 +316,15 @@ class Controller {
             $qsLength = 0;
         
         $url = new Url($_SERVER['SERVER_NAME'], substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['REQUEST_URI']) - $qsLength), $_SERVER['QUERY_STRING']);
-        $req = Request::createBuilder()->site($this->site)->getData($_GET)->postData($_POST)
-               ->requestMethod($_SERVER['REQUEST_METHOD'])->url( $url )
-               ->headers(getallheaders())->serverData($_SERVER)->build();	
+        $req = Request::createBuilder()->site($this->site)
+                                       ->getData($_GET)
+                                       ->postData($_POST)
+                                       ->requestMethod($_SERVER['REQUEST_METHOD'])
+                                       ->url( $url )
+                                       ->headers(getallheaders())
+                                       ->serverData($_SERVER)
+                                       ->session( Session::createFromEnvironment() )
+                                       ->build();	
 		
 		return $req;
 		

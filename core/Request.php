@@ -23,6 +23,9 @@ class Request {
     /* Server environment variables */
     protected $serverData = array();
 
+    /* The user's session */
+    protected $session;
+
     /* The request method used in sending the request */
     protected $requestMethod;
 	
@@ -53,6 +56,7 @@ class Request {
         $this->requestMethod = $builder->getRequestMethod();
         $this->headers = $builder->getHeaders();
         $this->url = $builder->getUrl();
+        $this->session = $builder->getSession();
     }
 
     /**
@@ -168,6 +172,15 @@ class Request {
      */
     public function getSite() {
         return $this->site;
+    }
+
+    /**
+     * Get the session of the user making the request.
+     *
+     * @return a Session object containing the user's session data
+     */
+    public function getSession() {
+        return $this->session;
     }
 
 }

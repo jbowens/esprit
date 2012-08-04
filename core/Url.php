@@ -98,12 +98,12 @@ class Url {
     }
 
     /**
-     * Get the (n-1)th path piece
+     * Get the (n+1)th path piece
      *
      * @param int $index  the index of the path piece
      * @throws IndexOutOfBoundsException
      * @throws NonexistentKeyException
-     * @return string  the ($index-1)th path piece
+     * @return string  the ($index+1)th path piece
      */
     public function getPathPiece( $index ) {
         if( $index < 0 || $index >= $this->getPathLength() )
