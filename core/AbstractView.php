@@ -17,6 +17,7 @@ abstract class AbstractView implements View {
     protected $config;
     protected $logger;
     protected $templateParser;
+    protected $response;
 
     public function __construct(Config $config, Logger $logger, TemplateParser $templateParser) {
         $this->config = $config;
@@ -28,6 +29,7 @@ abstract class AbstractView implements View {
      * See View.display(Response $response);
      */
     public function display(Response $response) {
+        $this->response = $response;
         $this->generateOutput( $response );
     }
 
@@ -43,6 +45,35 @@ abstract class AbstractView implements View {
      */
     protected function setStatus(HttpStatusCode $status) {
         http_response_code($status->getCode());
+    }
+
+    /**
+     * Sets a header
+     */
+    protected function setHeader( $key, $value ) {
+        header( $key . ': ' . $value );
+    }
+
+    /**
+     * Redirects the user to the provided page.
+     */
+    protected function redirect($where, $permanently = false)
+    {
+        if( $permanently )
+            $this->setStatus( new HttpStatusCodes\MovedPermanently() );
+        else
+            $this->setStatus( new HttpStatusCodes\TemporaryRedirect() );
+
+        if( $where[0] == "/" && $this->response != null ) {
+            $domain = $this->response->getRequest()->getSite()->getDomain();
+            $absoluteUrl = "http://" . $domain . $where;
+        } else
+            $absoluteUrl = $where;
+
+        $this->setHeader( 'Location', $absoluteUrl );
+
+        exit;
+
     }
 
 }

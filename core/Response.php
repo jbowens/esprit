@@ -46,12 +46,29 @@ class Response {
     }
 
     /**
+     * Determines if the given key xists.
+     *
+     * @param $key  the key to check
+     * @return true iff the given key is defined on the Response object
+     */
+    public function keyExists( $key ) {
+        return array_key_exists( $key, $this->output );
+    }
+
+    /**
      * Determines whether the given key is set.
      *
      * @param $key  the key to check
      */
     public function __isset($key) {
         return isset($output[$key]);
+    }
+
+    /**
+     * Unsets the given key.
+     */
+    public function __unset($key) {
+        unset( $this->output[$key] );
     }
 
     /**
