@@ -1,0 +1,101 @@
+#!/bin/sh
+usage()
+{
+cat << EOF
+usage: $0 options
+
+Bounces the epsrit-based website.
+
+OPTIONS:
+   -h      Show this message
+   -f      Flush the logs
+   -v      Verbose
+EOF
+}
+
+VERBOSE=
+FLUSH_LOGS=
+while getopts “h::vf” OPTION
+do
+     case $OPTION in
+         h)
+             usage
+             exit 1
+             ;;
+         f)
+             FLUSH_LOGS=1
+             ;;
+         v)
+             VERBOSE=1
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
+done
+
+# Check that ESPRIT_TOP is set
+if [[ -z "$ESPRIT_TOP" ]]; then
+    echo "[BOUNCE] [ERROR] \$ESPRIT_TOP is not set."
+    exit 1;
+else
+    echo "[BOUNCE] \$ESPRIT_TOP = $ESPRIT_TOP"
+fi
+
+# Flush the logs if asked
+if [[ "$FLUSH_LOGS" ]]; then
+    echo "[BOUNCE] Flushing the existing log files"
+    rm -f $ESPRIT_TOP/logs/errors >/dev/null 2>&1
+    rm -f $ESPRIT_TOP/logs/debug >/dev/null 2>&1
+fi
+
+# Save the logs error length for later
+START_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
+
+# Kill any existing weird alternative apache instance
+echo "[BOUNCE] Stopping any alternative Apache instances..."
+sudo apachectl stop >/dev/null 2>&1
+
+# Restart MySQL
+echo "[BOUNCE] Restarting mysql..."
+sudo /opt/local/share/mysql5/mysql/mysql.server start
+
+# Flush memcached
+echo "[BOUNCE] Killing any existing memcached processes..."
+killall memcached >/dev/null 2>&1
+echo "[BOUNCE] Starting memcached..."
+memcached -d -m 128
+
+# Restart Apache
+echo "[BOUNCE] Restarting Apache..."
+if [ ! -d /tmp/apache-cores ]; then
+    sudo mkdir /tmp/apache-cores
+fi
+sudo httpd -f /opt/local/apache2/conf/httpd.conf -k restart
+
+APACHE_START_CODE=$?
+
+if [[ "$APACHE_START_CODE" == 0 ]]; then
+
+    HTTP_CODE=`curl -s -o /dev/null -I -w "%{http_code}" http://localhost:80`
+
+    echo "[BOUNCE] Received $HTTP_CODE http status code"
+
+    if [[ "$HTTP_CODE" == 200 ]]; then
+        echo "[BOUNCE] Bounce successful"
+    else
+        echo "[BOUNCE] ERROR BOUNCING"
+    fi
+else
+    echo "[BOUNCE] ERROR BOUNCING"
+fi
+
+# Print any errors printed to the error logs from start up or the test request
+END_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
+if [[ $END_ERROR_LENGTH -gt $START_ERROR_LENGTH ]]; then
+    echo "[BOUNCE] The following errors in the error log are new:"
+    tail -n `expr $END_ERROR_LENGTH - $START_ERROR_LENGTH` $ESPRIT_TOP/logs/errors
+else
+    echo "[BOUNCE] No errors in error log from bouncing"
+fi
