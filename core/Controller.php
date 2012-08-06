@@ -3,13 +3,14 @@
 namespace esprit\core;
 
 use \Exception;
-use \SessionHandler as SessionHandler;
-use \SessionHandlerInterface as SessionHandlerInterface;
-use \ReflectionClass as ReflectionClass;
+use \SessionHandler;
+use \SessionHandlerInterface;
+use \ReflectionClass;
 
 use \esprit\core\util\LogEventFactory;
 use \esprit\core\util\Logger;
-use \esprit\core\exceptions\UnserviceableRequestException as UnserviceableRequestException;
+use \esprit\core\exceptions\UnserviceableRequestException;
+use \esprit\core\exceptions\PageNotFoundException;
 
 /**
  * The primary controller for the framework. This controller creates the initial
@@ -254,17 +255,7 @@ class Controller {
             // If the request wasn't resolved to command, use the fallback.
             if( $command == null )
             {
-                if( $this->config->settingExists('FallbackCommand') ) {
-                    $fallbackCmdName = $this->config->get('FallbackCommand');
-                } else {
-                    $fallbackCmdName = self::DEFAULT_FALLBACK_COMMAND;
-                }
-
-                $class = new ReflectionClass( $fallbackCmdName );
-                if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
-                    throw new UnserviceableRequestException( $request );
-                
-                $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
+                $command = $this->getFallbackCommand();
 
                 $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
             }
@@ -272,11 +263,10 @@ class Controller {
             $this->logger->finest('Going to use command: ' . get_class($command), self::LOG_ORIGIN);
 
             try {
-                $response = $command->execute($request, $response);
+                $response = $this->executeCommand( $command, $request, $response );
             } catch( Exception $e ) {
-                // TODO: Add more granular logging and add
-                // logic for actually handling exceptions
-                $this->logger->log( LogEventFactory::createFromException( $e, $command->getName() ) );
+                throw new UnserivceableRequestException( $request ); 
+                $this->logger->log( LogEventFactory::createFromException( $e, 'Command\\'.$command->getName() ) );
             }
 
             // Save the class name in case the view layer needs it
@@ -297,7 +287,43 @@ class Controller {
 
         return true;
             
-	}
+    }
+
+    /**
+     * Executes the command, returning the new resulting response object.
+     */
+    protected function executeCommand(Command $command, Request $request, Response $response) {
+        try
+        {
+            $response = $command->execute($request, $response);
+        }
+        catch( PageNotFoundException $e )
+        {
+            // Use the default fallback instead.
+            $command = $this->getFallbackCommand();
+            $response = $this->executeCommand( $command, $request, $response ); 
+        }
+        return $response;
+    }
+
+    /**
+     * Returns the Command that should be used as a fallback.
+     */
+    protected function getFallbackCommand() {
+        if( $this->config->settingExists('FallbackCommand') ) {
+            $fallbackCmdName = $this->config->get('FallbackCommand');
+        } else {
+            $fallbackCmdName = self::DEFAULT_FALLBACK_COMMAND;
+        }
+
+        $class = new ReflectionClass( $fallbackCmdName );
+        if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
+            throw new UnserviceableRequestException( $request );
+        
+        $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
+
+        return $command;
+    }
 
 	/**
 	 * Processes PHP environment variables, instantiating and populating a
