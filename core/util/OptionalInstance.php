@@ -28,7 +28,7 @@ class OptionalInstance {
      * Sets the contained instance
      */
     public function set( $obj ) {
-        $this->instance = $objl
+        $this->instance = $obj;
     } 
 
 }

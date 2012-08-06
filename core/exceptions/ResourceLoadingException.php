@@ -7,7 +7,7 @@ namespace esprit\core\exceptions;
  *
  * @author jbowens
  */
-class ResourceLoadingException extends Exception {
+class ResourceLoadingException extends \Exception {
 
 
 }

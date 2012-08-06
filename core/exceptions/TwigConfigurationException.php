@@ -7,4 +7,4 @@ namespace \core\esprit\exceptions;
  *
  * @author jbowens
  */
-class TwigConfigurationException extends InvalidArgumentException { }
+class TwigConfigurationException extends \InvalidArgumentException { }

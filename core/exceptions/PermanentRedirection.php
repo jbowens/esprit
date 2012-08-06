@@ -15,4 +15,7 @@ class PermanentRedirection extends Exception {
         $this->destination = $destination;
     }
 
+    public function getDestination() {
+        return $this->destination;
+    }
 }

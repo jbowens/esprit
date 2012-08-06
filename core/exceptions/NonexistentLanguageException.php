@@ -8,7 +8,7 @@ class NonexistentLanguageException extends \InvalidArgumentException {
 
     public function __construct($id) {
         $this->languageIdentifier = $id;
-        $this->message = "The language " + $id + " does not exist.";
+        parent::__construct("[LANG] The language " + $id + " does not exist.", 0);
     }
 
 }
