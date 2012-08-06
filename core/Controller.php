@@ -276,7 +276,7 @@ class Controller {
             } catch( Exception $e ) {
                 // TODO: Add more granular logging and add
                 // logic for actually handling exceptions
-                $this->logger->logEvent( LogEventFactory::createFromException( $e, $command->getName() ) );
+                $this->logger->log( LogEventFactory::createFromException( $e, $command->getName() ) );
             }
 
             // Save the class name in case the view layer needs it
