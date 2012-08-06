@@ -78,6 +78,8 @@ APACHE_START_CODE=$?
 
 if [[ "$APACHE_START_CODE" == 0 ]]; then
 
+    sleep 1
+
     HTTP_CODE=`curl -s -o /dev/null -I -w "%{http_code}" http://localhost:80`
 
     echo "[BOUNCE] Received $HTTP_CODE http status code"
@@ -87,15 +89,17 @@ if [[ "$APACHE_START_CODE" == 0 ]]; then
     else
         echo "[BOUNCE] ERROR BOUNCING"
     fi
+
+    # Print any errors printed to the error logs from start up or the test request
+    END_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
+    if [[ $END_ERROR_LENGTH -gt $START_ERROR_LENGTH ]]; then
+        echo "[BOUNCE] The following errors in the error log are new:"
+        tail -n `expr $END_ERROR_LENGTH - $START_ERROR_LENGTH` $ESPRIT_TOP/logs/errors
+    else
+        echo "[BOUNCE] Everything looks A-Okay!"
+    fi
+
 else
     echo "[BOUNCE] ERROR BOUNCING"
 fi
 
-# Print any errors printed to the error logs from start up or the test request
-END_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
-if [[ $END_ERROR_LENGTH -gt $START_ERROR_LENGTH ]]; then
-    echo "[BOUNCE] The following errors in the error log are new:"
-    tail -n `expr $END_ERROR_LENGTH - $START_ERROR_LENGTH` $ESPRIT_TOP/logs/errors
-else
-    echo "[BOUNCE] No errors in error log from bouncing"
-fi
