@@ -269,10 +269,6 @@ class Controller {
                 $this->logger->log( LogEventFactory::createFromException( $e, 'Command\\'.$command->getName() ) );
             }
 
-            // Save the class name in case the view layer needs it
-            $commandClassName = get_class( $command );
-            $response->setCommandClass( $commandClassName );
-
             $this->viewManager->display( $response );
 
         } catch( UnserviceableRequestException $exception ) {
@@ -293,6 +289,11 @@ class Controller {
      * Executes the command, returning the new resulting response object.
      */
     protected function executeCommand(Command $command, Request $request, Response $response) {
+        
+        // Save the class name in case the view layer needs it
+        $commandClassName = get_class( $command );
+        $response->setCommandClass( $commandClassName );
+
         try
         {
             $response = $command->execute($request, $response);
@@ -303,6 +304,7 @@ class Controller {
             $command = $this->getFallbackCommand();
             $response = $this->executeCommand( $command, $request, $response ); 
         }
+
         return $response;
     }
 
