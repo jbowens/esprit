@@ -54,7 +54,12 @@ class Request {
         $this->postData = $builder->getPostData();
         $this->serverData = $builder->getServerData();
         $this->requestMethod = $builder->getRequestMethod();
-        $this->headers = $builder->getHeaders();
+        $this->headers = array();
+        // Save headers with the keys strtolowered, so we can do 
+        // case-insensitive lookups
+        $headers = $builder->getHeaders();
+        foreach( $headers as $key => $val )
+            $headers[strtolower($key)] = $val;
         $this->url = $builder->getUrl();
         $this->session = $builder->getSession();
     }
@@ -132,7 +137,7 @@ class Request {
         if( ! $this->headerIsSet( $key ) )
             return null;
         else
-            return $this->headers[$key];
+            return $this->headers[strtolower($key)];
     }
 
     /**
@@ -143,7 +148,7 @@ class Request {
      * @return  true iff the request sent the given header
      */
     public function headerIsSet($key) {
-        return isset($this->headers[$key]);
+        return isset($this->headers[strtolower($key)]);
     }
 
     /**
