@@ -2,12 +2,9 @@
 
 namespace esprit;
 
-require_once "core/Controller.php";
-
 /**
  * This file adds an autoloader for all default esprit classes.
  */
-
 function autoload( $class ) {
     $classPieces = explode("\\", $class);
 
@@ -28,6 +25,4 @@ function autoload( $class ) {
     }
 }
 
-
 spl_autoload_register(__NAMESPACE__.'\autoload', true);
-
