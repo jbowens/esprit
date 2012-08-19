@@ -11,6 +11,11 @@ use \esprit\core\util\Logger as Logger;
  * key/value association in memory. Additionally functionality may be added in
  * the future but always in a backwards compatible way.
  *
+ * WARNING: If you call isCached or get, this class will also maintain a reference
+ * to the returned object. This means that the returned object will not be garbage
+ * collected until the cache object is garbage collected! If you need to destroy
+ * a reference, call 'removeFromLocalCache'. 
+ *
  * @author jbowens 
  */
 class MemcachedCache implements Cache {
@@ -172,6 +177,19 @@ class MemcachedCache implements Cache {
      */
     public function getNamespace() {
         return $this->namespace;
+    }
+
+    /**
+     * Destroys any local runtime reference to the object at
+     * the given key.
+     *
+     * @param $key the key to remove from the local cache
+     */
+    public function removeFromLocalCache( $key )
+    {
+        if( isset($this->runtimeCache[$key]) ) {
+            unset($this->runtimeCache[$key]);
+        }
     }
 
 }
