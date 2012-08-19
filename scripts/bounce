@@ -51,7 +51,7 @@ if [[ "$FLUSH_LOGS" ]]; then
 fi
 
 # Save the logs error length for later
-START_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
+START_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]*'`
 
 # Kill any existing weird alternative apache instance
 echo "[BOUNCE] Stopping any alternative Apache instances..."
@@ -91,7 +91,7 @@ if [[ "$APACHE_START_CODE" == 0 ]]; then
     fi
 
     # Print any errors printed to the error logs from start up or the test request
-    END_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]'`
+    END_ERROR_LENGTH=`wc -l $ESPRIT_TOP/logs/errors | egrep -o -m 1 '[[:digit:]]+ ' | grep -o '[[:digit:]]*'`
     if [[ $END_ERROR_LENGTH -gt $START_ERROR_LENGTH ]]; then
         echo "[BOUNCE] The following errors in the error log are new:"
         tail -n `expr $END_ERROR_LENGTH - $START_ERROR_LENGTH` $ESPRIT_TOP/logs/errors

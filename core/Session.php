@@ -48,7 +48,7 @@ class Session {
      */
     public function keyExists( $key )
     {
-        return array_key_exists($this->data, $key);
+        return array_key_exists($key, $this->data);
     }
 
     /**
