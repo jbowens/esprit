@@ -13,6 +13,7 @@ use \esprit\core\util\Logger as Logger;
 class Statement {
 
     const LOG_ORIGIN = 'DATABASE';
+    const PDO_ERRORINFO_MESSAGE_INDEX = 2;
 
     protected $stmt;
     protected $logger;
@@ -22,9 +23,20 @@ class Statement {
         $this->logger = $logger;
 	}
 
+    /**
+     * execute wrapper with logging
+     */ 
     public function execute( $input_parameters = array() ) {
         $this->logger->fine( 'Executing query: ' . $this->stmt->queryString, self::LOG_ORIGIN, $input_parameters );
         $result = $this->stmt->execute( $input_parameters );
+
+        // Check for an error
+        $errorCode = $this->stmt->errorCode();
+        if( $errorCode != "00000" )
+        {
+            $this->logger->error( 'SQL error ('.$errorCode.'): ' . $this->errorInfo()[self::PDO_ERRORINFO_MESSAGE_INDEX], self::LOG_ORIGIN );
+        }
+
         return $result;
     }
 

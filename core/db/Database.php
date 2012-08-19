@@ -13,8 +13,9 @@ use \esprit\core\exceptions\NonexistentDatabaseException;
  */
 class Database {
 
-    protected $dbh;
+    const LOG_SOURCE = "DATABASE";
 
+    protected $dbh;
     protected $logger;
 
 	/**
@@ -40,7 +41,9 @@ class Database {
 
     public function commit() {
         $this->checkConnection();
-        return $this->dbh->commit();
+        $ret = $this->dbh->commit();
+        $this->checkErrorCode();
+        return $ret;
     }
 
     public function errorCode() {
@@ -55,7 +58,9 @@ class Database {
 
     public function exec($statement) {
         $this->checkConnection();
-        return $this->dbh->exec($statement);
+        $ret = $this->dbh->exec($statement);
+        $this->checkErrorCode();
+        return $ret;
     }
 
     public function getAttribute( $attribute ) {
@@ -89,6 +94,7 @@ class Database {
     public function query($statement) {
         $this->checkConnection();
         $stmt = $this->dbh->query($statement);
+        $this->checkErrorCode();
         if( $stmt === false )
             return $stmt;
         else
@@ -102,12 +108,25 @@ class Database {
 
     public function rollBack() {
         $this->checkConnection();
+        $this->logger->finer("Rolling back a database transaction", self::LOG_SOURCE);
         return $this->dbh->rollBack();
     }
 
     public function setAttribute($attribute, $value) {
         $this->checkConnection();
         return $this->dbh->setAttribute($attribute, $value);
+    }
+
+    /**
+     * Checks the PDO error code and logs an error if one exists.
+     */
+    public function checkErrorCode() {
+        $errorCode = $this->errorCode();
+        if( $errorCode != "00000" )
+        {
+            $errorInfo = $this->errorInfo();
+            $this->logger->error("SQL Error (#".$errorCode."): " . $errorInfo[2], self::LOG_SOURCE);
+        }
     }
 
     /**
