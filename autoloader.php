@@ -16,7 +16,7 @@ function autoload( $class ) {
 
     unset($classPieces[0]);
 
-    $file = implode('/', $classPieces).'.php';
+    $file = implode(DIRECTORY_SEPARATOR, $classPieces).'.php';
 
     if( @file_exists( __DIR__ . DIRECTORY_SEPARATOR . $file ) )
     {
