@@ -335,7 +335,8 @@ class Controller {
 	 */
 	public function createRequestFromEnvironment() {
 
-        $this->logger->finest("Received query string of " . $_SERVER['QUERY_STRING'], self::LOG_ORIGIN);
+        if( isset( $_SERVER['QUERY_STRING'][0] ) )
+            $this->logger->finest("Received query string of " . $_SERVER['QUERY_STRING'], self::LOG_ORIGIN);
 
         //TODO: Update with support for actual site id
         if( strlen($_SERVER['QUERY_STRING']) )
