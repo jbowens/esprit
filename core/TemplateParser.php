@@ -88,7 +88,7 @@ abstract class TemplateParser {
         {
             return $this->otherVariables[$key];
         }
-        if( $this->response->keyExists($key) )
+        if( $this->response != null && $this->response->keyExists($key) )
         {
             return $this->response->get($key);
         }
