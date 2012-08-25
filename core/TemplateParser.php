@@ -72,6 +72,30 @@ abstract class TemplateParser {
     }
 
     /**
+     * Gets a variable as it is set in the template parser scope.
+     *
+     * @param $variableName  the variable name to look up
+     * @return the value of the given variable in the template parser scope
+     */
+    public function getVariable( $key ) {
+        if( ! is_string($key) ) {
+            $this->logger->error("Received non-string variable name, \"".$key."\"", self::LOG_SOURCE);
+            throw new \InvalidArgumentException("Received nonstring variable name");
+            // TODO: Maybe not throw an exception and instead return null?
+            // We're already logging the error, so it might be better to gracefully fail.
+        }
+        if( array_key_exists( $key, $this->otherVariables ) )
+        {
+            return $this->otherVariables[$key];
+        }
+        if( $this->response->keyExists($key) )
+        {
+            return $this->response->get($key);
+        }
+        return null;
+    }
+
+    /**
      * Sets the response object the parser should use. The response object should be
      * used to populate the tempalte parser's variables. It would be a good idea
      * to override this to load the response variables into the template parser.
