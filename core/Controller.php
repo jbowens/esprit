@@ -444,6 +444,10 @@ class Controller {
         return new TranslationManager($this->dbm->getDb(), $this->cache, $this->languageSource); 
     }
 
+    public function getTemplateParser() {
+        return $this->viewManager->getTemplateParser();
+    }
+
     /**
      * Determines which site the request came into.
      */

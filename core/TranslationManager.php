@@ -99,7 +99,7 @@ class TranslationManager implements TranslationSource {
             while( $language->getParentId() != null )
             {
                 $stmt->execute( array( $language->getParentId() ) );
-                $arr = $stmt->fetch(PDO::FETCH_ASSOC);
+                $arr = $stmt->fetch(\PDO::FETCH_ASSOC);
                 $language = Language::createFromArray($arr);
                 array_push( $ancestors, $language );
             }

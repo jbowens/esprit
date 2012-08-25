@@ -110,7 +110,7 @@ class MemcachedCache implements Cache {
         if( isset( $this->runtimeCache[$key] ) )
             return $this->runtimeCache[$key];
 
-        $val = $memcached->get( $this->key($key) );
+        $val = $this->memcached->get( $this->key($key) );
 
         $this->runtimeCache[$key] = $val;
 

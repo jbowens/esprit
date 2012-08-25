@@ -41,6 +41,18 @@ class Session {
     }
 
     /**
+     * Sets a session value.
+     *
+     * @param $key  the key to set
+     * @param $value  the value to set
+     */
+    public function set( $key, $value )
+    {
+        $this->data[$key] = $value;
+        $_SESSION[$key] = $value;
+    }
+
+    /**
      * Determines if the given key is set in the current session
      *
      * @param $key  the key to lookup

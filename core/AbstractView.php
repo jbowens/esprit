@@ -55,6 +55,13 @@ abstract class AbstractView implements View {
     }
 
     /**
+     * Sets a value in the template parser.
+     */
+    protected function set( $key, $value ) {
+        $this->templateParser->setVariable($key, $value);
+    }
+
+    /**
      * Redirects the user to the provided page.
      */
     protected function redirect($where, $permanently = false)
