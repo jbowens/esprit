@@ -26,14 +26,13 @@ class Command_JsErrorRecord extends BaseCommand {
         
         if( ! $request->getPost('eMsg') || ! $request->getPost('eName') )
         {
-            $this->logger->error("Received a js error record request without error data originating from " .
-                $request->getHeader('Referer'), "command\\" . $this->getName());
+            $this->error("Received a js error record request without error data originating from ".$request->getHeader('Referer'));
 
             throw new \InvalidArgumentException("Did not receive valid error data.");
         }
         else
         {
-            $this->logger->error("(".$request->getPost('path').") " . $request->getPost('eName') . ": " . $request->getPost('eMsg') . $request->getPost('eStack'), self::LOG_SOURCE);
+            $this->error("(".$request->getPost('path').") " . $request->getPost('eName') . ": " . $request->getPost('eMsg') . $request->getPost('eStack'), self::LOG_SOURCE);
         }
         
         return $response;

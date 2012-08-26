@@ -11,6 +11,7 @@ namespace esprit\core;
  */
 abstract class BaseCommand implements Command
 {
+    use LogAware;
 
     /* The database manager this command should use for all connections to 
        the database systems */
@@ -25,6 +26,15 @@ abstract class BaseCommand implements Command
 
     /* The cache for the command to use */
     protected $cache;
+
+    /**
+     * Gets the log source of this command. This is used by the
+     * LogAware trait.
+     */
+    public function getLogSource()
+    {
+        return end(explode('\\', (string) get_class($this)));
+    }
 
     /**
      * Takes the incoming request data and produces the output data that
