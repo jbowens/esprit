@@ -31,16 +31,22 @@ var esprit = {
      *
      * @param error  an Error object
      */
-    errorReport: function(error)
+    recordError: function(error)
     {
         data = {
-            'error': error,
+            'eName': error.name,
+            'eMsg': error.message,
             'url': window.location.toString(),
             'host': window.location.host,
             'path': window.location.pathname,
             'user-agent': window.navigator.userAgent,
             'appCodeName': window.navigator.appCodeName
         };
+
+        if( error.stack )
+        {
+            data.eStack = error.stack;
+        }
         
         // If any error data extractors were registered, we should send along that
         // data with the error report as well.
@@ -58,7 +64,21 @@ var esprit = {
             }
         }
 
-        $.post('/js-error-report', data);
+        $.post('/js-error-record', data);
+    },
+
+    /**
+     * Records an action event. The data surrounding the action will
+     * be forwarded to the server through an ajax call. This is useful
+     * for tracking user involvement with page elements on the page for
+     * analytics.
+     *
+     * @param an esprit.Action object
+     */
+    recordAction: function(action)
+    {
+        var data = {};
+        $.post('/action-record', data);
     }
 
 };

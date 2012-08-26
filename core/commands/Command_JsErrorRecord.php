@@ -24,7 +24,7 @@ class Command_JsErrorRecord extends BaseCommand {
      */
     public function run(Request $request, Response $response) {
         
-        if( ! $request->getGet('eMsg') )
+        if( ! $request->getPost('eMsg') || ! $request->getPost('eName') )
         {
             $this->logger->error("Received a js error record request without error data originating from " .
                 $request->getHeader('Referer'), "command\\" . $this->getName());
@@ -33,7 +33,7 @@ class Command_JsErrorRecord extends BaseCommand {
         }
         else
         {
-            $this->logger->error("[".$request->getGet('eSource')."] " . $request->getGet('eMsg') . $request->getGet('eStack'), self::LOG_SOURCE);
+            $this->logger->error("(".$request->getPost('path').") " . $request->getPost('eName') . ": " . $request->getPost('eMsg') . $request->getPost('eStack'), self::LOG_SOURCE);
         }
         
         return $response;

@@ -9,7 +9,7 @@ namespace esprit\core\exceptions;
  *
  * @author jbowens 
  */
-class NonserviceableRequestException extends \RuntimeException { 
+class UnserviceableRequestException extends \RuntimeException { 
 
     protected $request;
 

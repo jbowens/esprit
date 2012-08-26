@@ -265,13 +265,13 @@ class Controller {
             try {
                 $response = $this->executeCommand( $command, $request, $response );
             } catch( Exception $e ) {
-                throw new UnserivceableRequestException( $request ); 
+                throw new UnserviceableRequestException( $request ); 
                 $this->logger->log( LogEventFactory::createFromException( $e, 'Command\\'.$command->getName() ) );
             }
 
             $this->viewManager->display( $response );
 
-        } catch( UnserviceableRequestException $exception ) {
+        } catch( \esprit\core\exceptions\UnserviceableRequestException $exception ) {
             // Log this
             $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             $this->dieGracefully();
@@ -320,7 +320,7 @@ class Controller {
 
         $class = new ReflectionClass( $fallbackCmdName );
         if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
-            throw new UnserviceableRequestException( $request );
+            throw new \esprit\core\exceptions\UnserviceableRequestException( $request );
         
         $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
 

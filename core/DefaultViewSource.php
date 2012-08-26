@@ -26,6 +26,7 @@ class DefaultViewSource implements ViewSource {
      * @param $directory  the directory this source should look in for its views
      */
     public function __construct(Config $config, util\Logger $logger, TemplateParser $templateParser, $namespace, $directory) {
+        $logger->fine("Creating DefaultViewSource for ".$namespace." namespace and the directory " . $directory, self::LOG_SOURCE);
         $this->config = $config;
         $this->logger = $logger;
         $this->templateParser = $templateParser;
@@ -35,6 +36,8 @@ class DefaultViewSource implements ViewSource {
 
     // @See ViewSource.isViewDefined()
     public function isViewDefined( $viewName ) {
+
+        $this->logger->finest('Checking for existence of view ' . $viewName, self::LOG_SOURCE);
 
         // If there's a namespace extract the class name and verify that the namespaces
         // match 
@@ -63,6 +66,8 @@ class DefaultViewSource implements ViewSource {
         $className = $this->getClassName( $viewName );
         $filename = $className . '.' . self::FILE_EXTENSION;
         $absolutePath = $this->directory . DIRECTORY_SEPARATOR . $filename;
+
+        $this->logger->finest("Looking for file " . $absolutePath, self::LOG_SOURCE);
 
         // Make sure the file actually exists
         if( ! file_exists($absolutePath) )

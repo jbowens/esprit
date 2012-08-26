@@ -10,7 +10,7 @@ use \esprit\core\Response as Response;
  *
  * @author jbowens
  */
-class FallbackView extends AbstractView {
+class JsErrorRecord extends AbstractView {
 
     /**
      * This output probably will never actually be used. It's unclear what the client
