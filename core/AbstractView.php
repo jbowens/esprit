@@ -13,6 +13,7 @@ use \esprit\core\util\Logger as Logger;
  * @author jbowens
  */
 abstract class AbstractView implements View {
+    use LogAware;
 
     protected $config;
     protected $logger;

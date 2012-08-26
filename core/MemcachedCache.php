@@ -19,6 +19,7 @@ use \esprit\core\util\Logger as Logger;
  * @author jbowens 
  */
 class MemcachedCache implements Cache {
+    use LogAware;
 
     const LOG_SOURCE = "MEMCACHED";
     const APP_NAMESPACE = 'es';
@@ -56,11 +57,11 @@ class MemcachedCache implements Cache {
                 $logger->finer("Connected to memcached server " . $server['host'] . ":".$port, self::LOG_SOURCE);
             }
             else
-                $logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, "CACHE");
+                $logger->error("Unable to connect to Memcached server " . $server['host'] . ":" . $port, self::LOG_SOURCE);
         }
 
         if( $activeServers <= 0 ) {
-            $logger->severe("No active Memcached servers", self::LOG_SOURCE, $servers);
+            $logger->severe("No active Memcached servers", $servers, self::LOG_SOURCE);
         }
 
         return new MemcachedCache($memcached, $config, $logger);
@@ -97,7 +98,7 @@ class MemcachedCache implements Cache {
             unset($this->runtimeCache[$key]);
         $success = $this->memcached->set($this->key($key), $val, $expire);
         if( ! $success )
-            $this->logger->warning("Unable to save cache key " . $key . ", memcached message: " . $this->memcached->getResultMessage(), self::LOG_SOURCE);
+            $this->warning("Unable to save cache key " . $key . ", memcached message: " . $this->memcached->getResultMessage());
     }
 
     /**
@@ -154,7 +155,7 @@ class MemcachedCache implements Cache {
         
         if( strlen($qualifiedKey) > self::MEMCACHED_KEY_LIMIT )
         {
-            $this->logger->warning("The cache key '" . $qualifiedKey . "' exceeds the memcached key length limit", "CACHE");
+            $this->warning("The cache key '" . $qualifiedKey . "' exceeds the memcached key length limit");
         }
 
         return $qualifiedKey;

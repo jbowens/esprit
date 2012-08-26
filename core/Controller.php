@@ -19,9 +19,8 @@ use \esprit\core\exceptions\PageNotFoundException;
  * @author jbowens
  */
 class Controller {
-    use LogAware;
 
-    const LOG_SOURCE = "CONTROLLER";
+    const LOG_ORIGIN = "CONTROLLER";
     const DEFAULT_FALLBACK_COMMAND = '\esprit\core\commands\Command_DefaultFallback';
     const DEFAULT_TIMEZONE = 'America/New_York';
 
@@ -94,14 +93,6 @@ class Controller {
 
         $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource(), $this->site->getLanguage());
         $this->setupResolvers();
-    }
-
-    /**
-     * Returns the log source of the controller.
-     */
-    public function getLogSource()
-    {
-        return self::LOG_SOURCE;
     }
 
     /**
@@ -251,7 +242,7 @@ class Controller {
             $request = $this->createRequestFromEnvironment();
             $response = new Response($request);
 
-            $this->finest("Request from " . $request->getIpAddress() . " to " . $request->getUrl()->getPath() . " " . date("r"));
+            $this->logger->finest("Request from " . $request->getIpAddress() . " to " . $request->getUrl()->getPath() . " " . date("r"), self::LOG_ORIGIN);
 
             // Identify the command that should be run
             $command = null;
@@ -266,10 +257,10 @@ class Controller {
             {
                 $command = $this->getFallbackCommand();
 
-                $this->warning('Hit fallback command on request to ' . $request->getUrl()->getPath(), $request); 
+                $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
             }
 
-            $this->finest('Going to use command: ' . get_class($command));
+            $this->logger->finest('Going to use command: ' . get_class($command), self::LOG_ORIGIN);
 
             try {
                 $response = $this->executeCommand( $command, $request, $response );
@@ -282,11 +273,11 @@ class Controller {
 
         } catch( \esprit\core\exceptions\UnserviceableRequestException $exception ) {
             // Log this
-            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_SOURCE ) );
+            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             $this->dieGracefully();
         } catch( Exception $exception ) {
             // Don't expose internal details of the exception to the user. Just exit.
-            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_SOURCE ) );
+            $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
             return false;
         }
 
@@ -345,7 +336,7 @@ class Controller {
 	public function createRequestFromEnvironment() {
 
         if( isset( $_SERVER['QUERY_STRING'][0] ) )
-            $this->finest("Received query string of " . $_SERVER['QUERY_STRING']);
+            $this->logger->finest("Received query string of " . $_SERVER['QUERY_STRING'], self::LOG_ORIGIN);
 
         //TODO: Update with support for actual site id
         if( strlen($_SERVER['QUERY_STRING']) )

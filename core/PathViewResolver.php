@@ -12,6 +12,7 @@ use \esprit\core\util\Logger as Logger;
  * @author jbowens
  */
 class PathViewResolver implements ViewResolver {
+    use LogAware;
 
     const LOG_ORIGIN = "PATH_VIEW_RESOLVER";
 

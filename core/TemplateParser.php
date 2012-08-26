@@ -12,8 +12,7 @@ use esprit\Core\util\Logger as Logger;
  * @author jbowens
  */
 abstract class TemplateParser {
-
-    const LOG_SOURCE = "TemplateParser";
+    use LogAware;
 
     protected $logger;
     protected $config;
@@ -65,7 +64,7 @@ abstract class TemplateParser {
      */
     public function setVariable( $key, $val ) {
         if( ! is_string($key) ) {
-            $this->logger->error("Received non-string variable name, \"" . $key . "\"", self::LOG_SOURCE);
+            $this->error("Received non-string variable name, \"" . $key . "\"");
             throw new \InvalidArgumentException("Received nonstring variable name");
         }
         $this->otherVariables[$key] = $val;
@@ -79,7 +78,7 @@ abstract class TemplateParser {
      */
     public function getVariable( $key ) {
         if( ! is_string($key) ) {
-            $this->logger->error("Received non-string variable name, \"".$key."\"", self::LOG_SOURCE);
+            $this->error("Received non-string variable name, \"".$key."\"");
             throw new \InvalidArgumentException("Received nonstring variable name");
             // TODO: Maybe not throw an exception and instead return null?
             // We're already logging the error, so it might be better to gracefully fail.

@@ -8,6 +8,7 @@ namespace esprit\core;
  * @authr jbowens
  */
 class Translator {
+    use LogAware;
 
     const LOG_SOURCE = "TRANSLATOR";
 

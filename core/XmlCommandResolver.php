@@ -9,6 +9,7 @@ namespace esprit\core;
  * @jbowens
  */
 class XmlCommandResolver implements CommandResolver {
+    use LogAware;
 
     /* Filename to configure the resolver */
     protected $xmlFilename;
