@@ -453,7 +453,7 @@ class Controller {
      */
     public function determineSite() {
         // TODO: Actually implement
-        return new Site(1, $_SERVER['HTTP_HOST'], $this->languageSource->getLanguageByIdentifier("en-US"));
+        return new Site(1, $_SERVER['HTTP_HOST'], $this->languageSource->getLanguageByIdentifier("fr"));
     }
 
 }

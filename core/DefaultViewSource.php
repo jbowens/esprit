@@ -9,6 +9,7 @@ namespace esprit\core;
  * @author jbowens
  */
 class DefaultViewSource implements ViewSource {
+    use LogAware;
 
     const LOG_SOURCE = "DEFAULT_VIEW_SOURCE";
     const FILE_EXTENSION = 'php';
@@ -18,6 +19,11 @@ class DefaultViewSource implements ViewSource {
     protected $templateParser;
     protected $namespace;
     protected $directory;
+
+    public function getLogSource()
+    {
+        return self::LOG_SOURCE;
+    }
 
     /**
      * Constructs a DefaultViewSource
@@ -37,7 +43,7 @@ class DefaultViewSource implements ViewSource {
     // @See ViewSource.isViewDefined()
     public function isViewDefined( $viewName ) {
 
-        $this->logger->finest('Checking for existence of view ' . $viewName, self::LOG_SOURCE);
+        $this->finest('Checking for existence of view ' . $viewName);
 
         // If there's a namespace extract the class name and verify that the namespaces
         // match 
@@ -56,7 +62,7 @@ class DefaultViewSource implements ViewSource {
             if( $namespace != $clippedSourceNamespace )
             {
                 // The namespaces did not match
-                $this->info( "The namespace for " . $viewName . " did not match " . $this->namespace, self::LOG_SOURCE );
+                $this->info( "The namespace for " . $viewName . " did not match " . $this->namespace );
                 return false;
             }
 
@@ -67,7 +73,7 @@ class DefaultViewSource implements ViewSource {
         $filename = $className . '.' . self::FILE_EXTENSION;
         $absolutePath = $this->directory . DIRECTORY_SEPARATOR . $filename;
 
-        $this->logger->finest("Looking for file " . $absolutePath, self::LOG_SOURCE);
+        $this->finest("Looking for file " . $absolutePath);
 
         // Make sure the file actually exists
         if( ! file_exists($absolutePath) )

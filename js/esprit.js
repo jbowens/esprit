@@ -7,6 +7,36 @@
 var esprit = {
 
     /**
+     * esprit.oop namespace contains useful methods for dealing
+     * with object-oriented features like object inheritance.
+     */
+    oop: {
+         
+        /**
+         * Creates a new object that extends the given super object.
+         *
+         * @param superObj  the object to extend
+         * @param objData  the new object data to add
+         */
+        extend: function(superObj, objData)
+        {
+            var newObj;
+            function F() {}
+            F.prototype = superObj;
+            newObj = new F();
+            newObj.uber = superObj;
+
+            for( var i in objData )
+            {
+                newObj[i] = objData[i];
+            }
+
+            return newObj;
+        }
+
+    },
+
+    /**
      * An array of functions that should be used to add data to any error reports
      * sent to the server.
      */
@@ -68,6 +98,34 @@ var esprit = {
     },
 
     /**
+     * Defines an Action object used for recording user 
+     * behavior.
+     */
+    Action: {
+
+        /**
+         * Creates a new esprit.Action object with the given
+         * identifier.
+         *
+         * @param identifier  the identifier of the action event
+         */
+        construct: function(identifier) {
+            return esprit.oop.extend(esprit.Action, { 'identifier': identifier });
+        },
+
+        identifier: null,
+
+        getIdentifier: function() {
+            return this.identifier;
+        },
+
+        toString: function() {
+            return "esprit.Action("+this.identifier+")";
+        }
+
+    },
+
+    /**
      * Records an action event. The data surrounding the action will
      * be forwarded to the server through an ajax call. This is useful
      * for tracking user involvement with page elements on the page for
@@ -77,8 +135,15 @@ var esprit = {
      */
     recordAction: function(action)
     {
-        var data = {};
-        $.post('/action-record', data);
+        try {
+            var data = {
+                identifier: action.getIdentifier()
+            };
+            $.post('/action-record', data);
+        } catch(err)
+        {
+            esprit.recordError(err);
+        }
     }
 
 };
