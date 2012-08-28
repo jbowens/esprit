@@ -143,7 +143,7 @@ class MemcachedCache implements Cache {
         if( isset($this->runtimeCache[$key] ) )
             unset($this->runtimeCache[$key]);
 
-        return $memcahced->delete( $this->key($key) );
+        return $this->memcached->delete( $this->key($key) );
     }
 
     /**
