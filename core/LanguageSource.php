@@ -2,6 +2,8 @@
 
 namespace esprit\core;
 
+use \esprit\core\util\Logger;
+
 /**
  * A class for getting languages from the database (or cache if available). This class uses
  * the flyweight pattern since Language is an immutable class.
@@ -9,12 +11,15 @@ namespace esprit\core;
  * @author jbowens
  */
 class LanguageSource {
+    use LogAware;
 
     const SQL_LANG_BY_ID = "SELECT `languageid`, `identifier`, `parentid` FROM `languages` WHERE `languageid` = ?";
     const SQL_LANG_BY_IDENTIFIER = "SELECT `languageid`, `identifier`, `parentid` FROM `languages` WHERE `identifier` = ?";
     const SQL_ALL_LANGS = "SELECT `languageid`, `identifier`, `parentid` FROM `languages`";
+    const LANGUAGE_NAMESPACE = 'languages';
 
     protected $dbm;
+    protected $logger;
     protected $cache;
 
     // Local caching so that we only have one instance of a language existing in memory at
@@ -22,9 +27,10 @@ class LanguageSource {
     protected $idMap;
     protected $identifierMap;
 
-    public function __construct(db\DatabaseManager $dbm, Cache $cache = null) {
+    public function __construct(db\DatabaseManager $dbm, Logger $logger, Cache $cache = null) {
         $this->dbm = $dbm;
-        $this->cache = $cache;
+        $this->logger = $logger;
+        $this->cache = $cache->accessNamespace( self::LANGUAGE_NAMESPACE );
         $this->idMap = array();
         $this->identifierMap = array();
     }
@@ -36,23 +42,24 @@ class LanguageSource {
         if( isset( $this->idMap[$languageid] ) )
             return $this->idMap[$languageid];
 
-        if( $cache->isCached( 'lang_' . $languageid ) ) {
+        if( $this->cache->isCached( 'lang_' . $languageid ) ) {
             $lang = $this->cache->get( 'lang_' . $languageid );
             $this->saveInLocalCache( $lang );
             return $lang;
         }
 
+        $this->info("Cache miss for language id " . $languageid);
+
         $db = $this->dbm->getDb();
 
         $stmt = $db->prepare( self::SQL_LANG_BY_ID );
         $stmt->execute(array( $languageid ));
-        $langData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $langData = $stmt->fetch(\PDO::FETCH_ASSOC);
         $lang = Language::createFromArray( $langData );
 
         $this->cache( $lang );
 
         return $lang;
-
     }
 
     /**
@@ -68,6 +75,8 @@ class LanguageSource {
             return $lang;
         }
 
+        $this->info( "Cache miss looking up language with identifier " . $identifier );
+
         $db = $this->dbm->getDb();
 
         $stmt = $db->prepare( self::SQL_LANG_BY_IDENTIFIER );
@@ -82,7 +91,6 @@ class LanguageSource {
         $this->cache( $lang );
 
         return $lang;
-
     }
 
     /**
@@ -108,6 +116,7 @@ class LanguageSource {
     }
 
     protected function cache( Language $lang ) {
+        $this->info("Caching the language " . $lang->getLanguageId());
         $this->cache->set('lang_' . $lang->getLanguageId(), $lang);
         $this->cache->set('lang_ident_' . $lang->getIdentifier(), $lang);
         $this->saveInLocalCache( $lang );

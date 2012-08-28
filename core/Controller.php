@@ -88,7 +88,7 @@ class Controller {
                                             $config->get("db_default_pass"),
                                             $this->logger);
 
-        $this->languageSource = new LanguageSource( $this->dbm, $this->cache ); 
+        $this->languageSource = new LanguageSource( $this->dbm, $this->logger, $this->cache ); 
         $this->site = $this->determineSite();
 
         $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource(), $this->site->getLanguage());

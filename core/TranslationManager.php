@@ -15,14 +15,11 @@ class TranslationManager implements TranslationSource {
 
     const SQL_GET_TRANSLATION_STRING_BY_IDENTIFER = "SELECT `translation` FROM `translations` WHERE `languageid` = ? AND `translationIdentifier` = ?";
 
-    /* The cache key prefix to use when caching */
-    protected $cacheKeyPrefix;
-
     /* The database to lookup translation data in */
     protected $db;
 
     /* Cache of localized strings */
-    protected $cache;
+    protected $translationCache;
 
     protected $languageSource;
 
@@ -30,11 +27,10 @@ class TranslationManager implements TranslationSource {
      * Creates a new TranslationManager given a cache and a key prefix to prepend
      * on all data saved in the cache.
      */
-    public function __construct( db\Database $db, Cache $cache, LanguageSource $langSource, $keyPrefix = 'tm_' ) {
+    public function __construct( db\Database $db, Cache $cache, LanguageSource $langSource, $keyNamespace = 'tm' ) {
         $this->db = $db;
-        $this->cache = $cache;
+        $this->translationCache = $cache->accessNamespace( $keyNamespace );
         $this->languageSource = $langSource;
-        $this->cacheKeyPrefix = $keyPrefix;
     }
 
      /**
@@ -64,9 +60,9 @@ class TranslationManager implements TranslationSource {
     public function getLocalized($translationIdentifier, Language $language) {
 
         $cacheKey = 'translation_' . $language->getLanguageId() . '_' . $translationIdentifier;
-        if( $this->cache->isCached( $cacheKey ) )
+        if( $this->translationCache->isCached( $cacheKey ) )
         {
-            return $this->cache->get( $cacheKey );
+            return $this->translationCache->get( $cacheKey );
         }
 
         // Get from database
@@ -76,7 +72,7 @@ class TranslationManager implements TranslationSource {
         $localizedString = $stmt->fetchColumn();
         $localizedString = $localizedString === false ? null : $localizedString;
         // Cache this localized string
-        $this->cache->set($cacheKey, $localizedString);
+        $this->translationCache->set($cacheKey, $localizedString);
 
         return $localizedString;
     }
@@ -94,13 +90,9 @@ class TranslationManager implements TranslationSource {
 
         if( $language->getParentId() != null ) {
          
-            $stmt = $this->db->prepare( LanguageSource::SQL_LANG_BY_ID );
-
             while( $language->getParentId() != null )
             {
-                $stmt->execute( array( $language->getParentId() ) );
-                $arr = $stmt->fetch(\PDO::FETCH_ASSOC);
-                $language = Language::createFromArray($arr);
+                $language = $this->languageSource->getLanguageById( $language->getParentId() );
                 array_push( $ancestors, $language );
             }
         }
