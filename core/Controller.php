@@ -79,6 +79,10 @@ class Controller {
             date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
         $this->logger = util\Logger::newInstance();
+
+        // Register a shutdown function so we can log any fatal errors
+        register_shutdown_function(array($this, 'shutdown'));
+
         $this->cache = MemcachedCache::connectToMemcached($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $config, $this->logger);
         $this->commandResolvers = array();
         $this->customSessionHandler = null;
@@ -209,6 +213,9 @@ class Controller {
      * database connections, file handles, etc will all have been closed.
      */
     public function close() {
+
+        $this->logger->fine("Closing controller", self::LOG_ORIGIN);
+
         try {
             $this->dbm->close();
         } catch( Exception $ex ) {
@@ -454,6 +461,19 @@ class Controller {
     public function determineSite() {
         // TODO: Actually implement
         return new Site(1, $_SERVER['HTTP_HOST'], $this->languageSource->getLanguageByIdentifier("fr"));
+    }
+
+    /**
+     * This method is called by PHP on shutdown. Do not call this yourself.
+     */
+    public function shutdown()
+    {
+        $mostRecentError = error_get_last();
+
+        if( $mostRecentError != null )
+        {
+            $this->logger->severe("a fatal error occurred in " . $error['file'] . " on line " . $error['line'] . ": " . $error['message'], "SHUTDOWN");
+        }
     }
 
 }
