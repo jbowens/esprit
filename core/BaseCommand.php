@@ -33,7 +33,11 @@ abstract class BaseCommand implements Command
      */
     public function getLogSource()
     {
-        return end(explode('\\', (string) get_class($this)));
+        $pieces = explode('\\', (string) get_class($this));
+        if( count($pieces) == 0 )
+            return null;
+        else
+            return $pieces[count($pieces)-1];
     }
 
     /**

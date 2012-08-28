@@ -24,7 +24,7 @@ class Command_JsErrorRecord extends BaseCommand {
      */
     public function run(Request $request, Response $response) {
         
-        if( ! $request->getPost('eMsg') || ! $request->getPost('eName') )
+        if( ! $request->getPost('eName') )
         {
             $this->error("Received a js error record request without error data originating from ".$request->getHeader('Referer'));
 
