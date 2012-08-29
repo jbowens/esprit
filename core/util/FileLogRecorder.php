@@ -26,6 +26,10 @@ class FileLogRecorder implements LogRecorder {
         $this->setCutoff( $severity );
         $this->filename = $file;
         $this->fileHandle = fopen($file, "a");
+        if( $this->fileHandle === false )
+        {
+            $this->close();
+        }
     }
     
     /**
@@ -34,7 +38,8 @@ class FileLogRecorder implements LogRecorder {
      * Records the LogEvent to a file.
      */
     public function record(LogEvent $event) {
-        fwrite($this->fileHandle, $event->toString() . "\n");
+        if( $this->fileHandle )
+            fwrite($this->fileHandle, $event->toString() . "\n");
     }
 
     /**
@@ -42,7 +47,9 @@ class FileLogRecorder implements LogRecorder {
      * like its open file handle.
      */
     public function close() {
-        fclose($this->fileHandle);
+        if( $this->fileHandle )
+            fclose($this->fileHandle);
+        $this->fileHandle = null;
     }
 
 }

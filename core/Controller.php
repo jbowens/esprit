@@ -468,9 +468,9 @@ class Controller {
      */
     public function shutdown()
     {
-        $mostRecentError = error_get_last();
+        $error = error_get_last();
 
-        if( $mostRecentError != null )
+        if( $error != null )
         {
             $this->logger->severe("a fatal error occurred in " . $error['file'] . " on line " . $error['line'] . ": " . $error['message'], "SHUTDOWN");
         }
