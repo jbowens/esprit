@@ -32,6 +32,26 @@ var esprit = {
             }
 
             return newObj;
+        },
+
+        /**
+         * Mixes in the given trait object into the given target
+         * object. 
+         *
+         * @param trait  an object with functionality that should be
+         *               added to the given obj
+         * @param objToModify  the object that should take on the trait's
+         *                     functionality
+         */
+        mixIn: function(trait, objToModify)
+        {
+            for( var key in trait )
+            {
+                if( ! objToModify.hasOwnProperty(key) )
+                    objToModify[key] = trait[key];
+            }
+
+            return objToModify;
         }
 
     },
