@@ -271,8 +271,6 @@ class Controller {
 
             try {
                 $response = $this->executeCommand( $command, $request, $response );
-                
-                throw new Exception("test");
             } catch( Exception $e ) {
                 throw new UnserviceableRequestException( $request ); 
                 $this->logger->log( LogEventFactory::createFromException( $e, 'Command\\'.$command->getName() ) );
