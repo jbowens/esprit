@@ -7,6 +7,43 @@
 var esprit = {
 
     /**
+     * A map from thranslation key to translation string.
+     */
+    translations: {},
+
+    /**
+     * Translates the given translation identifier into the correct string.
+     * 
+     * @param translationIdentifier  the translation identifier to translate
+     * @return the identifier translated into the currently selected language
+     */
+    t: function(translationIdentifier) {
+        try {
+            if( ! this.translations[translationIdentifier] )
+            {
+                throw new Error("Could not find a translation for key: " + translationIdentifier);
+                return '';
+            }
+            
+            return this.translations[translationIdentifier];
+
+        } catch(err) {
+            this.recordError( err );
+        }
+    },
+
+    /**
+     * Adds a translation into the javascript base.
+     */
+    addTranslation: function( identifier, translation ) {
+        try {
+            this.translations[identifier] = translation;
+        } catch(err) {
+            this.recordError(err);
+        }
+    },
+
+    /**
      * esprit.oop namespace contains useful methods for dealing
      * with object-oriented features like object inheritance.
      */
@@ -20,6 +57,7 @@ var esprit = {
          */
         extend: function(superObj, objData)
         {
+            
             var newObj;
             function F() {}
             F.prototype = superObj;
@@ -28,7 +66,7 @@ var esprit = {
 
             for( var i in objData )
             {
-                newObj[i] = objData[i];
+                    newObj[i] = objData[i];
             }
 
             return newObj;
@@ -167,3 +205,18 @@ var esprit = {
     }
 
 };
+
+// Load any translations stored in the window object
+if( window.espritTranslations )
+{
+    try {
+        for( var key in window.espritTranslations )
+        {
+            esprit.addTranslation(key, window.espritTranslations[key]);
+        }
+    }
+    catch(err) 
+    { 
+        esprit.recordErr(err);
+    }
+}

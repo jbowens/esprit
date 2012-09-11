@@ -27,7 +27,7 @@ class SaltedHashingStrategy implements PasswordHashingStrategy
      */
     public function hash( $password )
     {
-        return hash( $this->algoirthm, $this->combineSalt( $password ) );
+        return hash( $this->algorithm, $this->combineSalt( $password ) );
     }
 
     /**
