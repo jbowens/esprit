@@ -66,7 +66,7 @@ var esprit = {
 
             for( var i in objData )
             {
-                    newObj[i] = objData[i];
+                newObj[i] = objData[i];
             }
 
             return newObj;
