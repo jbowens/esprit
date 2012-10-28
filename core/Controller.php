@@ -70,33 +70,41 @@ class Controller {
 	 * @param Config $config the config object to use
 	 */
 	public function __construct(Config $config) {
-        $this->config = $config;
+        try {
+            $this->config = $config;
 
-        // Set the timezone
-        if( $this->config->settingExists('default_timezone') )
-            date_default_timezone_set($this->config->get('default_timezone'));
-        else
-            date_default_timezone_set(self::DEFAULT_TIMEZONE);
+            // Set the timezone
+            if( $this->config->settingExists('default_timezone') )
+                date_default_timezone_set($this->config->get('default_timezone'));
+            else
+                date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
-        $this->logger = util\Logger::newInstance();
+            $this->logger = util\Logger::newInstance();
 
-        // Register a shutdown function so we can log any fatal errors
-        register_shutdown_function(array($this, 'shutdown'));
+            // Register a shutdown function so we can log any fatal errors
+            register_shutdown_function(array($this, 'shutdown'));
 
-        $this->cache = MemcachedCache::connectToMemcached($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $config, $this->logger);
-        $this->commandResolvers = array();
-        $this->customSessionHandler = null;
+            $this->cache = MemcachedCache::connectToMemcached($config->get('memcached_servers') ? $config->get('memcached_servers') : array(), $config, $this->logger);
+            $this->commandResolvers = array();
+            $this->customSessionHandler = null;
 
-        $this->dbm = new db\DatabaseManager($config->get("db_default_dsn"),
-                                            $config->get("db_default_user"),
-                                            $config->get("db_default_pass"),
-                                            $this->logger);
+            $this->dbm = new db\DatabaseManager($config->get("db_default_dsn"),
+                                                $config->get("db_default_user"),
+                                                $config->get("db_default_pass"),
+                                                $this->logger);
 
-        $this->languageSource = new LanguageSource( $this->dbm, $this->logger, $this->cache ); 
-        $this->site = $this->determineSite();
+            $this->languageSource = new LanguageSource( $this->dbm, $this->logger, $this->cache ); 
+            $this->site = $this->determineSite();
 
-        $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource(), $this->site->getLanguage());
-        $this->setupResolvers();
+            $this->viewManager = new ViewManager($config, $this->logger, $this->createTranslationSource(), $this->site->getLanguage());
+            $this->setupResolvers();
+        } catch (Exception $ex)
+        {
+            // Log this
+            if( $this->logger )
+                $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+            $this->dieGracefully();
+        }
     }
 
     /**
@@ -286,6 +294,7 @@ class Controller {
         } catch( Exception $exception ) {
             // Don't expose internal details of the exception to the user. Just exit.
             $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+            $this->dieGracefully();
             return false;
         }
 
