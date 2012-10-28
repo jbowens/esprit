@@ -102,7 +102,7 @@ class Controller {
         {
             // Log this
             if( $this->logger )
-                $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_ORIGIN ) );
+                $this->logger->log( LogEventFactory::createFromException( $ex, self::LOG_ORIGIN ) );
             $this->dieGracefully();
         }
     }
