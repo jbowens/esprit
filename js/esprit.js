@@ -44,57 +44,6 @@ var esprit = {
     },
 
     /**
-     * esprit.oop namespace contains useful methods for dealing
-     * with object-oriented features like object inheritance.
-     */
-    oop: {
-         
-        /**
-         * Creates a new object that extends the given super object.
-         *
-         * @param superObj  the object to extend
-         * @param objData  the new object data to add
-         */
-        extend: function(superObj, objData)
-        {
-            
-            var newObj;
-            function F() {}
-            F.prototype = superObj;
-            newObj = new F();
-            newObj.uber = superObj;
-
-            for( var i in objData )
-            {
-                newObj[i] = objData[i];
-            }
-
-            return newObj;
-        },
-
-        /**
-         * Mixes in the given trait object into the given target
-         * object. 
-         *
-         * @param trait  an object with functionality that should be
-         *               added to the given obj
-         * @param objToModify  the object that should take on the trait's
-         *                     functionality
-         */
-        mixIn: function(trait, objToModify)
-        {
-            for( var key in trait )
-            {
-                if( ! objToModify.hasOwnProperty(key) )
-                    objToModify[key] = trait[key];
-            }
-
-            return objToModify;
-        }
-
-    },
-
-    /**
      * An array of functions that should be used to add data to any error reports
      * sent to the server.
      */
@@ -121,7 +70,9 @@ var esprit = {
      */
     recordError: function(error)
     {
+        console.log(error);
         data = {
+            'eToString': error.toString(),
             'eName': error.name,
             'eMsg': error.message,
             'url': window.location.toString(),
@@ -159,27 +110,18 @@ var esprit = {
      * Defines an Action object used for recording user 
      * behavior.
      */
-    Action: {
+    Action: function(identifier) 
+    {
 
-        /**
-         * Creates a new esprit.Action object with the given
-         * identifier.
-         *
-         * @param identifier  the identifier of the action event
-         */
-        construct: function(identifier) {
-            return esprit.oop.extend(esprit.Action, { 'identifier': identifier });
-        },
+        this.identifier = identifier;
 
-        identifier: null,
-
-        getIdentifier: function() {
+        this.getIdentifier = function() {
             return this.identifier;
-        },
+        };
 
-        toString: function() {
+        this.toString = function() {
             return "esprit.Action("+this.identifier+")";
-        }
+        };
 
     },
 
