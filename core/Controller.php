@@ -440,7 +440,7 @@ class Controller {
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Error - College Quill</title>
+        <title>Error - Esprit</title>
         <style type="text/css">
             body { background: #532424; color: #EEE; margin: 0; border-top: 20px #2e2e2e solid; }
             #errorPage {
