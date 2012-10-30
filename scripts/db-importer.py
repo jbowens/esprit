@@ -24,31 +24,32 @@ def parse_dsn(dsn):
     return values
 
 parser = OptionParser()
-parser.add_option('-o', '--output-file', dest='output', help="The file to output the json to. If omitted, the json will be printed to stdout")
+parser.add_option('-s', '--source-file', dest='source', help="The file to read the input json from. If not provided, the script will expect input from stdin.")
 
 (options,args) = parser.parse_args()
 
 if len(args) != 2:
-    print("This script expects exactly 2 arguments, the esprit config file and the db table to export")
+    print "This script expects exactly 2 arguments, the esprit config file and the db table to import into"
     sys.exit(1)
 
 config_contents = ""
 try:
     config_contents =  open(args[0], 'r').read()
 except:
-    print("Unable to read configuration file: %s" % args[0])
+    print "Unable to read configuration file: %s" % args[0]
     sys.exit(1)
 
 config = json.loads(config_contents)
 
+# Make sure the db data is legit
 if not "db_default_dsn" in config:
-    print("'db_default_dsn' not set in config file")
+    print "'db_default_dsn' not set in config file"
     sys.exit(1)
 if not "db_default_user" in config:
-    print("'db_default_user' not set in config file")
+    print "'db_default_user' not set in config file"
     sys.exit(1)
 if not "db_default_pass" in config:
-    print("'db_default_pass' not set in config file")
+    print "'db_default_pass' not set in config file"
     sys.exit(1)
 
 db_default_dsn = config['db_default_dsn']
@@ -57,18 +58,20 @@ db_default_pass = config['db_default_pass']
 
 dsn_info = parse_dsn(db_default_dsn)
 
+# Get the data to input
+if options.source:
+    input_str = open(options,source,'r').read()
+else:
+    input_str = '\n'.join(sys.stdin.readlines())
+
+input_json = json.loads(input_str)
+
 conn = oursql.connect(host=dsn_info['host'], user=db_default_user, passwd=db_default_pass, db=dsn_info['dbname']);
 cur = conn.cursor(oursql.DictCursor)
-cur.execute( "SELECT * FROM " + args[1] );
-rows = []
-for row in cur.fetchall():
-    rows.append(row)
+rows_inserted = 0
+for k in input_json:
+    cur.execute( 'INSERT INTO ' + args[1] + ' ('+', '.join(input_json[k].keys())+') VALUES( ' + ', '.join(['?' for x in range(len(input_json[k]))]) + ')', input_json[k].values() )
+    rows_inserted = rows_inserted + cur.rowcount;
 
-jsonOutput = json.dumps(rows)
+print( "Inserted %d rows" % rows_inserted )
 
-if not options.output:
-    print(jsonOutput)
-else:
-    f = open(options.output, "w")
-    f.write(jsonOutput)
-    f.close()
