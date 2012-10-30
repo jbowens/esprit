@@ -5,6 +5,7 @@
     },
 
     "debug": false,
+    "default_error_logfile": /var/www/logs/errors.log,
 
     "db_default_dsn": "mysql:host=localhost;dbname=esprit_test;charset=utf8",
     "db_default_user": "esprit",

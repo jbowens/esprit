@@ -81,8 +81,8 @@ class Controller {
                 date_default_timezone_set(self::DEFAULT_TIMEZONE);
 
             $this->logger = util\Logger::newInstance();
-            if( $config->settingExists('default_error_logfile'))
-               $this->logger->addLogRecorder(new FileLogRecorder($config->get('default_error_logfile'), Logger::WARNING));
+            if( $config->settingExists('default_error_logfile') )
+               $this->logger->addLogRecorder(new util\FileLogRecorder($config->get('default_error_logfile'), Logger::WARNING));
 
             // Register a shutdown function so we can log any fatal errors
             register_shutdown_function(array($this, 'shutdown'));
