@@ -5,11 +5,15 @@ A PHP 5.4 web framework
 jbowens.org
 
 
----
+---------------------------------------------------------------------
 System Requirements
----
+---------------------------------------------------------------------
 
 PHP 5.4
 Apache 2.2
 Memcached
 Twig
+
+Recommended:
+Python 2.6+
+Python libraries: oursql
