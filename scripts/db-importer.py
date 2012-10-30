@@ -29,27 +29,27 @@ parser.add_option('-s', '--source-file', dest='source', help="The file to read t
 (options,args) = parser.parse_args()
 
 if len(args) != 2:
-    print "This script expects exactly 2 arguments, the esprit config file and the db table to import into"
+    print("This script expects exactly 2 arguments, the esprit config file and the db table to import into")
     sys.exit(1)
 
 config_contents = ""
 try:
     config_contents =  open(args[0], 'r').read()
 except:
-    print "Unable to read configuration file: %s" % args[0]
+    print("Unable to read configuration file: %s" % args[0])
     sys.exit(1)
 
 config = json.loads(config_contents)
 
 # Make sure the db data is legit
 if not "db_default_dsn" in config:
-    print "'db_default_dsn' not set in config file"
+    print("'db_default_dsn' not set in config file")
     sys.exit(1)
 if not "db_default_user" in config:
-    print "'db_default_user' not set in config file"
+    print("'db_default_user' not set in config file")
     sys.exit(1)
 if not "db_default_pass" in config:
-    print "'db_default_pass' not set in config file"
+    print("'db_default_pass' not set in config file")
     sys.exit(1)
 
 db_default_dsn = config['db_default_dsn']
