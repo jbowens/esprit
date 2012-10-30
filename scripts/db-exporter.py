@@ -8,7 +8,7 @@ import json, sys, re, oursql
 
 """
 
-# parse_dsn function borrowed from 
+# parse_dsn function adapted from 
 # http://e-mats.org/2011/01/parse-a-dsn-string-in-python/
 def parse_dsn(dsn):
     m = re.search("([a-zA-Z0-9]+):(.*)", dsn)
@@ -16,7 +16,7 @@ def parse_dsn(dsn):
    
     if (m and m.group(1) and m.group(2)):
         values['driver'] = m.group(1)
-        m_options = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9]+)", m.group(2))
+        m_options = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9_]+)", m.group(2))
        
         for pair in m_options:
             values[pair[0]] = pair[1]
