@@ -3,14 +3,15 @@
 namespace esprit\core;
 
 use \Exception;
+use \ReflectionClass;
 use \SessionHandler;
 use \SessionHandlerInterface;
-use \ReflectionClass;
 
-use \esprit\core\util\LogEventFactory;
-use \esprit\core\util\Logger;
-use \esprit\core\exceptions\UnserviceableRequestException;
 use \esprit\core\exceptions\PageNotFoundException;
+use \esprit\core\exceptions\UnserviceableRequestException;
+use \esprit\core\utilFileLogRecorder;
+use \esprit\core\util\Logger;
+use \esprit\core\util\LogEventFactory;
 
 /**
  * The primary controller for the framework. This controller creates the initial
