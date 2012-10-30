@@ -6,7 +6,6 @@ import json, sys, re, oursql
 """
 @author jbowens
 
-Exports the database's translations strings to to a json file.
 """
 
 # parse_dsn function borrowed from 
@@ -26,12 +25,16 @@ def parse_dsn(dsn):
 
 parser = OptionParser()
 parser.add_option('-c', '--config-file', dest='config', help="the esprit config file to use when connecting to the db")
-parser.add_option('-o', '--output-file', dest='output', help="The file to output the translations to. if ommitted, stdout")
+parser.add_option('-o', '--output-file', dest='output', help="The file to output the json to. If omitted, the json will be printed to stdout")
 
 (options,args) = parser.parse_args()
 
 if not options.config:
     print "You must provide an esprit config file"
+    sys.exit(1)
+
+if len(args) != 1:
+    print "This script expects exactly 1 argument, the db table to export"
     sys.exit(1)
 
 config_contents = ""
@@ -60,7 +63,17 @@ db_default_pass = config['db_default_pass']
 dsn_info = parse_dsn(db_default_dsn)
 
 conn = oursql.connect(host=dsn_info['host'], user=db_default_user, passwd=db_default_pass, db=dsn_info['dbname']);
-cur = conn.cursor()
-cur.execute( "SELECT * FROM translations" );
+cur = conn.cursor(oursql.DictCursor)
+cur.execute( "SELECT * FROM " + args[0] );
+rows = []
 for row in cur.fetchall():
-    print row
+    rows.append(row)
+
+jsonOutput = json.dumps(rows)
+
+if not options.output:
+    print jsonOutput
+else:
+    f = open(options.output, "w")
+    f.write(jsonOutput)
+    f.close()
