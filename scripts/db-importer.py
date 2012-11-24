@@ -8,7 +8,7 @@ import json, sys, re, oursql
 
 """
 
-# parse_dsn function borrowed from 
+# parse_dsn function adaptedfrom 
 # http://e-mats.org/2011/01/parse-a-dsn-string-in-python/
 def parse_dsn(dsn):
     m = re.search("([a-zA-Z0-9]+):(.*)", dsn)
@@ -16,7 +16,7 @@ def parse_dsn(dsn):
    
     if (m and m.group(1) and m.group(2)):
         values['driver'] = m.group(1)
-        m_options = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9]+)", m.group(2))
+        m_options = re.findall("([a-zA-Z0-9]+)=([a-zA-Z0-9_]+)", m.group(2))
        
         for pair in m_options:
             values[pair[0]] = pair[1]
@@ -58,9 +58,11 @@ db_default_pass = config['db_default_pass']
 
 dsn_info = parse_dsn(db_default_dsn)
 
+print(dsn_info['dbname'])
+
 # Get the data to input
 if options.source:
-    input_str = open(options,source,'r').read()
+    input_str = open(options.source,'r').read()
 else:
     input_str = '\n'.join(sys.stdin.readlines())
 
@@ -69,9 +71,13 @@ input_json = json.loads(input_str)
 conn = oursql.connect(host=dsn_info['host'], user=db_default_user, passwd=db_default_pass, db=dsn_info['dbname']);
 cur = conn.cursor(oursql.DictCursor)
 rows_inserted = 0
-for k in input_json:
-    cur.execute( 'INSERT INTO ' + args[1] + ' ('+', '.join(input_json[k].keys())+') VALUES( ' + ', '.join(['?' for x in range(len(input_json[k]))]) + ')', input_json[k].values() )
-    rows_inserted = rows_inserted + cur.rowcount;
+skipped = 0
+for row in input_json:
+    try:
+        cur.execute( 'REPLACE INTO ' + args[1] + ' ('+(', '.join(row.keys()))+') VALUES( ' + ', '.join(['?' for x in range(len(row))]) + ')', row.values() )
+        rows_inserted = rows_inserted + 1
+    except:
+        skipped = skipped + 1
 
-print( "Inserted %d rows" % rows_inserted )
+print( "Inserted %d rows, and skipped %d rows" % (rows_inserted,skipped) )
 
