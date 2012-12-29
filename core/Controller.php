@@ -175,7 +175,7 @@ class Controller {
      * Creates a BaseCommandSource with the given data.
      */
     public function createBaseCommandSource($namespace, $directory) {
-        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, $namespace, $directory);
+        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, $this->viewManager, $namespace, $directory);
     }
 
     /**
@@ -214,7 +214,13 @@ class Controller {
      * Returns a command source that can instantiate all default Esprit commands.
      */
     public function createEspritCommandSource() {
-        return new BaseCommandSource($this->config, $this->logger, $this->dbm, $this->cache, '\esprit\core\commands', $this->config->get('esprit_commands'));
+        return new BaseCommandSource($this->config, 
+                                     $this->logger, 
+                                     $this->dbm, 
+                                     $this->cache, 
+                                     $this->viewManager, 
+                                     '\esprit\core\commands', 
+                                     $this->config->get('esprit_commands'));
     }
 
     /**

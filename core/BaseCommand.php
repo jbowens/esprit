@@ -27,6 +27,9 @@ abstract class BaseCommand implements Command
     /* The cache for the command to use */
     protected $cache;
 
+    /* The view manager */
+    protected $viewManager;
+
     /**
      * Gets the log source of this command. This is used by the
      * LogAware trait.
@@ -86,6 +89,17 @@ abstract class BaseCommand implements Command
      }
 
     /**
+     * Gets the ViewManager that should be used for presentation of things that
+     * are outside of the normal page display. Commands should not abuse this
+     * access by displaying their templates through this pointer. This should only
+     * be used for things like creating email templates, which require view decisions
+     * but still belong in the model.
+     */
+    protected function getViewManager() {
+        return $this->viewManager;
+    }
+
+    /**
      * Logs a message to this command's logger.
      *
      * @param $serverity  the severity of the log event (See constants defined in Logger)
@@ -100,11 +114,12 @@ abstract class BaseCommand implements Command
      * Constructor for the base command. The default command resolvers instantiate
      * BaseCommands through this constructor.
      */
-    public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger, Cache $cache) {
+    public function __construct(Config $config, db\DatabaseManager $dbm, util\Logger $logger, Cache $cache, ViewManager $viewManager) {
         $this->config = $config;
         $this->databaseManager = $dbm;
         $this->logger = $logger;
         $this->cache = $cache;
+        $this->viewManager = $viewManager;
     }
 
     /**
