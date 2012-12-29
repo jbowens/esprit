@@ -115,7 +115,7 @@ class Email
      */
     public function getToAsString()
     {
-        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
+        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress(); }, 
                                        $this->to));
     }
 
@@ -189,7 +189,7 @@ class Email
      */
     public function getCcAsString()
     {
-        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
+        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress(); }, 
                                        $this->cc));
     }   
     
@@ -199,7 +199,7 @@ class Email
      */
     public function getBccAsString()
     {
-        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
+        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress(); }, 
                                        $this->bcc));
     }
 
