@@ -30,4 +30,6 @@ class TwigTemplatedEmailer
         $this->emailSender = $newEmailSender;
     }
 
+    // TODO: Everything
+
 }
