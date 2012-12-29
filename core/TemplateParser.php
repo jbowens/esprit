@@ -130,6 +130,9 @@ abstract class TemplateParser {
     public function getVariables() {
         // Because $this->otherVariables appears second, if a key appears in both arrays
         // the value in $this->otherVariables will be taken.
-        return array_merge($this->response->getAsArray(), $this->otherVariables);
+        if( $this->response )
+            return array_merge($this->response->getAsArray(), $this->otherVariables);
+        else
+            return $this->otherVariables;
     }
 }

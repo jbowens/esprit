@@ -14,13 +14,9 @@ use \esprit\core\TemplateParser;
 class TemplatedEmailer
 {
 
-    /* The default email sender is the PHP one, since it's guaranteed on all
-     * installations. */
-    static protected $defaultSender = new PhpMailEmailSender();
-
     /* The EmailSender implementation that handles the logicistics of actually
      * sending an email through the smtp servers. */
-    protected $emailSender = static::$defaultSender;
+    protected $emailSender;
 
     // A \esprit\core\TemplateParser for evaluating the email templates
     protected $templateParser;
@@ -41,6 +37,7 @@ class TemplatedEmailer
     {
         $this->templateParser = $templateParser;
         $this->templatePrefix = $templatePrefix;
+        $this->emailSender = new PhpMailEmailSender();
     }
 
     /**
@@ -80,7 +77,7 @@ class TemplatedEmailer
         }
 
         // Remove any old parameters on the template parser
-        $this->templateParser->clear();
+        $this->templateParser->clearVariables();
 
         // Set the provided template parameters
         foreach( $params as $key => $val )

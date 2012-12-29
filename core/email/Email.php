@@ -46,7 +46,7 @@ class Email
      */
     public function addRecipient( EmailAddress $recipient )
     {
-        array_push( $to, $recipient );
+        array_push( $this->to, $recipient );
     }
 
     /**
@@ -56,7 +56,7 @@ class Email
      */
     public function addCarbonCopy( EmailAddress $ccAddress )
     {
-        array_push( $cc, $ccAddress );
+        array_push( $this->cc, $ccAddress );
     }
 
     /**
@@ -66,7 +66,7 @@ class Email
      */
     public function addBlindCarbonCopy( EmailAddress $bccAddress )
     {
-        array_push( $bcc, $bccAddress );
+        array_push( $this->bcc, $bccAddress );
     }
 
     /**
