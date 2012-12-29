@@ -105,6 +105,16 @@ abstract class TemplateParser {
     }
 
     /**
+     * Clears any variables set in this template parser. This includes any set
+     * implicitly through a Response object by disassociating any existing
+     * Response object.
+     */
+    public function clearVariables() {
+        $this->otherVariables = array();
+        $this->response = null;
+    }
+
+    /**
      * Sets the response object the parser should use. The response object should be
      * used to populate the template parser's variables. It would be a good idea
      * to override this to load the response variables into the template parser.
