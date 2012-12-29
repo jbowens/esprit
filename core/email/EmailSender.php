@@ -1,6 +1,6 @@
 <?php
 
-namespace esprit\core;
+namespace esprit\core\email;
 
 /**
  * An interface for an email sender.

@@ -1,6 +1,6 @@
 <?php
 
-namespace esprit\core;
+namespace esprit\core\email;
 
 /**
  * An immutable class that represents an email address.

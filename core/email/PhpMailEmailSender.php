@@ -1,6 +1,6 @@
 <?php
 
-namespace esprit\core;
+namespace esprit\core\email;
 
 /**
  * An EmailSender that uses PHP's mail() function to send an email. As such, it's not

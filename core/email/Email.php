@@ -1,6 +1,6 @@
 <?php
 
-namespace esprit\core;
+namespace esprit\core\email;
 
 /**
  * A class that represents an email. An object of this type must be given to an 
