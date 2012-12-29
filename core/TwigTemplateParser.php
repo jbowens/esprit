@@ -73,11 +73,16 @@ class TwigTemplateParser extends TemplateParser {
         return false;
     }
 
-    public function displayTemplate( $template ) {
+    /**
+     * Returns the raw text of the evaluated template.
+     *
+     * @param $template  the template to evaluate
+     */
+    public function evaluateTemplate( $template ) {
         try {
             $templateFile = $this->getResourceName( $template );
             $temp = $this->twig->loadTemplate($templateFile);
-            echo $temp->render( $this->getVariables() );
+            return $temp->render( $this->getVariables() );
         } catch( \Twig_Error $exception ) {
             $this->logger->log( LogEventFactory::createFromException( $exception, self::LOG_SOURCE ) ); 
         }

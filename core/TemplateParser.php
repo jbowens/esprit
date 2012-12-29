@@ -39,11 +39,12 @@ abstract class TemplateParser {
     public abstract function templateExists( $template );
 
     /**
-     * Displays the given template.
+     * Evaluates the given template, returnning the string of the result.
      *
-     * @param string $template  the template identifier of the template to display
+     * @param string $template  the template identifier of the template to evaluate
+     * @return  the $template evaluated
      */
-    public abstract function displayTemplate( $template );
+    public abstract function evaluateTemplate( $template );
 
     /**
      * Takes a template and returns the name of the template resource
@@ -51,6 +52,15 @@ abstract class TemplateParser {
      * this method should return the filename of the given template.
      */
     public abstract function getResourceName( $template );
+    
+    /**
+     * Displays the given template.
+     *
+     * @param string $template  the template identifier of the template to display
+     */
+    public function displayTemplate( $template ) {
+        echo $this->evaluateTemplate( $template );
+    }
 
     /**
      * Sets a variable in the templating engine. Always use string keys for variables.
@@ -96,7 +106,7 @@ abstract class TemplateParser {
 
     /**
      * Sets the response object the parser should use. The response object should be
-     * used to populate the tempalte parser's variables. It would be a good idea
+     * used to populate the template parser's variables. It would be a good idea
      * to override this to load the response variables into the template parser.
      */
     public function loadResponse( Response $response ) {
