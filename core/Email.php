@@ -27,6 +27,18 @@ class Email
     /* The reply-to address for the email. */
     protected $replyTo;
 
+    /* The subject line of the email. */
+    protected $subject;
+
+    /* The message of the email. */
+    protected $message;
+
+    /* The charset of the email. */
+    protected $charset = 'utf-8';
+
+    /* The content-type of the email. */
+    protected $contentType = 'text/plain';
+
     /**
      * Adds a recipient to the email.
      *
@@ -72,6 +84,22 @@ class Email
     }
 
     /**
+     * Sets the subject of the email.
+     */
+    public function setSubject( $subject )
+    {
+        $this->subject = $subject;
+    }
+
+    /**
+     * Sets the message content of the email.
+     */
+    public function setMessage( $message )
+    {
+        $this->message = $message;
+    }
+
+    /**
      * Sets the reply-to address for the email.
      *
      * @param $address  an EmailAddress to sue as the reply-to address
@@ -83,12 +111,96 @@ class Email
 
     /**
      * Returns the TO field of the email as a string. It will be a comma separated list
-     * of address in RFC 2822 format.
+     * of addresses in RFC 2822 format.
      */
-    public function getTo()
+    public function getToAsString()
     {
         return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
                                        $this->to));
+    }
+
+    /**
+     * Returns the FROM field of the email as a string. It will be in RFC 2822 format.
+     */
+    public function getFromAsString()
+    {
+        return $this->from->getFormattedAddress();
+    }
+
+    /**
+     * Returns the Reply-To field of the email as a string. It will be in RFC 2822 format.
+     */
+    public function getReplyToAsString()
+    {
+        return $this->replyTo->getFormattedAddress();
+    } 
+
+    /**
+     * Gets the subject of the email.
+     */
+    public function getSubject()
+    {
+        return $this->subject;
+    }
+
+    /**
+     *  Gets the message of the email.
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Retrieves the charset in which this email is encoded.
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+    /**
+     * Retrieves the content-type of this email's message body.
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * Returns whether or not this email has any addresses CC'd.
+     */
+    public function usesCc()
+    {
+        return count($this->cc) > 0;
+    }
+
+    /**
+     * Returns whether or not this email has any addressed BCC'd.
+     */
+    public function usesBcc()
+    {
+        return count($this->bcc) > 0;
+    }
+
+    /**
+     * Returns the Cc field of the email as a string. It will be a comma separated list
+     * of addresses in RFC 2822 format.
+     */
+    public function getCcAsString()
+    {
+        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
+                                       $this->cc));
+    }   
+    
+    /**
+     * Returns the Bcc field of the email as a string. It will be a comma separated list
+     * of addresses in RFC 2822 format.
+     */
+    public function getBccAsString()
+    {
+        return implode(', ', array_map(function(EmailAddress $e) { return $e->getFormattedAddress() }, 
+                                       $this->bcc));
     }
 
 }

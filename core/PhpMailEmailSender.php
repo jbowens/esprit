@@ -15,9 +15,25 @@ class PhpMailEmailSender implements EmailSender
 
     public function send(Email $email)
     {
+        // Extract pertinent data
+        $to = $email->getToAsString();
+        $from = $email->getFromAsString();
+        $subject = $email->getSubject();
+        $message = $email->getMessage();
 
-        // TODO: Implement
+        // Setup the headers
+        $headers = array();
+        $headers[] = 'Content-type: ' . $email->getContentType() . '; charset=' . $email->getCharset();
+        $headers[] = 'From: ' . $from;
+        $headers[] = 'Reply-To: ' . $email->getReplyToAsString();
+        if( $email->usesCc() )
+            $headers[] = 'Cc: ' . $email->getCcAsString();
+        if( $email->usesBcc() )
+            $headers[] = 'Bcc: ' . $email->getBccAsString();
+        $headers[] = 'X-Mailer: PHP/'.phpversion();
 
+        // Send the email
+        mail($to, $subject, $message, implode("\r\n", $headers));
     }
 
 }

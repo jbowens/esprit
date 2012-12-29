@@ -11,12 +11,21 @@ final class EmailAddress
     protected $displayName;
     protected $address;
 
+    /**
+     * Constructs an EmailAddress object from a string email address.
+     *
+     * @param $address  an email address in someone@example.com format.
+     */
     public static function createFromAddress( $address )
     {
         return new EmailAddress( $address, null );
     }
 
 
+    /**
+     * @param $address  an email address in someone@example.com format
+     * @param $name  a name associated with the email address.
+     */
     public function __construct( $address, $name )
     {
         $this->address = $address;
@@ -42,7 +51,6 @@ final class EmailAddress
      */
     public function getHostname()
     {
-        // TODO: Test this method
         $matches = array();
         preg_match('/.*@(.+)/', $this->address, $matches);
         return $matches[1];
