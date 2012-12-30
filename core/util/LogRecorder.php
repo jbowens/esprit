@@ -26,6 +26,14 @@ interface LogRecorder {
     public function record(LogEvent $event);
 
     /**
+     * Flushes any buffered log events. Depending on the recorder implementation,
+     * calling this yourself may be unnecessary. However, if this method is called,
+     * recorder implementations should guarantee that all previously recorded events
+     * have been flushed to whatever data storage device it uses.
+     */
+    public function flushBuffer();
+
+    /**
      * Closes the log recorder. This should be called as soon as the
      * recorder is no longer necessary.
      */

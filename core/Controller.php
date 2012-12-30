@@ -241,8 +241,10 @@ class Controller {
 
         // Close any log recorders listening to the default logger
         try {
-            foreach( $this->logger->getRecorders() as $recorder )
+            foreach( $this->logger->getRecorders() as $recorder ) {
+                $recorder->flushBuffer();
                 $recorder->close();
+            }
         } catch( Exception $ex ) {
             // Nothing we can do. The recorders are all gone.
         }
@@ -518,6 +520,9 @@ EOD;
         {
             $this->logger->severe("a fatal error occurred in " . $error['file'] . " on line " . $error['line'] . ": " . $error['message'], "SHUTDOWN");
         }
+
+        // Ensure that the logs get flushed
+        $this->logger->flushRecorders();
     }
 
 }

@@ -172,6 +172,17 @@ class Logger {
     }
 
     /**
+     * If any log events recorded by the log event recorders have not yet
+     * been flushed to their storage devices, this method will force them
+     * to flush now.
+     */
+    public function flushRecorders() {
+        // Flush the recorders
+        foreach( $this->logRecorders as $recorder )
+            $recorder->flushBuffer();
+    }
+
+    /**
      * Converts a severity constant into a string representing the severity.
      * This is messy as hell, but php doesn't support enums... I would like to
      * replace this at some point with something more elegant.

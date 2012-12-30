@@ -16,6 +16,9 @@ class FileLogRecorder implements LogRecorder {
     /* The handle to opened log file */
     protected $fileHandle;
 
+    /* A buffer for log events */
+    protected $buffer = array();
+
     /**
      * Constructs a new file log recorder.
      *
@@ -31,15 +34,26 @@ class FileLogRecorder implements LogRecorder {
             $this->close();
         }
     }
-    
+
     /**
-     * @Override
-     *
-     * Records the LogEvent to a file.
+     * Writes all recorded log events to the file.
+     */
+    public function flushBuffer() {
+        if( count($this->buffer) > 0 )
+        {
+            $bufferAsString = implode("\n", $this->buffer) . "\n";
+            $this->buffer = array();
+            if( $this->fileHandle )
+                fwrite($this->fileHandle, $bufferAsString);
+        }
+    }
+
+    /**
+     * Records the LogEvent to the buffer
      */
     public function record(LogEvent $event) {
         if( $this->fileHandle )
-            fwrite($this->fileHandle, $event->toString() . "\n");
+            $this->buffer[] = $event->toString();
     }
 
     /**
@@ -47,6 +61,10 @@ class FileLogRecorder implements LogRecorder {
      * like its open file handle.
      */
     public function close() {
+        // Flush the buffer first
+        $this->flushBuffer();
+
+        // Close the file handle
         if( $this->fileHandle )
             fclose($this->fileHandle);
         $this->fileHandle = null;
