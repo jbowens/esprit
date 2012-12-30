@@ -39,8 +39,9 @@ class ViewManager {
      */
     public function display(Response $response) {
 
-        // Find the appropriate view
         $view = null;
+
+        // Find the appropriate view
         $i = 0;
         while( $i < count($this->viewResolvers) && $view == null )
         {

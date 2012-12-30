@@ -19,12 +19,23 @@ class Response {
     /* The class name of the command that serviced this request. */
     protected $commandClass;
 
+    /* Whether or not a 404 occurred during processing. */
+    protected $fourOhFour = false;
+
     public function __construct(Request $request) {
         $this->request = $request;
     }
 
     public function getRequest() {
         return $this->request;
+    }
+
+    public function set404($val) {
+        $this->fourOhFour = $val;
+    }
+
+    public function get404() {
+        return $this->fourOhFour;
     }
 
     /**

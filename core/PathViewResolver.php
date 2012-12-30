@@ -15,6 +15,7 @@ class PathViewResolver implements ViewResolver {
     use LogAware;
 
     const LOG_ORIGIN = "PATH_VIEW_RESOLVER";
+    const VIEW_NAME_404 = "FourOhFour";
 
     /* The sources for views */
     protected $viewSources;
@@ -48,6 +49,15 @@ class PathViewResolver implements ViewResolver {
      * @see ViewResolver.resolve(Response $response)
      */
     public function resolve(Response $response) {
+        
+        // Handle 404 case
+        if( $response->get404() )
+        {
+            $view = $this->getView('FourOhFour');
+            if( $view != null )
+                return $view;
+        }
+
         $url = $response->getRequest()->getUrl();
         $path = $url->getPath();
 

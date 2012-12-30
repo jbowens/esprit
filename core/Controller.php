@@ -328,7 +328,8 @@ class Controller {
         {
             // Use the default fallback instead.
             $command = $this->getFallbackCommand();
-            $response = $this->executeCommand( $command, $request, $response ); 
+            $response = $this->executeCommand( $command, $request, $response );
+            $response->set404(true); 
         }
 
         return $response;
