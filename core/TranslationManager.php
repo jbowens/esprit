@@ -16,7 +16,10 @@ class TranslationManager implements TranslationSource {
     const SQL_GET_TRANSLATION_STRING_BY_IDENTIFER = "SELECT `translation` FROM `translations` WHERE `languageid` = ? AND `translationIdentifier` = ?";
 
     /* The database to lookup translation data in */
-    protected $db;
+    protected $databaseHandle;
+
+    /* The dbm to access the database through */
+    protected $dbm;
 
     /* Cache of localized strings */
     protected $translationCache;
@@ -27,8 +30,9 @@ class TranslationManager implements TranslationSource {
      * Creates a new TranslationManager given a cache and a key prefix to prepend
      * on all data saved in the cache.
      */
-    public function __construct( db\Database $db, Cache $cache, LanguageSource $langSource, $keyNamespace = 'tm' ) {
-        $this->db = $db;
+    public function __construct( db\DatabaseManager $dbm, Cache $cache, LanguageSource $langSource, $keyNamespace = 'tm', $databaseHandle = 'default' ) {
+        $this->dbm = $dbm;
+        $this->databaseHandle = $databaseHandle;
         $this->translationCache = $cache->accessNamespace( $keyNamespace );
         $this->languageSource = $langSource;
     }
@@ -66,7 +70,7 @@ class TranslationManager implements TranslationSource {
         }
 
         // Get from database
-        $stmt = $this->db->prepare( self::SQL_GET_TRANSLATION_STRING_BY_IDENTIFER );
+        $stmt = $this->dbm->getDb($this->databaseHandle)->prepare( self::SQL_GET_TRANSLATION_STRING_BY_IDENTIFER );
         $stmt->execute(array( $language->getLanguageId(), $translationIdentifier ));
 
         $localizedString = $stmt->fetchColumn();

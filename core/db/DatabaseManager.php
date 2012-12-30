@@ -17,7 +17,11 @@ class DatabaseManager {
 
 	/* A map of handles to database connections */
 	protected $databaseConnections = array();
-	
+
+    /* A map of lazy database connections. These connections have not been made yet,
+     * but will be created if needed. */
+    protected $lazyDatabaseConnections = array();
+
 	/* The default username */
 	protected $defaultUsername;
 	
@@ -39,7 +43,7 @@ class DatabaseManager {
 		$this->defaultUser = $defaultUser;
 		$this->defaultPass = $defaultPass;
         $this->logger = $logger;
-		$this->connectToDatabase("default", $defaultDsn, $defaultUser, $defaultPass) ;
+		$this->lazyConnectToDatabase("default", $defaultDsn, $defaultUser, $defaultPass) ;
 	}
 	
 	/**
@@ -51,10 +55,24 @@ class DatabaseManager {
 	 * @return  a database connection (a PDO object)
 	 */
 	public function getDb($handle = "default") {
-		if( ! isset( $this->databaseConnections[$handle] ) )
-			throw new \esprit\core\exceptions\NonexistentDatabaseException();
-		else
-			return $this->databaseConnections[$handle];
+        if( ! isset( $this->databaseConnections[$handle] ) )
+        {
+            // Is this an uninitialized lazy connection?
+            if( isset( $this->lazyDatabaseConnections[$handle] ) )
+            {
+                $connInfo = $this->lazyDatabaseConnections[$handle];
+                unset($this->lazyDatabaseConnections[$handle]);
+                $this->connectToDatabase($handle,
+                                         $connInfo['dsn'],
+                                         $connInfo['user'],
+                                         $connInfo['pass']);
+                return $this->databaseConnections[$handle];
+            } else
+            {
+			    throw new \esprit\core\exceptions\NonexistentDatabaseException();
+            }
+        }
+        return $this->databaseConnections[$handle];
 	}
 	
 	/**
@@ -88,10 +106,38 @@ class DatabaseManager {
                                                                                     'user'   => $user ));
             throw new \esprit\core\exceptions\DatabaseConnectionException( $ex );
         }
-	}
+    }
 
     /**
-     * Determines if there is a connection with the given handle.
+     * Records information to connect to the database. If the associated handle is ever used,
+     * a connection will be opened to the database for the rest of the dbm's lifetime or until
+     * it's explicitly closed. This method has the advantage of not connecting to the database
+     * unless the connection is actually used.
+     *
+     * @param string $handle  the handle to refer to the connection in the future
+     * @param string $dsn  the dsn of the database
+     * @param string $user  (optional) the database username
+     * @param string $pass  (optional) the database password
+     */
+    public function lazyConnectToDatabase($handle, $dsn, $user = null, $pass = null) {
+        
+        if( $user == null )
+            $user = $this->defaultUsername;
+
+        if( $pass == null )
+            $pass = $this->defaultPass;
+
+        $this->lazyDatabaseConnections[$handle] = array(
+                                                    "dsn" => $dsn,
+                                                    "user" => $user,
+                                                    "pass" => $pass
+                                                  );    
+
+    }
+
+    /**
+     * Determines if there is an *active* connection with the given handle. This will return false for
+     * lazy connections.
      *
      * @param string $handle  the handle to check
      */
@@ -105,10 +151,21 @@ class DatabaseManager {
      * @param string $handle  the handle referring to the connection
      */
     public function closeConnection($handle) {
-        if( ! isset( $this->databaseConnections[$handle] ) )
+        
+        if( ! isset( $this->databaseConnections[$handle] ) && ! isset($this->lazyDatabaseConnections[$handle]) )
             throw new NonexistentDatabaseException("No database with the handle " . $handle . " exists.");
-        $this->databaseConnections[$handle]->close();
-        unset($this->databaseConnctions[$handle]);
+        
+        if( isset( $this->databaseConnections[$handle] ) )
+        {
+            $this->databaseConnections[$handle]->close();
+            unset($this->databaseConnctions[$handle]);
+        }
+
+        if( isset( $this->lazyDatabaseConnections[$handle] ) )
+        {
+            unset($this->lazyDatabaseConnections[$handle]);
+        }
+
     }
 
     /**
@@ -116,7 +173,13 @@ class DatabaseManager {
      * including closing all current database connections managed by the manager.
      */
     public function close() {
+        // Close active connections
         foreach( $this->databaseConnections as $handle => $db ) {
+            $this->closeConnection($handle);
+        }
+
+        // Remove uninitialized lazy connections
+        foreach( $this->lazyDatabaseConnections as $handle => $connInfo ) {
             $this->closeConnection($handle);
         }
     }

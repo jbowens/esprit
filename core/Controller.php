@@ -492,7 +492,7 @@ EOD;
     }
 
     public function createTranslationSource() {
-        return new TranslationManager($this->dbm->getDb(), $this->cache, $this->languageSource); 
+        return new TranslationManager($this->dbm, $this->cache, $this->languageSource); 
     }
 
     public function getTemplateParser() {
