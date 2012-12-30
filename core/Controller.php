@@ -348,7 +348,7 @@ class Controller {
         if( ! $class->isSubclassOf('\esprit\core\BaseCommand') || ! $class->isInstantiable() )
             throw new \esprit\core\exceptions\UnserviceableRequestException( $request );
         
-        $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache);
+        $command = $class->newInstance($this->config, $this->dbm, $this->logger, $this->cache, $this->viewManager);
 
         return $command;
     }
