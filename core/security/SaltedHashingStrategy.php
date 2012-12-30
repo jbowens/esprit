@@ -51,7 +51,7 @@ class SaltedHashingStrategy implements PasswordHashingStrategy
      */
     protected function combineSalt( $data )
     {
-        return $this->salt . $data;
+        return $data . $this->salt;
     }
 
     /**
@@ -63,7 +63,7 @@ class SaltedHashingStrategy implements PasswordHashingStrategy
      */
     protected function removeSalt( $saltedData )
     {   
-        return substr( $saltedData, strlen($this->salt) );
+        return substr( $saltedData, 0, strlen($saltedData) - strlen($this->salt) );
     }
 
 }
