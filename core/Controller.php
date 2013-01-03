@@ -283,7 +283,7 @@ class Controller {
             {
                 $command = $this->getFallbackCommand();
 
-                $this->logger->warning('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
+                $this->logger->info('Hit fallback command on request to ' . $request->getUrl()->getPath() , self::LOG_ORIGIN, $request); 
             }
 
             $this->logger->finest('Going to use command: ' . get_class($command), self::LOG_ORIGIN);
