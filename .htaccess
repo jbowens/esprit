@@ -9,6 +9,9 @@ RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 # through Apache, without going through Esprit's controller.
 RewriteRule ^static/(.*)$ static/$1 [L,NC]
 
+# Allow robots.txt
+RewriteRule ^robots\.txt$ robots.txt [L,NC]
+
 # All other requests should go to index.php, where you
 # setup and run \esprit\core\Controller
 RewriteRule ^.+$ index.php [L,QSA,NC]
