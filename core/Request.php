@@ -100,6 +100,29 @@ class Request {
         else
             return $this->postData[$key];
     }
+
+    /**
+     * Determines whether a given SERVER environment variable exists.
+     *
+     * @param string $param  the environment variable to check
+     * @return  true iff the variable is set
+     */
+    public function serverParamExists($key) {
+        return isset($this->serverData[$key]);
+    }
+
+    /**
+     * Retrieves the given SERVER parameter
+     *
+     * @param string $param  the environment variable to retrieve
+     * @return  the environment variable's value, if any
+     */
+    public function getServer($key) {
+        if( ! $this->serverParamExists($key) )
+            return null;
+        else
+           return $this->serverData[$key]; 
+    }
 	
 	/**
 	 * 

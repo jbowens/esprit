@@ -32,7 +32,7 @@ class Command_JsErrorRecord extends BaseCommand {
         }
         else
         {
-            $this->error("(".$request->getPost('path').") " . $request->getPost('eName') . ": " . $request->getPost('eMsg') . $request->getPost('eStack'), self::LOG_SOURCE);
+            $this->error("(".$request->getPost('path')."; " . $request->getServer('HTTP_USER_AGENT') ." ) " . $request->getPost('eName') . ": " . $request->getPost('eMsg') . $request->getPost('eStack'), self::LOG_SOURCE);
         }
         
         return $response;
