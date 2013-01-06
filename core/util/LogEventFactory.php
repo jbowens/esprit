@@ -18,7 +18,7 @@ class LogEventFactory {
      * @return a LogEvent for the exception
      */
     public static function createFromException(\Exception $e, $origin) {
-        return new LogEvent(Logger::ERROR, $origin, $e->getMessage(), $e);
+        return new LogEvent(Logger::ERROR, $origin, $e->getFile() . ', line ' . $e->getLine() . ': ' . $e->getMessage(), $e);
     }
 
 }

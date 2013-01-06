@@ -69,7 +69,7 @@ class DatabaseManager {
                 return $this->databaseConnections[$handle];
             } else
             {
-			    throw new \esprit\core\exceptions\NonexistentDatabaseException();
+			    throw new \esprit\core\exceptions\NonexistentDatabaseException("The database '".$handle."' does not exist.");
             }
         }
         return $this->databaseConnections[$handle];
@@ -143,6 +143,17 @@ class DatabaseManager {
      */
     public function connectionExists($handle) {
         return isset($this->databaseConnections[$handle]) && $this->databaseConnections[$handle]->checkConnection();
+    }
+
+    /**
+     * Determines if the given handle exists in the manager. A true value does not necessarily mean the
+     * connection is active or that the handle has a valid dsn/user/pass combination--only that the handle
+     * was set.
+     *
+     * @param string $handle  the handle to check
+     */
+    public function handleExists($handle) {
+        return isset($this->databaseConnections[$handle]) || isset($this->lazyDatabaseConnections[$handle]);
     }
 
     /**
