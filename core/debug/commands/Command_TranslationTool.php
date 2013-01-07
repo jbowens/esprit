@@ -10,6 +10,7 @@ use \esprit\core\debug\TranslationTool;
 use \esprit\core\BaseCommand as BaseCommand;
 use \esprit\core\Request as Request;
 use \esprit\core\Response as Response;
+use \esprit\core\ViewManager;
 
 /**
  * A command that handles the translation tool.
@@ -22,8 +23,8 @@ class Command_TranslationTool extends BaseCommand {
 
     protected $translationTool;
 
-    public function __construct(Config $config, DatabaseManager $dbm, Logger $logger, Cache $cache, TranslationTool $translationTool) {
-        parent::__construct($config, $dbm, $logger, $cache);
+    public function __construct(Config $config, DatabaseManager $dbm, Logger $logger, Cache $cache, ViewManager $viewManager, TranslationTool $translationTool) {
+        parent::__construct($config, $dbm, $logger, $cache, $viewManager);
         $this->translationTool = $translationTool;
     }  
 

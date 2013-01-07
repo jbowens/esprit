@@ -405,6 +405,15 @@ class Controller {
     }
 
     /**
+     * Returns the view maanger used by the controller.
+     *
+     * @return ViewManager  the controller's ViewManager
+     */
+    public function getViewManager() {
+        return $this->viewManager;
+    }
+
+    /**
      * Retrieves the session handler that should be used by the controller.
      *
      * @return a SessionHandlerInterface object

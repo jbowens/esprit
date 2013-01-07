@@ -35,6 +35,7 @@ class DebugCommandResolver implements CommandResolver {
                                                 $this->controller->getDatabaseManager(),
                                                 $this->controller->getLogger(),
                                                 $this->controller->getCache(),
+                                                $this->controller->getViewManager(),
                                                 $translationTool );
         }
 
