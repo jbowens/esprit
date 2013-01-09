@@ -49,8 +49,11 @@ class Controller {
     /* The view manager that handles presentation of responses */
     protected $viewManager;
 
-    /* The language soruce to use throughout */
+    /* The language source to use throughout */
     protected $languageSource;
+
+    /* Request flaggers to apply to the request */
+    protected $requestFlaggers = array();
 
     /**
      * Creates a new controller from the given configuration object.
@@ -211,6 +214,17 @@ class Controller {
     }
 
     /**
+     * Registers a request flagger. If called before Controller::run(), the provided
+     * RequestFlagger will be used to flag the request appropriately.
+     *
+     * @param RequestFlagger $requestFlagger  the RequestFlagger to use
+     */
+    public function registerRequestFlagger(RequestFlagger $requestFlagger)
+    {
+        array_push($this->requestFlaggers, $requestFlagger);
+    }
+
+    /**
      * Returns a command source that can instantiate all default Esprit commands.
      */
     public function createEspritCommandSource() {
@@ -266,6 +280,10 @@ class Controller {
             $this->initializeSessions();
             
             $request = $this->createRequestFromEnvironment();
+            // Flag the request as appropriate
+            foreach( $this->requestFlaggers as $requestFlagger )
+                $requestFlagger->processRequest($request);
+
             $response = new Response($request);
 
             $this->logger->finest("Request from " . $request->getIpAddress() . " to " . $request->getUrl()->getPath() . " " . date("r"), self::LOG_ORIGIN);

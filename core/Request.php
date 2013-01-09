@@ -197,6 +197,13 @@ class Request {
     }
 
     /**
+     * Returns the user agent of the user
+     */
+    public function getUserAgent() {
+        return isset($this->serverData['HTTP_USER_AGENT']) ? $this->serverData['HTTP_USER_AGENT'] : null;
+    }
+
+    /**
      * Returns the site that the request came into.
      */
     public function getSite() {
