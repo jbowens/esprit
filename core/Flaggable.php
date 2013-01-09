@@ -20,7 +20,7 @@ trait Flaggable
     public function hasFlag( $flagKey )
     {
         if( $this->isFlagDefined( $flagKey ) )
-            return $flags[$flagKey];
+            return $this->flags[$flagKey];
         else
             return false;
     }
