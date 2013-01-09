@@ -10,6 +10,7 @@ namespace esprit\core;
  * @author jbowens
  */
 class Request {
+    use Flaggable;
 
     /* The site of the site version the request was submitted to */
     protected $site;
