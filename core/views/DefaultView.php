@@ -45,7 +45,7 @@ class DefaultView extends AbstractView {
                 for( $j = $i; $j >= 0; $j-- )
                     array_push($testPieces, $classPieces[$j]);
 
-                $potentialTemp = implode('_', $testPieces);
+                $potentialTemp = implode('_', array_reverse($testPieces));
 
                 if( $this->templateParser->templateExists( $potentialTemp ) ) {
                     $innerTemplate = $potentialTemp;
