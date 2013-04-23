@@ -18,21 +18,21 @@ class Database {
     protected $dbh;
     protected $logger;
 
-	/**
-	 * Default constructor for a datbase. Constructs from a DSN.
-	 * 
-	 * @param string $dsn
-	 * @param string $username
+    /**
+     * Default constructor for a datbase. Constructs from a DSN.
+     * 
+     * @param string $dsn
+     * @param string $username
      * @param string $password
      * @param Logger $logger
-	 * @param array $driver_options
-	 */
-	public function __construct($dsn, $username, $password, Logger $logger, $driver_options = array()) {
-	
+     * @param array $driver_options
+     */
+    public function __construct($dsn, $username, $password, Logger $logger, $driver_options = array()) {
+    
         $this->logger = $logger;
-		$this->dbh = new PDO($dsn, $username, $password, $driver_options);
+        $this->dbh = new PDO($dsn, $username, $password, $driver_options);
 
-	}
+    }
 
     public function beginTransaction() {
         $this->checkConnection();
@@ -100,7 +100,7 @@ class Database {
         else
             return new Statement( $stmt, $this->logger );
     }
-	
+    
     public function quote($string, $parameter_type = PDO::PARAM_STR) {
         $this->checkConnection();
         return $this->dbh->quote($string, $parameter_type);

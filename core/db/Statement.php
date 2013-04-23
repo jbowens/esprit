@@ -18,10 +18,10 @@ class Statement {
     protected $stmt;
     protected $logger;
 
-	function __construct(\PDOStatement $originalStatement, Logger $logger) {
-		$this->stmt = $originalStatement;
+    function __construct(\PDOStatement $originalStatement, Logger $logger) {
+        $this->stmt = $originalStatement;
         $this->logger = $logger;
-	}
+    }
 
     /**
      * execute wrapper with logging
